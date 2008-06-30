@@ -11,7 +11,7 @@
  * @copyright 	2005-2006, ProCreat Systems, http://procreat.ru/
  * @copyright   2007-2008, Eresus Group, http://eresus.ru/
  * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
- * @maintainer  БерсЪ <bersz@procreat.ru>
+ * @maintainer  Mikhail Krasilnikov <mk@procreat.ru>
  * @author      Mikhail Krasilnikov <mk@procreat.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
@@ -47,7 +47,7 @@ class Html extends ContentPlugin {
 		global $Eresus, $page;
 
 		$item = $Eresus->sections->get($page->id);
-		$item['content'] = stripslashes($content);
+		$item['content'] = arg('content');
 		$item['options']['allowGET'] = arg('allowGET', 'int');
 		$Eresus->sections->update($item);
 	}
