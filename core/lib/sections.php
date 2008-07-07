@@ -1,11 +1,29 @@
 <?php
 /**
- * Eresus™ 2
+ * Eresus™ 2.10.1
  *
  * Библиотека для работы с разделами сайта
  *
- * @author: Mikhail Krasilnikov <mk@procreat.ru>
- * @version: 0.0.5
+ * @copyright		2004-2007, ProCreat Systems, http://procreat.ru/
+ * @copyright		2007-2008, Eresus Group, http://eresus.ru/
+ * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
+ * @author      Mikhail Krasilnikov <mk@procreat.ru>
+ *
+ * Данная программа является свободным программным обеспечением. Вы
+ * вправе распространять ее и/или модифицировать в соответствии с
+ * условиями версии 3 либо (по вашему выбору) с условиями более поздней
+ * версии Стандартной Общественной Лицензии GNU, опубликованной Free
+ * Software Foundation.
+ *
+ * Мы распространяем эту программу в надежде на то, что она будет вам
+ * полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том
+ * числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ
+ * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
+ * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
+ *
+ * Вы должны были получить копию Стандартной Общественной Лицензии
+ * GNU с этой программой. Если Вы ее не получили, смотрите документ на
+ * <http://www.gnu.org/licenses/>
  *
  * TODO: Перенести сохранение сквозной нумерации позицию сюда из pages
  *
@@ -239,6 +257,13 @@ class Sections {
 		$result = false;
 		$item['updated'] = gettime('Y-m-d H:i:s');
 		$item['options'] = encodeOptions($item['options']);
+		$item['title'] = $Eresus->db->escape($item['title']);
+		$item['caption'] = $Eresus->db->escape($item['caption']);
+		$item['description'] = $Eresus->db->escape($item['description']);
+		$item['hint'] = $Eresus->db->escape($item['hint']);
+		$item['keywords'] = $Eresus->db->escape($item['keywords']);
+		$item['content'] = $Eresus->db->escape($item['content']);
+		$item['options'] = $Eresus->db->escape($item['options']);
 		$result = $Eresus->db->updateItem($this->table, $item, "`id`={$item['id']}");
 		return $result;
 	}

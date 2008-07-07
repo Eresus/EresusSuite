@@ -1,53 +1,70 @@
 <?php
 /**
-* Eresus™ 2
-*
-* Библиотека для работы с таблицами
-*
-* @author: Mikhail Krasilnikov <mk@procreat.ru>
-* @version: 0.0.1
-* @modified: 2007-07-23
-*/
+ * Eresus™ 2.10.1
+ *
+ * Библиотека для создания табличных списков
+ *
+ * @copyright		2007-2008, Eresus Group, http://eresus.ru/
+ * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
+ * @author      Mikhail Krasilnikov <mk@procreat.ru>
+ *
+ * Данная программа является свободным программным обеспечением. Вы
+ * вправе распространять ее и/или модифицировать в соответствии с
+ * условиями версии 3 либо (по вашему выбору) с условиями более поздней
+ * версии Стандартной Общественной Лицензии GNU, опубликованной Free
+ * Software Foundation.
+ *
+ * Мы распространяем эту программу в надежде на то, что она будет вам
+ * полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том
+ * числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ
+ * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
+ * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
+ *
+ * Вы должны были получить копию Стандартной Общественной Лицензии
+ * GNU с этой программой. Если Вы ее не получили, смотрите документ на
+ * <http://www.gnu.org/licenses/>
+ *
+ */
 
 class AdminList {
-  var $columns = array();
-  var $head = array();
-  var $body = array();
-  var $__controls = array(
-  	'add'           => array('image' => 'core/img/ctrl_add.gif', 'title' => strAdd, 'alt' => '+'),
-  	'edit' 	        => array('image' => 'core/img/ctrl_edit.gif', 'title' => strEdit, 'alt' => '&plusmn;'),
-  	'delete'        => array('image' => 'core/img/ctrl_delete.gif', 'title' => strDelete, 'alt' => 'X', 'onclick' => 'return askdel(this)'),
-  	'setup'         => array('image' => 'core/img/ctrl_setup.gif', 'title' => strProperties, 'alt' => '*'),
-  	'move'          => array('image' => 'core/img/ctrl_move.gif', 'title' => strMove, 'alt' => '-&gt;'),
-  	'on'        	  => array('image' => 'core/img/ctrl_off.gif', 'title' => admActivate, 'alt' => '0'),
-  	'off'       	  => array('image' => 'core/img/ctrl_on.gif', 'title' => admDeactivate, 'alt' => '1'),
-  	'position'      => array('image' => 'core/img/ctrl_up.gif', 'title' => admUp, 'alt' => '&uarr;'),
-  	'position_down' => array('image' => 'core/img/ctrl_down.gif', 'title' => admDown, 'alt' => '&darr;'), 
-  );
-  /**
-  * Отрисовывает элемент управления
-  *
-  * @param string $type    Тип ЭУ (delete,toggle,move,custom...)
-  * @param string $href    Ссылка
-  * @param string $custom  Индивидуальные настройки
-  * @return  string  Отрисованный ЭУ
-  */
-  function control($type, $href, $custom = array())
-  {
-    global $Eresus;
+	var $columns = array();
+	var $head = array();
+	var $body = array();
+	var $__controls = array(
+		'add'           => array('image' => 'core/img/ctrl_add.gif', 'title' => strAdd, 'alt' => '+'),
+		'edit' 	        => array('image' => 'core/img/ctrl_edit.gif', 'title' => strEdit, 'alt' => '&plusmn;'),
+		'delete'        => array('image' => 'core/img/ctrl_delete.gif', 'title' => strDelete, 'alt' => 'X', 'onclick' => 'return askdel(this)'),
+		'setup'         => array('image' => 'core/img/ctrl_setup.gif', 'title' => strProperties, 'alt' => '*'),
+		'move'          => array('image' => 'core/img/ctrl_move.gif', 'title' => strMove, 'alt' => '-&gt;'),
+		'on'        	  => array('image' => 'core/img/ctrl_off.gif', 'title' => admActivate, 'alt' => '0'),
+		'off'       	  => array('image' => 'core/img/ctrl_on.gif', 'title' => admDeactivate, 'alt' => '1'),
+		'position'      => array('image' => 'core/img/ctrl_up.gif', 'title' => admUp, 'alt' => '&uarr;'),
+		'position_down' => array('image' => 'core/img/ctrl_down.gif', 'title' => admDown, 'alt' => '&darr;'),
+		);
+	/**
+	 * Отрисовывает элемент управления
+	 *
+	 * @param string $type    Тип ЭУ (delete,toggle,move,custom...)
+	 * @param string $href    Ссылка
+	 * @param string $custom  Индивидуальные настройки
+	 * @return  string  Отрисованный ЭУ
+	 */
+	function control($type, $href, $custom = array())
+	{
+		global $Eresus;
 
-    if (isset($this->__controls[$type])) $control = $this->__controls[$type];
-    switch($type) {
-      case 'position':
-        $s = array_pop($href);
-        $href = $href[0];
-      break;
-    }
-    foreach($custom as $key => $value) $control[$key] = $value;
-    $result = '<a href="'.$href.'"'.(isset($control['onclick'])?' onclick="'.$control['onclick'].'"':'').'><img src="'.$Eresus->root.$control['image'].'" alt="'.$control['alt'].'" title="'.$control['title'].'" /></a>';
-    if ($type == 'position') $result .= ' '.$this->control('position_down', $s, $custom);
-    return $result;
-  }
+		if (isset($this->__controls[$type])) $control = $this->__controls[$type];
+		switch($type) {
+			case 'position':
+				$s = array_pop($href);
+				$href = $href[0];
+			break;
+		}
+		foreach($custom as $key => $value) $control[$key] = $value;
+		$result = '<a href="'.$href.'"'.(isset($control['onclick'])?' onclick="'.$control['onclick'].'"':'').'><img src="'.$Eresus->root.$control['image'].'" alt="'.$control['alt'].'" title="'.$control['title'].'" /></a>';
+		if ($type == 'position') $result .= ' '.$this->control('position_down', $s, $custom);
+		return $result;
+	}
   //------------------------------------------------------------------------------
  /**
   * Устанавливает названия и параметры столбцов

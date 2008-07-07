@@ -1,13 +1,29 @@
 <?php
 /**
+ * Eresus 2.10.1
+ *
  * Библиотека для работы с СУБД MySQL
  *
- * Система управления контентом Eresus™ 2
- * © 2004-2007, ProCreat Systems, http://procreat.ru/
- * © 2007, Eresus Group, http://eresus.ru/
+ * @copyright		2004-2007, ProCreat Systems, http://procreat.ru/
+ * @copyright		2007-2008, Eresus Group, http://eresus.ru/
+ * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
+ * @author      Mikhail Krasilnikov <mk@procreat.ru>
  *
- * @author Mikhail Krasilnikov <mk@procreat.ru>
- * @version 1.3.2
+ * Данная программа является свободным программным обеспечением. Вы
+ * вправе распространять ее и/или модифицировать в соответствии с
+ * условиями версии 3 либо (по вашему выбору) с условиями более поздней
+ * версии Стандартной Общественной Лицензии GNU, опубликованной Free
+ * Software Foundation.
+ *
+ * Мы распространяем эту программу в надежде на то, что она будет вам
+ * полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том
+ * числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ
+ * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
+ * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
+ *
+ * Вы должны были получить копию Стандартной Общественной Лицензии
+ * GNU с этой программой. Если Вы ее не получили, смотрите документ на
+ * <http://www.gnu.org/licenses/>
  */
 
 # ФУНКЦИИ ОТЛАДКИ (Работают при установленном флаге $Eresus->conf['debug'])
@@ -190,13 +206,13 @@ class MySQL {
 		return $result;
 	}
  /**
-  * Выполняет обновление информации в БД
-  *
-  * @param string $table      Таблица
-  * @param string $set        Изменения
-  * @param string $condition  Условие
-  * @return unknown
-  */
+	* Выполняет обновление информации в БД
+	*
+	* @param string $table      Таблица
+	* @param string $set        Изменения
+	* @param string $condition  Условие
+	* @return unknown
+	*/
 	function update($table, $set, $condition)
 	{
 		$result = $this->query("UPDATE `".$this->prefix.$table."` SET ".$set." WHERE ".$condition);
