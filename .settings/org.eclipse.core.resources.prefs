@@ -1,3 +1,9 @@
-#Wed May 21 00:18:56 MSD 2008
+#Mon Jul 07 12:00:02 MSD 2008
 eclipse.preferences.version=1
+encoding//core/admin.css=windows-1251
+encoding//core/editor/editor.js=windows-1251
+encoding//core/files.js=windows-1251
+encoding//core/functions.js=windows-1251
+encoding//core/js/ajax.js=windows-1251
+encoding//core/js/ua.js=windows-1251
 encoding/<project>=windows-1251

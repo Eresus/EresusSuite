@@ -1,6 +1,6 @@
 <?php
 /**
- * Eresus 2.10
+ * Eresus 2.10.1
  *
  * Основные классы системы
  *
@@ -238,15 +238,18 @@ class WebPage {
 	{
 		global $Eresus;
 
-		$result = array();
 		$parents = $Eresus->sections->parents($id);
 
 		if (is_null($parents)) return null;
 
 		array_push($parents, $id);
-		$items = $Eresus->sections->get( $parents);
-		for($i=0; $i<count($items); $i++) $result[] = $items[$i]['name'];
-		$result = $Eresus->root.implode('/', $result).(count($result)?'/':'');
+		$items = $Eresus->sections->get($parents);
+
+		$list = array();
+		for($i = 0; $i < count($items); $i++) $list[array_search($items[$i]['id'], $parents)-1] = $items[$i]['name'];
+		$result = $Eresus->root;
+		for($i = 0; $i < count($list); $i++) $result .= $list[$i].'/';
+
 		return $result;
 	}
 	//-----------------------------------------------------------------------------

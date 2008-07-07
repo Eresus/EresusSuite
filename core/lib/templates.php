@@ -1,12 +1,30 @@
 <?php
 /**
-* Eresus™ 2
-*
-* Библиотека для работы с шаблонами
-*
-* @author Mikhail Krasilnikov <mk@procreat.ru>
-* @version 0.0.3
-*/
+ * Eresus™ 2.10.1
+ *
+ * Библиотека для работы с шаблонами
+ *
+ * @copyright		2004-2007, ProCreat Systems, http://procreat.ru/
+ * @copyright		2007-2008, Eresus Group, http://eresus.ru/
+ * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
+ * @author      Mikhail Krasilnikov <mk@procreat.ru>
+ *
+ * Данная программа является свободным программным обеспечением. Вы
+ * вправе распространять ее и/или модифицировать в соответствии с
+ * условиями версии 3 либо (по вашему выбору) с условиями более поздней
+ * версии Стандартной Общественной Лицензии GNU, опубликованной Free
+ * Software Foundation.
+ *
+ * Мы распространяем эту программу в надежде на то, что она будет вам
+ * полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том
+ * числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ
+ * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
+ * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
+ *
+ * Вы должны были получить копию Стандартной Общественной Лицензии
+ * GNU с этой программой. Если Вы ее не получили, смотрите документ на
+ * <http://www.gnu.org/licenses/>
+ */
 
 class Templates {
 	var $pattern = '/^<!--\s*(.+?)\s*-->.*$/s';
@@ -33,20 +51,20 @@ class Templates {
 		}
 		return $result;
 	}
-  //------------------------------------------------------------------------------
-  /**
-   * Возвращает шаблон
-   *
-   * @param string $name  Имя шаблона
-   * @param string $type  Тип шаблона (соответствует поддиректории в /templates)
-   * @param bool   $array Вернуть шаблон в виде массива
-   * @return mixed Шаблон
-   */
-  function get($name = '', $type = '', $array = false)
-  {
-  	$result = false;
-  	if (empty($name)) $name = 'default';
-  	$filename = filesRoot.'templates/';
+	//------------------------------------------------------------------------------
+	/**
+	 * Возвращает шаблон
+	 *
+	 * @param string $name  Имя шаблона
+	 * @param string $type  Тип шаблона (соответствует поддиректории в /templates)
+	 * @param bool   $array Вернуть шаблон в виде массива
+	 * @return mixed Шаблон
+	 */
+	function get($name = '', $type = '', $array = false)
+	{
+		$result = false;
+		if (empty($name)) $name = 'default';
+		$filename = filesRoot.'templates/';
 		if ($type) $filename .= "$type/";
 		$filename .= "$name.html";
 		$result = fileread($filename);
@@ -66,22 +84,22 @@ class Templates {
 			#if (!$result) FatalError(sprintf(errTemplateNotFound, $name));
 			if (!$result) $result = '';
 		}
-  	return $result;
-  }
-  //------------------------------------------------------------------------------
-  /**
-   * Новый шаблон
-   *
-   * @param string $name Имя шаблона
-   * @param string $type Тип шаблона (соответствует поддиректории в /templates)
-   * @param string $code Содержимое шаблона
-   * @param string $desc Описание шаблона (необязательно)
-   * @return bool Результат выполенния
-   */
-  function add($name, $type, $code, $desc = '')
-  {
-  	$result = false;
-  	$filename = filesRoot.'templates/';
+		return $result;
+	}
+	//------------------------------------------------------------------------------
+	/**
+	 * Новый шаблон
+	 *
+	 * @param string $name Имя шаблона
+	 * @param string $type Тип шаблона (соответствует поддиректории в /templates)
+	 * @param string $code Содержимое шаблона
+	 * @param string $desc Описание шаблона (необязательно)
+	 * @return bool Результат выполенния
+	 */
+	function add($name, $type, $code, $desc = '')
+	{
+		$result = false;
+		$filename = filesRoot.'templates/';
 		if ($type) $filename .= "$type/";
 		$filename .= "$name.html";
 		$content = "<!-- $desc -->\n\n$code";
@@ -93,22 +111,22 @@ class Templates {
 		} else {
 			ErrorMessage(sprintf(errFileWrite, $filename));
 		}
-  	return $result;
-  }
-  //------------------------------------------------------------------------------
-  /**
-   * Изменяет шаблон
-   *
-   * @param string $name Имя шаблона
-   * @param string $type Тип шаблона (соответствует поддиректории в /templates)
-   * @param string $code Содержимое шаблона
-   * @param string $desc Описание шаблона (необязательно)
-   * @return bool Результат выполенния
-   */
-  function update($name, $type, $code, $desc = null)
-  {
-  	$result = false;
-  	$filename = filesRoot.'templates/';
+		return $result;
+	}
+	//------------------------------------------------------------------------------
+	/**
+	 * Изменяет шаблон
+	 *
+	 * @param string $name Имя шаблона
+	 * @param string $type Тип шаблона (соответствует поддиректории в /templates)
+	 * @param string $code Содержимое шаблона
+	 * @param string $desc Описание шаблона (необязательно)
+	 * @return bool Результат выполенния
+	 */
+	function update($name, $type, $code, $desc = null)
+	{
+		$result = false;
+		$filename = filesRoot.'templates/';
 		if ($type) $filename .= "$type/";
 		$filename .= "$name.html";
 		$item = $this->get($name, $type, true);
@@ -123,20 +141,20 @@ class Templates {
 		} else {
 			ErrorMessage(sprintf(errFileWrite, $filename));
 		}
-  	return $result;
-  }
-  //------------------------------------------------------------------------------
-  /**
-   * Удаляет шаблон
-   *
-   * @param string $name Имя шаблона
-   * @param string $type Тип шаблона (соответствует поддиректории в /templates)
-   * @return bool Результат выполенния
-   */
-  function delete($name, $type = '')
-  {
-  	$result = false;
-  	$filename = filesRoot.'templates/';
+		return $result;
+	}
+	//------------------------------------------------------------------------------
+	/**
+	 * Удаляет шаблон
+	 *
+	 * @param string $name Имя шаблона
+	 * @param string $type Тип шаблона (соответствует поддиректории в /templates)
+	 * @return bool Результат выполенния
+	 */
+	function delete($name, $type = '')
+	{
+		$result = false;
+		$filename = filesRoot.'templates/';
 		if ($type) $filename .= "$type/";
 		$filename .= "$name.html";
 		$result = filedelete($filename);
@@ -147,9 +165,9 @@ class Templates {
 		} else {
 			ErrorMessage(sprintf(errFileDelete, $filename));
 		}
-  	return $result;
-  }
-  //------------------------------------------------------------------------------
+		return $result;
+	}
+	//------------------------------------------------------------------------------
 }
 
 ?>

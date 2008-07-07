@@ -1,17 +1,16 @@
 <?php
 /**
-* Создание миниатюр
-*
-* Создаёт миниатюру
-*
-* @author: Mikhail Krasilnikov <mk@procreat.ru>
-* @version: 0.0.1
-* @modified: 2007-07-26
-*
-* @param  string   file    Имя исходного файла относительно /data
-* @param  integer  width   Ширина миниатюры в пикселях
-* @param  integer  height  Высота миниатюры в пикселях
-*/
+ * Создание миниатюр
+ *
+ * Создаёт миниатюру
+ *
+ * @author   Mikhail Krasilnikov <mk@procreat.ru>
+ * @version  0.0.1
+ *
+ * @param  string   file    Имя исходного файла относительно /data
+ * @param  integer  width   Ширина миниатюры в пикселях
+ * @param  integer  height  Высота миниатюры в пикселях
+ */
 
 define('root', realpath(dirname(__FILE__).'/../../data').DIRECTORY_SEPARATOR);
 $file = $_REQUEST['file'];

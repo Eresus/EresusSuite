@@ -1,13 +1,13 @@
 <?php
 /**
- * Eresus 2.10
+ * Eresus 2.10.1
  *
  * Система управления контентом Eresus 2
  *
  * @copyright		2004-2007, ProCreat Systems, http://procreat.ru/
  * @copyright		2007-2008, Eresus Group, http://eresus.ru/
  * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
- * @author Mikhail Krasilnikov <mk@procreat.ru>
+ * @author      Mikhail Krasilnikov <mk@procreat.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -27,11 +27,11 @@
  */
 
 define('CMSNAME', 'Eresus'); # Название системы
-define('CMSVERSION', '2.10rc2'); # Версия системы
+define('CMSVERSION', '2.10'); # Версия системы
 define('CMSLINK', 'http://eresus.ru/'); # Веб-сайт
 
 define('KERNELNAME', 'ERESUS'); # Имя ядра
-define('KERNELDATE', '22.03.08'); # Дата обновления ядра
+define('KERNELDATE', '07.07.08'); # Дата обновления ядра
 
 # Уровни доступа
 define('ROOT',   1); # Главный администратор
@@ -43,6 +43,8 @@ define('GUEST',  5); # Гость (не зарегистрирован)
 if (!defined('FILE_APPEND')) define('FILE_APPEND', 8);
 
 ### ОБРАБОТКА ОШИБОК ###
+
+###cut:start (testing purpose)
 /**
  * Функция выводит сообщение о пользовательской ошибке и прекращает работу скрипта.
  *
@@ -72,6 +74,7 @@ function FatalError($msg)
 	die($result);
 }
 //------------------------------------------------------------------------------
+###cut:end (testing purpose)
 /**
  * Вывод сообщения о пользовательской ошибке
  *
@@ -455,6 +458,8 @@ function replaceMacros($template, $source)
  * @param array $prevent     Список полей массива изменять которые не следует
  *
  * @return array  Заполненный массив
+ *
+ * @deprecated since 2.10
  */
 function GetArgs($item, $checkboxes = array(), $prevent = array())
 {
@@ -965,7 +970,9 @@ class Eresus {
 	{
 		session_set_cookie_params(ini_get('session.cookie_lifetime'), $this->path);
 		session_name('sid');
+		###cut:start (testing purpose)
 		session_start();
+		###cut:end (testing purpose)
 		$this->session = &$_SESSION['session'];
 		if (!isset($this->session['msg'])) $this->session['msg'] = array('error' => array(), 'information' => array());
 		$this->user = &$_SESSION['user'];
@@ -1049,7 +1056,7 @@ class Eresus {
 		$request['link'] = $request['url'];
 		if (substr($request['link'], -1) == '/') $request['link'] .= '?';
 		if (strpos($request['link'], '?') === false)  $request['link'] .= '?';
-		if (substr($request['link'], -1) == '?') $request['link'] .= '&';
+		if (substr($request['link'], -1) != '?') $request['link'] .= '&';
 		# Адрес, откуда был совершён переход
 		$request['referer'] = isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'';
 		# Сбор аргументов вызова
@@ -1141,8 +1148,14 @@ class Eresus {
 	function check_loginout()
 	{
 		if (arg('action')) switch (arg('action')) {
-			case 'login': $this->login(arg('user', 'dbsafe'), $this->password_hash(arg('password')), arg('autologin', 'int')); break;
-			case 'logout': $this->logout(true); goto($this->root.'admin/'); break;
+			case 'login':
+				$this->login(arg('user', 'dbsafe'), $this->password_hash(arg('password')), arg('autologin', 'int'));
+				goto($this->request['url']);
+			break;
+			case 'logout':
+				$this->logout(true);
+				goto($this->root.'admin/');
+			break;
 		}
 	}
 	//------------------------------------------------------------------------------
@@ -1334,7 +1347,11 @@ class Eresus {
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 
+###cut:start (testing purpose)
+
 $GLOBALS['Eresus'] = new Eresus;
 $GLOBALS['Eresus']->init();
 $GLOBALS['Eresus']->execute();
+
+###cut:end (testing purpose)
 ?>
