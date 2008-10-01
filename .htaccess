@@ -1,3 +1,6 @@
+#
+# $Id$
+#
 Options -Indexes +FollowSymLinks
 AddDefaultCharset Off
 

@@ -9,7 +9,7 @@
 // Version 3.0 developed by Mihai Bazon.
 //   http://dynarch.com/mishoo
 //
-// $Id: popup.js 617 2006-12-06 13:03:34Z ray $
+// $Id$
 HTMLArea = window.opener.HTMLArea;
 
 function getAbsolutePos(el) {
