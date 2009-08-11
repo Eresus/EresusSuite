@@ -33,7 +33,7 @@
  * @package Plugins
  * @subpackage Articles
  *
- * $Id: articles.php 145 2009-06-29 20:13:01Z mekras $
+ * $Id: articles.php 146 2009-07-02 07:43:52Z mekras $
  */
 
 /**
@@ -517,7 +517,7 @@ class TArticles extends TListContentPlugin {
 				array ('type' => 'memo', 'name' => 'preview', 'label' => 'Краткое описание', 'height' => '5'),
 				array ('type' => 'checkbox', 'name'=>'updatePreview', 'label'=>'Обновить краткое описание автоматически', 'value' => false),
 				array ('type' => ($this->settings['blockMode'] == _ARTICLES_BLOCK_MANUAL)?'checkbox':'hidden', 'name' => 'block', 'label' => 'Показывать в блоке'),
-				array ('type' => 'file', 'name' => 'image', 'label' => 'Картинка', 'width' => '100', 'comment'=>(is_file(dataFiles.$this->name.'/'.$item['id'].'.jpg')?'<a href="'.$page->url(array('action'=>'delimage')).'">Удалить</a>':'')),
+				array ('type' => 'file', 'name' => 'image', 'label' => 'Картинка', 'width' => '100', 'comment'=>(is_file($Eresus->fdata.$this->name.'/'.$item['image'].'.jpg')?'<a href="'.$page->url(array('action'=>'delimage')).'">Удалить</a>':'')),
 				array ('type' => 'divider'),
 				array ('type' => 'edit', 'name' => 'section', 'label' => 'Раздел', 'access'=>ADMIN),
 				array ('type' => 'edit', 'name'=>'posted', 'label'=>'Написано'),
