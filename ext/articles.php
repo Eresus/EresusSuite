@@ -32,6 +32,8 @@
  *
  * @package Plugins
  * @subpackage Articles
+ *
+ * $Id: articles.php 146 2009-07-02 07:43:52Z mekras $
  */
 
 /**
@@ -287,10 +289,18 @@ class TArticles extends TListContentPlugin {
 	{
 		global $Eresus, $page;
 
-		$item = getArgs($Eresus->db->fields($this->table['name']));
+		$item = array();
+		$item['section'] = arg('section', 'int');
 		$item['active'] = true;
-		if (empty($item['preview'])) $item['preview'] = $this->createPreview($item['text']);
+		// FIXME Не задаётся position. Наверно надо учесть режим сортировки
 		$item['posted'] = gettime();
+		$item['block'] = arg('block', 'int');
+		$item['caption'] = arg('caption', 'dbsafe');
+		$item['text'] = arg('text', 'dbsafe');
+		$item['preview'] = arg('preview', 'dbsafe');
+		if (empty($item['preview'])) $item['preview'] = $this->createPreview($item['text']);
+		$item['image'] = '';
+
 		$Eresus->db->insert($this->table['name'], $item);
 		$item['id'] = $Eresus->db->getInsertedID();
 
@@ -324,7 +334,16 @@ class TArticles extends TListContentPlugin {
 
 		$item = $Eresus->db->selectItem($this->table['name'], "`id`='".arg('update', 'int')."'");
 		$image = $item['image'];
-		$item = GetArgs($item, array('active', 'block'));
+		$item = array();
+		$item['section'] = arg('section', 'int');
+		if ( ! is_null(arg('section')) )
+			$item['active'] = arg('active', 'int');
+		// FIXME Не задаётся position. Наверно надо учесть режим сортировки
+		$item['posted'] = arg('posted', 'dbsafe');
+		$item['block'] = arg('block', 'int');
+		$item['caption'] = arg('caption', 'dbsafe');
+		$item['text'] = arg('text', 'dbsafe');
+		$item['preview'] = arg('preview', 'dbsafe');
 		if (empty($item['preview']) || arg('updatePreview')) $item['preview'] = $this->createPreview($item['text']);
 
 		if (is_uploaded_file($_FILES['image']['tmp_name'])) {
@@ -498,7 +517,7 @@ class TArticles extends TListContentPlugin {
 				array ('type' => 'memo', 'name' => 'preview', 'label' => 'Краткое описание', 'height' => '5'),
 				array ('type' => 'checkbox', 'name'=>'updatePreview', 'label'=>'Обновить краткое описание автоматически', 'value' => false),
 				array ('type' => ($this->settings['blockMode'] == _ARTICLES_BLOCK_MANUAL)?'checkbox':'hidden', 'name' => 'block', 'label' => 'Показывать в блоке'),
-				array ('type' => 'file', 'name' => 'image', 'label' => 'Картинка', 'width' => '100', 'comment'=>(is_file(dataFiles.$this->name.'/'.$item['id'].'.jpg')?'<a href="'.$page->url(array('action'=>'delimage')).'">Удалить</a>':'')),
+				array ('type' => 'file', 'name' => 'image', 'label' => 'Картинка', 'width' => '100', 'comment'=>(is_file($Eresus->fdata.$this->name.'/'.$item['image'].'.jpg')?'<a href="'.$page->url(array('action'=>'delimage')).'">Удалить</a>':'')),
 				array ('type' => 'divider'),
 				array ('type' => 'edit', 'name' => 'section', 'label' => 'Раздел', 'access'=>ADMIN),
 				array ('type' => 'edit', 'name'=>'posted', 'label'=>'Написано'),
