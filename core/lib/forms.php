@@ -1,14 +1,13 @@
 <?php
 /**
- * Eresus™ 2.10.1
+ * Eresus 2.11
  *
- * Библиотека для работы с HTML-формами
+ * Система управления контентом Eresus 2
  *
- * @copyright		2004-2007, ProCreat Systems, http://procreat.ru/
- * @copyright		2007-2008, Eresus Group, http://eresus.ru/
- * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
- * @author      Mikhail Krasilnikov <mk@procreat.ru>
- * @author БерсЪ <bersz@procreat.ru>
+ * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @license http://www.gnu.org/licenses/gpl.txt GPL License 3
+ * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -26,6 +25,7 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
+ * $Id$
  */
 
 /**
@@ -39,7 +39,7 @@ class Form {
 	var $validator = '';
 	var $file = false;    # Признок наличия полей типа file
 	var $html = false;    # Признак наличия WYSIWYG редакторов
-	var $syntax = false;  # Признако наличия полей с подсветкой синтаксиса
+	var $options = array();
 	/**
 	* Конструктор
 	*
@@ -282,6 +282,8 @@ class Form {
 	*/
 	function render_memo($item)
 	{
+		global $Eresus;
+
 		if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
 		if (empty($item['width'])) $item['width'] = '100%';
 		if (strpos($item['width'], '%') === false) {
@@ -289,13 +291,12 @@ class Form {
 			$item['width'] = '';
 		} else $cols = '50';
 		if (isset($item['syntax'])) {
-			if (!$item['id']) $item['id'] = $this->form['name'].'_'.$item['name'];
-			$item['class'][] = 'codepress';
-			$item['class'] = array_merge($item['class'], explode(' ', $item['syntax']));
-			$this->onsubmit .=
-				"\n    form.".$item['name'].".value = ".$item['id'].".getCode();\n".
-				"    form.".$item['name'].".disabled = false;\n";
-			$this->syntax = true;
+			$extension = $Eresus->extensions->load(
+				'forms',
+				'memo_syntax',
+				isset($item['syntax_extension']) ? $item['syntax_extension'] : null
+			);
+			if ($extension) $item = $extension->forms_memo_syntax($this, $item);
 		}
 		$result = "\t\t".'<tr><td colspan="2">'.(empty($item['label'])?'':'<span class="formLabel">'.$item['label'].'</span><br />').'<textarea name="'.$item['name'].'" cols="'.$cols.'" rows="'.(empty($item['height'])?'3':$item['height']).'" '.$this->attrs($item).'>'.EncodeHTML($item['value'])."</textarea></td></tr>\n";
 		return $result;
@@ -312,11 +313,18 @@ class Form {
 	*/
 	function render_html($item)
 	{
-		global $page;
+		global $Eresus;
+
 		if ($item['name'] === '') ErrorMessage(sprintf(errFormFieldHasNoName, $item['type'], $this->form['name']));
-		$value = isset($values[$item['name']]) ? $values[$item['name']] : (isset($item['value'])?$item['value']:'');
-		$result = "\t\t".'<tr><td colspan="2">'.$item['label'].'<br /><textarea name="wyswyg_'.$item['name'].'" id="wyswyg_'.$item['name'].'" style="width: 100%; height: '.$item['height'].';">'.str_replace('$(httpRoot)', httpRoot, EncodeHTML($value)).'</textarea></td></tr>'."\n";
-		$page->htmlEditors[] = 'wyswyg_'.$item['name'];
+
+		$result = '';
+		 $extension = $Eresus->extensions->load(
+			 'forms',
+			 'html',
+			 isset($item['html_extension']) ? $item['html_extension'] : null
+		 );
+		if ($extension) $result = $extension->forms_html($this, $item);
+
 		return $result;
 	}
 	//------------------------------------------------------------------------------
@@ -393,7 +401,6 @@ class Form {
 				return result;
 			}
 		";
-		if ($this->syntax) $page->linkScripts(httpRoot.'core/codepress/codepress.js');
 		# FIXME: sub_id - устаревший элемент
 		$referer = arg('sub_id')?$page->url(array('sub_id'=>'')):$page->url(array('id'=>''));
 		$this->hidden .= "\t\t".'<input type="hidden" name="submitURL" value="'.$referer.'" />';
@@ -443,4 +450,3 @@ function form($form, $values=array())
 	return $result;
 }
 //------------------------------------------------------------------------------
-?>

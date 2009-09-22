@@ -1,11 +1,38 @@
 <?php
+/**
+ * Eresus 2.11
+ *
+ * Система управления контентом Eresus 2
+ *
+ * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @license http://www.gnu.org/licenses/gpl.txt GPL License 3
+ * @author Mikhail Krasilnikov <mk@procreat.ru>
+ *
+ * Данная программа является свободным программным обеспечением. Вы
+ * вправе распространять ее и/или модифицировать в соответствии с
+ * условиями версии 3 либо (по вашему выбору) с условиями более поздней
+ * версии Стандартной Общественной Лицензии GNU, опубликованной Free
+ * Software Foundation.
+ *
+ * Мы распространяем эту программу в надежде на то, что она будет вам
+ * полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том
+ * числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ
+ * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
+ * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
+ *
+ * Вы должны были получить копию Стандартной Общественной Лицензии
+ * GNU с этой программой. Если Вы ее не получили, смотрите документ на
+ * <http://www.gnu.org/licenses/>
+ *
+ * $Id$
+ */
+
 useClass('backward/TContentPlugin');
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# КЛАСС-ПРЕДОК "КОНТЕНТ-СПИСОК"
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+
 class TListContentPlugin extends TContentPlugin {
-var $table;
-var $pagesCount = 0;
+	var $table;
+	var $pagesCount = 0;
 #---------------------------------------------------------------------------------------------------------------------#
 function install()
 {
@@ -98,7 +125,7 @@ global $Eresus, $page;
 
 	$result = '';
 	if (!is_null(arg('id'))) {
-		$item = $Eresus->db->selectItem($this->table['name'], "`".$this->table['key']."` = '".arg('id')."'");
+		$item = $Eresus->db->selectItem($this->table['name'], "`".$this->table['key']."` = '".arg('id', 'dbsafe')."'");
 		$page->title .= empty($item['caption'])?'':' - '.$item['caption'];
 	}
 	switch (true) {
@@ -106,16 +133,16 @@ global $Eresus, $page;
 			if (method_exists($this, 'update')) $result = $this->update(); else ErrorMessage(sprintf(errMethodNotFound, 'update', get_class($this)));
 		break;
 		case !is_null(arg('toggle')) && isset($this->table['controls']['toggle']):
-			if (method_exists($this, 'toggle')) $result = $this->toggle(arg('toggle')); else ErrorMessage(sprintf(errMethodNotFound, 'toggle', get_class($this)));
+			if (method_exists($this, 'toggle')) $result = $this->toggle(arg('toggle', 'dbsafe')); else ErrorMessage(sprintf(errMethodNotFound, 'toggle', get_class($this)));
 		break;
 		case !is_null(arg('delete')) && isset($this->table['controls']['delete']):
-			if (method_exists($this, 'delete')) $result = $this->delete(arg('delete')); else ErrorMessage(sprintf(errMethodNotFound, 'delete', get_class($this)));
+			if (method_exists($this, 'delete')) $result = $this->delete(arg('delete', 'dbsafe')); else ErrorMessage(sprintf(errMethodNotFound, 'delete', get_class($this)));
 		break;
 		case !is_null(arg('up')) && isset($this->table['controls']['position']):
-			if (method_exists($this, 'up')) $result = $this->table['sortDesc']?$this->down(arg('up')):$this->up(arg('up')); else ErrorMessage(sprintf(errMethodNotFound, 'up', get_class($this)));
+			if (method_exists($this, 'up')) $result = $this->table['sortDesc']?$this->down(arg('up', 'dbsafe')):$this->up(arg('up', 'dbsafe')); else ErrorMessage(sprintf(errMethodNotFound, 'up', get_class($this)));
 		break;
 		case !is_null(arg('down')) && isset($this->table['controls']['position']):
-			if (method_exists($this, 'down')) $result = $this->table['sortDesc']?$this->up(arG('down')):$this->down(arg('down')); else ErrorMessage(sprintf(errMethodNotFound, 'down', get_class($this)));
+			if (method_exists($this, 'down')) $result = $this->table['sortDesc']?$this->up(arg('down', 'dbsafe')):$this->down(arg('down', 'dbsafe')); else ErrorMessage(sprintf(errMethodNotFound, 'down', get_class($this)));
 		break;
 		case !is_null(arg('id')) && isset($this->table['controls']['edit']):
 			if (method_exists($this, 'adminEditItem')) $result = $this->adminEditItem(); else ErrorMessage(sprintf(errMethodNotFound, 'adminEditItem', get_class($this)));
@@ -133,7 +160,7 @@ global $Eresus, $page;
 			}
 		break;
 		default:
-			if (!is_null(arg('section'))) $this->table['condition'] = "`section`='".arg('section')."'";
+			if (!is_null(arg('section'))) $this->table['condition'] = "`section`='".arg('section', 'int')."'";
 			$result = $page->renderTable($this->table);
 	}
 	return $result;

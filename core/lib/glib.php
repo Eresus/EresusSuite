@@ -1,13 +1,13 @@
 <?php
 /**
- * Eresus 2.10.1
+ * Eresus 2.11
  *
- * Библиотека для работы с изображениями
+ * Система управления контентом Eresus 2
  *
- * @copyright		2004-2007, ProCreat Systems, http://procreat.ru/
- * @copyright		2007-2008, Eresus Group, http://eresus.ru/
- * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
- * @author      Mikhail Krasilnikov <mk@procreat.ru>
+ * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @license http://www.gnu.org/licenses/gpl.txt GPL License 3
+ * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -24,6 +24,8 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
+ *
+ * $Id$
  */
 
 /**
@@ -151,5 +153,3 @@ function imageConvert($srcFile, $dstFile, $format = IMG_JPG)
 	return $result;
 }
 
-
-?>

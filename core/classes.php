@@ -1,13 +1,13 @@
 <?php
 /**
- * Eresus 2.10.1
+ * Eresus 2.11
  *
- * Основные классы системы
+ * Система управления контентом Eresus 2
  *
- * @copyright		2004-2007, ProCreat Systems, http://procreat.ru/
- * @copyright		2007-2008, Eresus Group, http://eresus.ru/
- * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
- * @author      Mikhail Krasilnikov <mk@procreat.ru>
+ * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @license http://www.gnu.org/licenses/gpl.txt GPL License 3
+ * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -25,8 +25,8 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
+ * $Id$
  */
-
 
 /**
  * Родительский класс веб-интерфейсов
@@ -243,7 +243,7 @@ class WebPage {
 		if (is_null($parents)) return null;
 
 		array_push($parents, $id);
-		$items = $Eresus->sections->get($parents);
+		$items = $Eresus->sections->get( $parents);
 
 		$list = array();
 		for($i = 0; $i < count($items); $i++) $list[array_search($items[$i]['id'], $parents)-1] = $items[$i]['name'];
@@ -316,7 +316,7 @@ class Plugins {
 	var $items = array(); # Массив плагинов
 	var $events = array(); # Таблица обработчиков событий
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-	function  Plugins()
+	function Plugins()
 	{
 		global $Eresus;
 
@@ -565,7 +565,7 @@ function Plugin()
 	$this->urlCode = $Eresus->root.'ext/'.$this->name.'/';
 	$this->dirStyle = $Eresus->fstyle.$this->name.'/';
 	$this->urlStyle = $Eresus->style.$this->name.'/';
-	$filename = filesRoot.'lang/'.$this->name.'/'.$locale['lang'].'.inc';
+	$filename = filesRoot.'lang/'.$this->name.'/'.$locale['lang'].'.php';
 	if (is_file($filename)) include_once($filename);
 }
 //------------------------------------------------------------------------------
@@ -642,6 +642,7 @@ function uninstall()
 {
 	global $Eresus;
 
+	# TODO: Перенести в IDataSource
 	$tables = $Eresus->db->query_array("SHOW TABLES LIKE '{$Eresus->db->prefix}{$this->name}_%'");
 	$tables = array_merge($tables, $Eresus->db->query_array("SHOW TABLES LIKE '{$Eresus->db->prefix}{$this->name}'"));
 	for ($i=0; $i < count($tables); $i++)
@@ -660,7 +661,7 @@ function updateSettings()
 {
 	global $Eresus;
 
-	foreach ($this->settings as $key => $value) if (!is_null(arg($key))) $this->settings[$key] = arg($key);
+	foreach ($this->settings as $key => $value) if (!is_null(arg($key))) $this->settings[$key] = arg($key, 'dbsafe');
 	$this->onSettingsUpdate();
 	$this->saveSettings();
 }
@@ -781,8 +782,8 @@ function dbDropTable($name = '')
  * @param string	$condition		Условие выборки
  * @param string	$order				Порядок выборки
  * @param string	$fields				Список полей
- * @param int		$limit				Вернуть не больше полей чем limit
- * @param int		$offset				Смещение выборки
+ * @param int			$limit				Вернуть не больше полей чем limit
+ * @param int			$offset				Смещение выборки
  * @param bool		$distinct			Только уникальные результаты
  *
  * @return array	Список записей
@@ -1026,4 +1027,137 @@ function adminRenderContent()
 }
 //------------------------------------------------------------------------------
 }
-?>
+
+/**
+ * Базовый класс коннектора сторонних расширений
+ *
+ */
+class EresusExtensionConnector {
+	var $root;
+	var $froot;
+ /**
+	* Конструктор
+	*
+	* @return EresusExtensionConnector
+	*/
+	function EresusExtensionConnector()
+	{
+		global $Eresus;
+
+		$name = strtolower(substr(get_class($this), 0, -9));
+		$this->root = $Eresus->root.'ext-3rd/'.$name.'/';
+		$this->froot = $Eresus->froot.'ext-3rd/'.$name.'/';
+	}
+	//-----------------------------------------------------------------------------
+	/**
+	 * Метод вызывается при проксировании прямых запросов к расширению
+	 *
+	 */
+	function proxy()
+	{
+		global $Eresus;
+
+		if(!UserRights(EDITOR))	die;
+
+		$ext = strtolower(substr($Eresus->request['file'], strrpos($Eresus->request['file'], '.')+1));
+		$filename = dirname($Eresus->request['url']).'/'.$Eresus->request['file'];
+		$filename = $Eresus->froot.substr($filename, strlen($Eresus->root));
+		switch (true) {
+			case in_array($ext, array('png', 'jpg', 'jpeg', 'gif')):
+				$info = getimagesize($filename);
+				header('Content-type: '.$info['mime']);
+				echo file_get_contents($filename);
+			break;
+			case $ext == 'js':
+				header('Content-type: text/javascript');
+				echo file_get_contents($filename);
+			break;
+			case $ext == 'css':
+				header('Content-type: text/css');
+				echo file_get_contents($filename);
+			break;
+			case $ext == 'html':
+				header('Content-type: text/html');
+				echo file_get_contents($filename);
+			break;
+			case $ext == 'php':
+				$Eresus->conf['debug']['enable'] = false;
+				restore_error_handler();
+				chdir(dirname($filename));
+				require $filename;
+			break;
+		}
+	}
+	//-----------------------------------------------------------------------------
+}
+
+/**
+ * Класс для работы с расширениями системы
+ */
+class EresusExtensions {
+ /**
+	* Загруженные расширения
+	*
+	* @var array
+	*/
+	var $items = array();
+ /**
+	* Определение имени расширения
+	*
+	* @param string $class     Класс расширения
+	* @param string $function  Расширяемая функция
+	* @param string $name      Имя расширения
+	*
+	* @return mixed  Имя расширения или false если подходящего расширения не найдено
+	*/
+	function get_name($class, $function, $name = null)
+	{
+		global $Eresus;
+
+		$result = false;
+		if (isset($Eresus->conf['extensions'])) {
+			if (isset($Eresus->conf['extensions'][$class])) {
+				if (isset($Eresus->conf['extensions'][$class][$function])) {
+					$items = $Eresus->conf['extensions'][$class][$function];
+					reset($items);
+					$result = isset($items[$name]) ? $name : key($items);
+				}
+			}
+		}
+
+		return $result;
+	}
+	//-----------------------------------------------------------------------------
+ /**
+	* Загрузка расширения
+	*
+	* @param string $class     Класс расширения
+	* @param string $function  Расширяемая функция
+	* @param string $name      Имя расширения
+	*
+	* @return mixed  Экземпляр класса EresusExtensionConnector или false если не удалось загрузить расширение
+	*/
+	function load($class, $function, $name = null)
+	{
+		global $Eresus;
+
+		$result = false;
+		$name = $this->get_name($class, $function, $name);
+
+		if (isset($this->items[$name])) {
+			if ($Eresus->PHP5) $result = $this->items[$name]; else $result =& $this->items[$name];
+		} else {
+			$filename = $Eresus->froot.'ext-3rd/'.$name.'/eresus-connector.php';
+			if (is_file($filename)) {
+				include_once $filename;
+				$class = $name.'Connector';
+				if (class_exists($class)) {
+					$this->items[$name] = new $class();
+					if ($Eresus->PHP5) $result = $this->items[$name]; else $result =& $this->items[$name];
+				}
+			}
+		}
+		return $result;
+	}
+	//-----------------------------------------------------------------------------
+}

@@ -1,13 +1,13 @@
 <?php
 /**
- * Eresus 2.10.1
+ * Eresus 2.11
  *
  * Библиотека для работы с СУБД MySQL
  *
- * @copyright		2004-2007, ProCreat Systems, http://procreat.ru/
- * @copyright		2007-2008, Eresus Group, http://eresus.ru/
- * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
- * @author      Mikhail Krasilnikov <mk@procreat.ru>
+ * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @license http://www.gnu.org/licenses/gpl.txt GPL License 3
+ * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -24,26 +24,38 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
+ *
+ * $Id$
  */
 
-# ФУНКЦИИ ОТЛАДКИ (Работают при установленном флаге $Eresus->conf['debug'])
-# Устанавливает глобальные переменные
-#  $__MYSQL_QUERY_COUNT - Считает количество запросов к БД
-#  $__MYSQL_QUERY_TIME - Считает общее время запросов к БД
-#  $__MYSQL_QUERY_LOG - Все сделанные запросы (Необходимо установить флаг TMySQL->logQueries)
-
 class MySQL {
-	var $Connection, $name, $prefix;
+	var $Connection;
+	var $name;
+	var $prefix;
 	var $logQueries = false;
+ /**
+	* Если TRUE (по умолчанию) в случае ошибки скрипт будет прерван и показано сообщение об ошибке
+	*
+	* @var  bool  $display_errors
+	*/
 	var $error_reporting = true;
-	#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-	function init($mysqlHost, $mysqlUser, $mysqlPswd, $mysqlName, $mysqlPrefix='')
-	# Открывает соединение с базой данных MySQL и выбирает указанную базу данных.
+ /**
+	* Открывает соединение сервером данных и выбирает источник
+	*
+	* @param  string  $server    Сервер данных
+	* @param  string  $username  Имя пользователя для доступа к серверу
+	* @param  string  $password  Пароль пользователя
+	* @param  string  $source    Имя источника данных
+	* @param  string  $prefix    Префикс для имён таблиц. По умолчанию ''
+	*
+	* @return  bool  Результат соединения
+	*/
+	function init($server, $username, $password, $source, $prefix='')
 	{
 		$result = false;
-		$this->name = $mysqlName;
-		$this->prefix = $mysqlPrefix;
-		@$this->Connection = mysql_connect($mysqlHost, $mysqlUser, $mysqlPswd, true);
+		$this->name = $source;
+		$this->prefix = $prefix;
+		@$this->Connection = mysql_connect($server, $username, $password, true);
 		if ($this->Connection) {
 			if (defined('LOCALE_CHARSET')) {
 				$version = preg_replace('/[^\d\.]/', '', mysql_get_server_info());
@@ -54,30 +66,32 @@ class MySQL {
 		} elseif ($this->error_reporting) FatalError("Can not connect to MySQL server. Check login and password");
 		return $result;
 	}
-	#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+	//-----------------------------------------------------------------------------
+ /**
+	* Выполняет запрос к источнику
+	*
+	* @param  string  $query    Запрос в формате источника
+	*
+	* @return  mixed  Результат запроса. Тип зависит от источника, запроса и результата
+	*/
 	function query($query)
-	# Выполняет запрос к базе данных с которой установленно соединение методом init().
 	{
-		global $Eresus, $__MYSQL_QUERY_COUNT, $__MYSQL_QUERY_TIME, $__MYSQL_QUERY_LOG;
+		global $Eresus;
 
-		if ($Eresus->conf['debug']['enable']) {
-			$time_start = microtime();
-			if ($this->logQueries) $__MYSQL_QUERY_LOG .= $query."\n";
-		}
 		$result = mysql_query($query, $this->Connection);
 		if ($this->error_reporting && !$result) FatalError(mysql_error($this->Connection)."<br />Query \"$query\"");
-		if ($Eresus->conf['debug']['enable']) {
-			$__MYSQL_QUERY_COUNT++;
-			$__MYSQL_QUERY_TIME += microtime() - $time_start;
-		}
 		return $result;
 	}
-	#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+	//-----------------------------------------------------------------------------
+ /**
+	* Выполняет запрос к источнику и возвращает ассоциативный массив значений
+	*
+	* @param  string  $query    Запрос в формате источника
+	*
+	* @return  array|bool  Ответ в виде массива или FALSE в случае ошибки
+	*/
 	function query_array($query)
-	# Выполняет запрос к базе данных и возвращает ассоциативный массив значений
 	{
-		global $__MYSQL_QUERY_COUNT, $__MYSQL_QUERY_TIME, $__MYSQL_QUERY_LOG;
-
 		$result = $this->query($query);
 		$values = Array();
 		while($row = mysql_fetch_assoc($result)) {
@@ -120,27 +134,27 @@ class MySQL {
 	}
 	//------------------------------------------------------------------------------
  /**
-	* Выполняет запрос SELECT
+	* Производит выборку данных из источника
 	*
-	* @param string  $tables      Список таблиц, разделённый запятыми
-	* @param string  $condition   Условие для выборки (WHERE)
-	* @param string  $order       Поля для сортировки (ORDER BY)
-	* @param string  $fields      Список полей для получения
-	* @param int     $lim_rows    Максимльное количество получаемых записей
-	* @param int     $lim_offset  Начальное смещение для выборки
-	* @param string  $group       Поле для группировки
-	* @param bool    $distinct    Вернуть только уникальные записи
+	* @param  string   $tables     Список таблиц из которых проводится выборка
+	* @param  string   $condition  Условие для выборки (WHERE)
+	* @param  string   $order      Поля для сортировки (ORDER BY)
+	* @param  string   $fields     Список полей для получения
+	* @param  int      $rows       Максимльное количество получаемых записей
+	* @param  int      $offset     Начальное смещение для выборки
+	* @param  string   $group      Поле для группировки
+	* @param  bool     $distinct   Вернуть только уникальные записи
 	*
-	* @return array
+	* @return  array|bool  Выбранные элементы в виде массива или FALSE в случае ошибки
 	*/
-	function select($tables, $condition = '', $order = '', $fields = '', $lim_rows = 0, $lim_offset = 0, $group = '', $distinct = false)
+	function select($tables, $condition = '', $order = '', $fields = '', $rows = 0, $offset = 0, $group = '', $distinct = false)
 	{
-		if (is_bool($fields) || $fields == '1' || $fields == '0' || !is_numeric($lim_rows)) {
+		if (is_bool($fields) || $fields == '1' || $fields == '0' || !is_numeric($rows)) {
 			# Обратная совместимость c 1.2.x
 			$desc = $fields;
-			$fields = $lim_rows ? $lim_rows : '*';
-			$lim_rows = $lim_offset;
-			$lim_offset = $group;
+			$fields = $rows ? $rows : '*';
+			$rows = $offset;
+			$offset = $group;
 			$group = $distinct;
 			$distinct = func_num_args() == 9 ? func_get_arg(8) : false;
 			$query = 'SELECT ';
@@ -155,10 +169,10 @@ class MySQL {
 				$query .= " ORDER BY $order";
 				if ($desc) $query .= ' DESC';
 			}
-			if ($lim_rows) {
+			if ($rows) {
 				$query .= ' LIMIT ';
-				if ($lim_offset) $query .= "$lim_offset, ";
-				$query .= $lim_rows;
+				if ($offset) $query .= "$offset, ";
+				$query .= $rows;
 			}
 		} else {
 			$query = 'SELECT ';
@@ -172,26 +186,31 @@ class MySQL {
 			if (strlen($order)) {
 				$order = explode(',', $order);
 				for($i = 0; $i < count($order); $i++) switch ($order[$i]{0}) {
-					case '+': $order[$i] = substr($order[$i], 1); break;
-					case '-': $order[$i] = substr($order[$i], 1).' DESC'; break;
+					case '+': $order[$i] = '`'.substr($order[$i], 1).'`'; break;
+					case '-': $order[$i] = '`'.substr($order[$i], 1).'` DESC'; break;
 				}
 				$query .= " ORDER BY ".implode(', ',$order);
 			}
-			if ($lim_rows) {
+			if ($rows) {
 				$query .= ' LIMIT ';
-				if ($lim_offset) $query .= "$lim_offset, ";
-				$query .= $lim_rows;
+				if ($offset) $query .= "$offset, ";
+				$query .= $rows;
 			}
 		}
 		$result = $this->query_array($query);
 
 		return $result;
 	}
-	#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+	//-----------------------------------------------------------------------------
+ /**
+	* Вставка элементов в источник
+	*
+	* @param  string  $table  Таблица, в которую надо вставтиь элемент
+	* @param  array   $item   Ассоциативный массив значений
+	*
+	* @return  mixed  Результат выполнения операции
+	*/
 	function insert($table, $item)
-	# Выполняет запрос INSERT к базе данных используя метод query().
-	#  $table - таблица, в которую надо вставтиь запись
-	#  $item - ассоциативный массив значений
 	{
 		$hnd = mysql_list_fields($this->name, $this->prefix.$table, $this->Connection);
 		$cols = '';
@@ -205,20 +224,33 @@ class MySQL {
 		$result = $this->query("INSERT INTO ".$this->prefix.$table." (".$cols.") VALUES (".$values.")");
 		return $result;
 	}
+	//-----------------------------------------------------------------------------
  /**
-	* Выполняет обновление информации в БД
+	* Выполняет обновление информации в источнике
 	*
 	* @param string $table      Таблица
-	* @param string $set        Изменения
+	* @param mixed  $set        Изменения
 	* @param string $condition  Условие
 	* @return unknown
 	*/
 	function update($table, $set, $condition)
 	{
+		if (is_array($set)) {
+			$pairs = array();
+			$fields = $this->fields($table, true);
+			foreach($set as $field => $value) {
+				if (isset($fields[$field])) {
+					switch ($fields[$field]) {
+
+					}
+					#$pairs[]
+				}
+			}
+		}
 		$result = $this->query("UPDATE `".$this->prefix.$table."` SET ".$set." WHERE ".$condition);
 		return $result;
 	}
-	#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+	//-----------------------------------------------------------------------------
 	function delete($table, $condition)
 	# Выполняет запрос DELETE к базе данных используя метод query().
 	#  $table - таблица, из которой требуется удалить записи
@@ -227,17 +259,66 @@ class MySQL {
 		$result = $this->query("DELETE FROM `".$this->prefix.$table."` WHERE ".$condition);
 		return $result;
 	}
-	#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-	function fields($table)
-	# Возвращает список полей таблицы
-	#  $table - таблица, для которой надо получить список полей
+	//-----------------------------------------------------------------------------
+ /**
+	* Получение списка полей таблицы
+	*
+	* @param string $table  Имя таблицы
+	* @return array  Описание полей
+	*/
+	function fields($table, $info = false)
 	{
-		$hnd = mysql_list_fields($this->name, $this->prefix.$table, $this->Connection);
-		if ($hnd == false) FatalError(mysql_error($this->Connection));
-		while (($field = @mysql_field_name($hnd, $i++))) $result[] = $field;
+		global $Eresus;
+
+		$fields = $this->query_array("SHOW COLUMNS FROM `{$this->prefix}$table`");
+		if ($fields) {
+			$result = array();
+			foreach($fields as $item) {
+				if ($info) {
+					$result[$item['Field']] = array(
+						'name' => $item['Field'],
+						'type' => $item['Type'],
+						'size' => 0,
+						'signed' => false,
+						'default' => $item['Default'],
+					);
+					switch (true) {
+						case $item['Type'] == 'text':
+							$result[$item['Field']]['size'] = 65535;
+						break;
+						case $item['Type'] == 'longtext':
+							$result[$item['Field']]['type'] = 'text';
+							$result[$item['Field']]['size'] = 4294967295;
+						break;
+						case substr($item['Type'], 0, 3) == 'int':
+							$result[$item['Field']]['signed'] = strpos($result[$item['Field']]['type'], 'unsigned') === false;
+							$item['Type'] = str_replace(' unsigned', '', $item['Type']);
+							$result[$item['Field']]['type'] = 'int';
+							$result[$item['Field']]['size'] = substr($item['Type'], 4, -1);
+						break;
+						case substr($item['Type'], 0, 8) == 'smallint':
+							$result[$item['Field']]['signed'] = strpos($result[$item['Field']]['type'], 'unsigned') === false;
+							$item['Type'] = str_replace(' unsigned', '', $item['Type']);
+							$result[$item['Field']]['type'] = 'int';
+							$result[$item['Field']]['size'] = substr($item['Type'], 9, -1);
+						break;
+						case substr($item['Type'], 0, 7) == 'tinyint':
+							$result[$item['Field']]['signed'] = strpos($result[$item['Field']]['type'], 'unsigned') === false;
+							$item['Type'] = str_replace(' unsigned', '', $item['Type']);
+							$result[$item['Field']]['type'] = 'int';
+							$result[$item['Field']]['size'] = substr($item['Type'], 8, -1);
+						break;
+						case substr($item['Type'], 0, 7) == 'varchar':
+							$result[$item['Field']]['type'] = 'string';
+							$result[$item['Field']]['size'] = substr($item['Type'], 8, -1);
+						break;
+					}
+				} else $result[] = $item['Field'];
+			}
+		} else FatalError(mysql_error($this->Connection));
 		return $result;
 	}
-	#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+	//-----------------------------------------------------------------------------
 	function selectItem($table, $condition, $fields = '')
 	{
 		if ($table{0} != "`") $table = "`".$table."`";
@@ -245,19 +326,27 @@ class MySQL {
 		$tmp = isset($tmp[0])?$tmp[0]:null;
 		return $tmp;
 	}
-	#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+	//-----------------------------------------------------------------------------
 	function updateItem($table, $item, $condition)
 	{
-		$hnd = mysql_list_fields($this->name, $this->prefix.$table, $this->Connection);
-		if ($hnd === false) FatalError(mysql_error($this->Connection));
+		$fields = $this->fields($table, true);
+
 		$values = array();
-		$i = 0;
-		while (($field = @mysql_field_name($hnd, $i++))) if (isset($item[$field])) $values[] = "`$field`='{$item[$field]}'";
+		foreach($fields as $field => $info) if (isset($item[$field])) {
+			switch ($info['type']) {
+				case 'int':
+					$value = $item[$field];
+					if (!$value) $value = 0;
+				break;
+				default: $value = "'".$item[$field]."'";
+			}
+			$values[] = "`$field` = $value";
+		}
 		$values = implode(', ', $values);
 		$result = $this->query("UPDATE `".$this->prefix.$table."` SET ".$values." WHERE ".$condition);
 		return $result;
 	}
-	#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+	//-----------------------------------------------------------------------------
 	function count($table, $condition='', $group='', $rows=false)
 	# Возвращает количество записей в таблице используя метод query().
 	#  $table - таблица, для которой требуется посчитать кол-во записей
@@ -273,12 +362,12 @@ class MySQL {
 		}
 		return $result;
 	}
-	#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+	//-----------------------------------------------------------------------------
 	function getInsertedID()
 	{
 		return mysql_insert_id($this->Connection);
 	}
-	#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+	//-----------------------------------------------------------------------------
 	function tableStatus($table, $param='')
 	{
 		$result = $this->query_array("SHOW TABLE STATUS LIKE '".$this->prefix.$table."'");
@@ -288,7 +377,7 @@ class MySQL {
 		}
 		return $result;
 	}
-	#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+	//-----------------------------------------------------------------------------
  /**
 	* Экранирует потенциально опасные символы
 	*
@@ -306,4 +395,3 @@ class MySQL {
 	}
 	//-----------------------------------------------------------------------------
 }
-?>

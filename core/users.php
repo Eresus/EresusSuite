@@ -1,13 +1,13 @@
 <?php
 /**
- * Eresus 2.10.1
+ * Eresus 2.11
  *
- * Управление учётными записями пользователей
+ * Система управления контентом Eresus 2
  *
- * @copyright		2004-2007, ProCreat Systems, http://procreat.ru/
- * @copyright		2007-2008, Eresus Group, http://eresus.ru/
- * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
- * @author      Mikhail Krasilnikov <mk@procreat.ru>
+ * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @license http://www.gnu.org/licenses/gpl.txt GPL License 3
+ * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -24,6 +24,8 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
+ *
+ * $Id$
  */
 
 useLib('accounts');
@@ -220,8 +222,8 @@ class TUsers extends Accounts {
 				array('type'=>'hidden','name'=>'action','value'=>'insert'),
 				array('type'=>'edit','name'=>'name','label'=>admUsersName,'maxlength'=>32,'width'=>'100%', 'pattern'=>'/.+/', 'errormsg'=>admUsersNameInvalid),
 				array('type'=>'edit','name'=>'login','label'=>admUsersLogin,'maxlength'=>16,'width'=>'100%', 'pattern'=>'/^[a-z0-9_]+$/i', 'errormsg'=>admUsersLoginInvalid),
-				array('type'=>'select','name'=>'access','label'=>admAccessLevel, 'width'=>'100%','values'=>array('2','3','4'),'items'=>array(ACCESSLEVEL2,ACCESSLEVEL3,ACCESSLEVEL4), 'value'=>USER),
-				array('type'=>'checkbox','name'=>'active','label'=>admUsersAccountState,'value'=>'1'),
+				array('type'=>'select','name'=>'access','label'=>admAccessLevel, 'width'=>'100%','values'=>array('2','3','4'),'items'=>array(ACCESSLEVEL2,ACCESSLEVEL3,ACCESSLEVEL4), 'default' => USER),
+				array('type'=>'checkbox','name'=>'active','label'=>admUsersAccountState, 'default' => true),
 				array('type'=>'divider'),
 				array('type'=>'password','name'=>'pswd1','label'=>admUsersPassword,'maxlength'=>32,'width'=>'100%'),
 				array('type'=>'password','name'=>'pswd2','label'=>admUsersConfirmation,'maxlength'=>32,'width'=>'100%', 'equal'=>'pswd1', 'errormsg'=>admUsersConfirmInvalid),
@@ -295,4 +297,3 @@ class TUsers extends Accounts {
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 }
-?>

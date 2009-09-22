@@ -1,13 +1,13 @@
 <?php
 /**
- * Eresus 2.10.1
+ * Eresus 2.11
  *
  * Система управления контентом Eresus 2
  *
- * @copyright		2004-2007, ProCreat Systems, http://procreat.ru/
- * @copyright		2007-2008, Eresus Group, http://eresus.ru/
- * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
- * @author      Mikhail Krasilnikov <mk@procreat.ru>
+ * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @license http://www.gnu.org/licenses/gpl.txt GPL License 3
+ * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -24,14 +24,16 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
+ *
+ * $Id$
  */
 
 define('CMSNAME', 'Eresus'); # Название системы
-define('CMSVERSION', '2.10'); # Версия системы
+define('CMSVERSION', '2.11'); # Версия системы
 define('CMSLINK', 'http://eresus.ru/'); # Веб-сайт
 
 define('KERNELNAME', 'ERESUS'); # Имя ядра
-define('KERNELDATE', '07.07.08'); # Дата обновления ядра
+define('KERNELDATE', '2009-09-21'); # Дата обновления ядра
 
 # Уровни доступа
 define('ROOT',   1); # Главный администратор
@@ -42,8 +44,6 @@ define('GUEST',  5); # Гость (не зарегистрирован)
 
 if (!defined('FILE_APPEND')) define('FILE_APPEND', 8);
 
-### ОБРАБОТКА ОШИБОК ###
-
 ###cut:start (testing purpose)
 /**
  * Функция выводит сообщение о пользовательской ошибке и прекращает работу скрипта.
@@ -52,6 +52,9 @@ if (!defined('FILE_APPEND')) define('FILE_APPEND', 8);
  */
 function FatalError($msg)
 {
+	if (PHP_SAPI == 'cli') {
+		$result = strip_tags(preg_replace('!<br(\s/)?>!i', "\n", $msg))."\n";
+	} else {
 	$result =
 		"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n\n".
 		"<html>\n".
@@ -71,6 +74,7 @@ function FatalError($msg)
 		"  </div>\n".
 		"</body>\n".
 		"</html>";
+	}
 	die($result);
 }
 //------------------------------------------------------------------------------
@@ -108,10 +112,10 @@ function ErrorHandler($errno, $errstr, $errfile, $errline)
 
 	if (error_reporting()) switch ($errno) {
 		case E_NOTICE:
-			if ($Eresus->conf['debug']) ErrorMessage('<b>'.$errstr.'</b> ('.$errfile.', '.$errline.')');
+			if ($Eresus->conf['debug']['enable']) ErrorMessage('<b>'.$errstr.'</b> ('.$errfile.', '.$errline.')');
 		break;
 		case E_WARNING:
-			if ($Eresus->conf['debug'])
+			if ($Eresus->conf['debug']['enable'])
 				FatalError('WARNING! <b>'.$errstr.'</b> in <b>'.$errfile.'</b> at <b>'.$errline.'</b><br /><br />'.(function_exists('callStack')?callStack():''));
 		break;
 		default:
@@ -348,14 +352,28 @@ function FormatDate($date, $format=DATETIME_NORMAL)
 
 //------------------------------------------------------------------------------
 # РАБОТА С ДАННЫМИ
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-function encodeHTML($text)
-# Кодирует спецсимволы HTML
+
+/**
+ * Кодирует спецсимволы HTML
+ *
+ * @param mixed $source
+ * @return mixed
+ */
+function encodeHTML($source)
 {
-	$trans_tbl = get_html_translation_table(HTML_SPECIALCHARS, ENT_QUOTES);
-	return strtr ($text, $trans_tbl);
+	$translationTable = get_html_translation_table(HTML_SPECIALCHARS, ENT_QUOTES);
+	switch (true) {
+		case is_string($source):
+			$source = strtr($source, $translationTable);
+		break;
+		case is_array($source):
+			foreach($source as $key => $value)
+				$source[$key] = strtr($value, $translationTable);
+		break;
+	}
+	return $source;
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
+//-----------------------------------------------------------------------------
 function decodeHTML($text)
 # Декодирует спецсимволы HTML
 {
@@ -368,9 +386,14 @@ function decodeHTML($text)
 	return $text;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-function text2array($value, $assoc=false)
-# Разбивает текст на строки и возвращает их массив
-# Если $assoc = true, то возвращается ассоциативный массив key=value
+/**
+ * Разбивает текст на строки и возвращает массив из них
+ *
+ * @param string $value
+ * @param bool   $assoc[optional]
+ * @return array
+ */
+function text2array($value, $assoc = false)
 {
 	$result = trim($value);
 	if (!empty($result)) {
@@ -379,26 +402,33 @@ function text2array($value, $assoc=false)
 		if ($assoc && count($result)) {
 			foreach($result as $item) {
 				$item = explode('=', $item);
-				$items[trim($item[0])] = trim($item[1]);
+				$key = trim($item[0]);
+				if ($key !== '') {
+					$value = isset($item[1]) ? trim($item[1]) : null;
+					$items[$key] = $value;
+				}
 			}
 			$result = $items;
 		}
 	} else $result = array();
 	return $result;
 }
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-function array2text($value, $assoc=false)
-# Собирает из массива текст
-# Если $assoc = true, то массив рассматривается как ассоциативный
+//-----------------------------------------------------------------------------
+/**
+ * Собирает текст из массива
+ * @param string $value
+ * @param bool   $assoc[optional]
+ * @return string
+ */
+function array2text($items, $assoc = false)
 {
 	$result = '';
-	if (count($value)) {
-		$result = $value;
-		if ($assoc && count($result)) {
-			foreach($result as $key => $value) $items[] = $key.'='.$value;
+	if (count($items)) {
+		if ($assoc)
+			foreach($items as $key => $value) $result[] = $key.'='.$value;
+		else
 			$result = $items;
-		}
-		$result = implode("\r\n", $result);
+		$result = implode("\n", $result);
 	}
 	return $result;
 }
@@ -446,7 +476,6 @@ function replaceMacros($template, $source)
 }
 //------------------------------------------------------------------------------
 
-
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Работа с HTTP-запросом
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -469,7 +498,7 @@ function GetArgs($item, $checkboxes = array(), $prevent = array())
 	foreach ($item as $key => $value) {
 		if ($clear) unset($item[$key]);
 		if (!in_array($key, $prevent)) {
-			if (!is_null(arg($key))) $item[$key] = arg($key);
+			if (!is_null(arg($key))) $item[$key] = arg($key, 'dbsafe');
 			if (in_array($key, $checkboxes)&& (!arg($key))) $item[$key] = false;
 		}
 	}
@@ -531,7 +560,7 @@ function restoreRequest()
 
  /*
  	* РАБОТА С БД
-  */
+	*/
 
 /**
  * Упорядочивание элементов
@@ -548,7 +577,7 @@ function dbReorderItems($table, $condition='', $id='id')
 
 	$items = $Eresus->db->select("`".$table."`", $condition, '`position`', $id);
 	for($i=0; $i<count($items); $i++) $Eresus->db->update($table, "`position` = $i", "`".$id."`='".$items[$i][$id]."'");
-}
+	}
 //------------------------------------------------------------------------------
 /**
  * Сдвиг позиций элементов
@@ -561,11 +590,11 @@ function dbReorderItems($table, $condition='', $id='id')
  *  */
 function dbShiftItems($table, $condition, $delta, $id='id')
 {
-	global $Eresus;
+global $Eresus;
 
 	$items = $Eresus->db->select("`".$table."`", $condition, '`position`', $id);
 	for($i=0; $i<count($items); $i++) $Eresus->db->update($table, "`position` = `position` + $delta", "`".$id."`='".$items[$i][$id]."'");
-}
+	}
 //------------------------------------------------------------------------------
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -666,6 +695,9 @@ function upload($name, $filename, $overwrite = true)
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # TODO: Удалить как устаревшую
+/**
+ * @deprecated
+ */
 function loadTemplate($name)
 # Считывает указанный шаблон
 {
@@ -680,6 +712,9 @@ function loadTemplate($name)
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # TODO: Удалить как устаревшую
+/**
+ * @deprecated
+ */
 function saveTemplate($name, $template)
 # Сохраняет указанный шаблон
 {
@@ -804,30 +839,31 @@ function Translit($s) #: String
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 function __clearargs($args)
 {
-	if (count($args)) foreach($args as $key => $value)
-		if (gettype($args[$key]) == 'array') {
-			$args[$key] = __clearargs($args[$key]);
-		} else {
-			if (get_magic_quotes_gpc()) $value = StripSlashes($value);
-			if (strpos($key, 'wyswyg_') === 0) {
-				unset($args[$key]);
-				$key = substr($key, 7);
-				$value = preg_replace('/(<[^>]+) ilo-[^\s>]*/i', '$1', $value);
-				$value = str_replace(array('%28', '%29'), array('(',')'), $value);
-				$value = str_replace(httpRoot, '$(httpRoot)', $value);
-				preg_match_all('/<img.*?>/', $value, $images, PREG_OFFSET_CAPTURE);
-				if (count($images[0])) {
-					$images = $images[0];
-					$delta = 0;
-					for($i = 0; $i < count($images); $i++) if (!preg_match('/alt=/i', $images[$i][0])) {
-						$s = preg_replace('/(\/?>)/', 'alt="" $1', $images[$i][0]);
-						$value = substr_replace($value, $s, $images[$i][1]+$delta, strlen($images[$i][0]));
-						$delta += strlen($s) - strlen($images[$i][0]);
-					}
+	global $Eresus;
+
+	if (count($args)) foreach($args as $key => $value) if (gettype($args[$key]) == 'array') {
+		$args[$key] = __clearargs($args[$key]);
+	} else {
+		if (get_magic_quotes_gpc()) $value = StripSlashes($value);
+		if (strpos($key, 'wyswyg_') === 0) {
+			unset($args[$key]);
+			$key = substr($key, 7);
+			$value = preg_replace('/(<[^>]+) ilo-[^\s>]*/i', '$1', $value);
+			$value = str_replace(array('%28', '%29'), array('(',')'), $value);
+			$value = str_replace($Eresus->root, '$(httpRoot)', $value);
+			preg_match_all('/<img.*?>/', $value, $images, PREG_OFFSET_CAPTURE);
+			if (count($images[0])) {
+				$images = $images[0];
+				$delta = 0;
+				for($i = 0; $i < count($images); $i++) if (!preg_match('/alt=/i', $images[$i][0])) {
+					$s = preg_replace('/(\/?>)/', 'alt="" $1', $images[$i][0]);
+					$value = substr_replace($value, $s, $images[$i][1]+$delta, strlen($images[$i][0]));
+					$delta += strlen($s) - strlen($images[$i][0]);
 				}
 			}
-			$args[$key] = $value;
 		}
+		$args[$key] = $value;
+	}
 	return $args;
 }
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
@@ -893,6 +929,7 @@ class Eresus {
 		'session' => array(
 			'timeout' => 30,
 		),
+		'extensions' => array(),
 		'backward' => array(
 			'TPlugins' => false,
 			'TPlugin' => false,
@@ -905,11 +942,25 @@ class Eresus {
 		),
 	);
 	var $session;
+ /**
+	* Интерфейс к расширениям системы
+	*
+	* @var unknown_type
+	*/
+	var $extensions;
 	var $db;
 	var $plugins;
+ /**
+	* Учётная запись пользователя
+	*
+	* @var EresusAccount
+	*/
 	var $user;
 
 	var $host;
+ /**
+	* @deprecated since 2.11
+	*/
 	var $https;
 	var $path;
 	var $root; # Корневой URL
@@ -956,7 +1007,7 @@ class Eresus {
 	{
 		global $Eresus;
 
-		$filename = realpath(dirname(__FILE__).'/..').'/cfg/main.inc';
+		$filename = realpath(dirname(__FILE__).'/..').'/cfg/main.php';
 		if (is_file($filename)) include_once($filename);
 		else FatalError("Main config file '$filename' not found!");
 	}
@@ -983,7 +1034,7 @@ class Eresus {
 	}
 	#-------------------------------------------------------------------------------
 	/**
-	* Определяет пути и адреса
+	* Определяет пути
 	*
 	* @access  private
 	*/
@@ -996,28 +1047,15 @@ class Eresus {
 		$this->fdata = $this->froot.'data/';
 		$this->fstyle = $this->froot.'style/';
 
-		if (is_null($this->host)) $this->host = strtolower($_SERVER['HTTP_HOST']);
-		$this->https = isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']);
-
 		if (is_null($this->path)) {
 			$s = $this->froot;
 			$s = substr($s, strlen(realpath($_SERVER['DOCUMENT_ROOT']))-($this->isWin32()?2:0));
 			if (!strlen($s) || $s{strlen($s)-1} != '/') $s .= '/';
 			$this->path = ($s{0} != '/' ? '/' : '').$s;
 		}
-		$this->root = ($this->https ? 'https://' : 'http://').$this->host.$this->path;
-		$this->data = $this->root.'data/';
-		$this->style = $this->root.'style/';
 
 		# Обратная совместимость
-		define('httpPath', $this->path);
 		define('filesRoot', $this->froot);
-		define('httpHost', $this->host);
-		define('httpRoot', $this->root);
-		define('styleRoot', $this->style);
-		define('dataRoot', $this->data);
-		define('cookieHost', $this->host);
-		define('cookiePath', $this->path);
 		define('dataFiles', $this->fdata);
 	}
 	//------------------------------------------------------------------------------
@@ -1028,7 +1066,7 @@ class Eresus {
 	*/
 	function init_settings()
 	{
-		$filename = $this->froot.'cfg/settings.inc';
+		$filename = $this->froot.'cfg/settings.php';
 		if (is_file($filename)) include_once($filename);
 		else FatalError("Settings file '$filename' not found!");
 	}
@@ -1042,31 +1080,66 @@ class Eresus {
 	{
 		global $request;
 
-		$s = substr($_SERVER['REQUEST_URI'], strlen($this->path));
-		# Если SID передается в URL, вырезаем его.
-		$sid = 'sid='.session_id();
-		if ($x = strpos($s, $sid)) {
-			$s = substr_replace($s, '', $x, strlen($sid));
-			if (($s{$x-1} == '&') || ($x == strlen($s))) $s = substr_replace($s, '', $x-1, 1);
-			else $s = substr_replace($s, '', $x, 1);
-		}
-		$request['method'] = $_SERVER['REQUEST_METHOD'];
-		$request['url'] = $this->root.$s;
+		# Значения по умолчанию
+		$request = array(
+			'method' => $_SERVER['REQUEST_METHOD'],
+			'scheme' => isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) ? 'https' : 'http',
+			'host' => strtolower(is_null($this->host) ? $_SERVER['HTTP_HOST'] : $this->host),
+			'port' => '',
+			'user' => isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : '',
+			'pass' => isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : '',
+			'path' => '',
+			'query' => '',
+			'fragment' => '', # TODO: Можно ли узнать значение этого компонента?
+			'referer' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '',
+		);
+
+		$request['url'] = $request['scheme'].'://'.$request['host'].$_SERVER['REQUEST_URI'];
+
+		$request = array_merge($request, parse_url($request['url']));
+		$request['file'] = substr($request['path'], strrpos($request['path'], '/')+1);
+		if ($request['file']) $request['path'] = substr($request['path'], 0, -strlen($request['file']));
+
 		# Создаем заготовку URL для GET-запросов с параметрами
 		$request['link'] = $request['url'];
 		if (substr($request['link'], -1) == '/') $request['link'] .= '?';
-		if (strpos($request['link'], '?') === false)  $request['link'] .= '?';
-		if (substr($request['link'], -1) != '?') $request['link'] .= '&';
-		# Адрес, откуда был совершён переход
-		$request['referer'] = isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'';
+		elseif (strpos($request['link'], '?') === false)  $request['link'] .= '?';
+		else $request['link'] .= '&';
+
+		if (is_null($this->path)) {
+			$s = $this->froot;
+			$s = substr($s, strlen(realpath($_SERVER['DOCUMENT_ROOT']))-($this->isWin32()?2:0));
+			if (!strlen($s) || sbstr($s, -1) != '/') $s .= '/';
+			$this->path = (substr($s, 0, 1) != '/' ? '/' : '').$s;
+		}
+
 		# Сбор аргументов вызова
 		$request['arg'] = __clearargs(array_merge($_GET, $_POST));
-		unset($request['arg']['sid']);
 		# Разбивка параметров вызова скрипта
-		if ($p = strrpos($s, '/')) $s = substr($s, 0, $p);
-		$request['path'] = $this->root.$s.'/';
-		$request['params'] = $s ? explode('/', $s) : array();
+		$s = substr($request['path'], strlen($this->path));
+		$request['params'] = $s ? explode('/', substr($s, 0, -1)) : array();
+
+		$root = $request['scheme'].'://'.$request['host'].($request['port'] ? ':'.$request['port'] : '');
+		$request['path'] = $root.$request['path'];
+
+		# Установка свойств объекта $Eresus
+		$this->host = $request['host'];
+		$this->root = $root.$this->path;
+		$this->data = $this->root.'data/';
+		$this->style = $this->root.'style/';
+
+		# Обратная совместимость
+		# <= 2.9
 		$this->request = &$request;
+		define('httpPath', $this->path);
+		define('httpHost', $this->host);
+		define('httpRoot', $this->root);
+		define('styleRoot', $this->style);
+		define('dataRoot', $this->data);
+		define('cookieHost', $this->host);
+		define('cookiePath', $this->path);
+		# 2.10
+		$this->https = $request['scheme'] == 'https';
 	}
 	//------------------------------------------------------------------------------
 	/**
@@ -1082,12 +1155,12 @@ class Eresus {
 		$locale['prefix'] = '';
 
 		# Подключение строковых данных
-		$filename = $this->froot.'lang/'.$locale['lang'].'.inc';
+		$filename = $this->froot.'lang/'.$locale['lang'].'.php';
 		if (is_file($filename)) include_once($filename);
 		else FatalError("Locale file '$filename' not found!");
 	}
 	//------------------------------------------------------------------------------
-	/**
+ /**
 	* Подключение базовых классов
 	*
 	* @access private
@@ -1104,6 +1177,17 @@ class Eresus {
 		elseif ($this->conf['backward']['TPlugin']) useClass('backward/TPlugin');
 	}
 	//------------------------------------------------------------------------------
+ /**
+	* Инициализация расширений
+	*/
+	function init_extensions()
+	{
+		$filename = $this->froot.'cfg/extensions.php';
+		if (is_file($filename)) include_once($filename);
+
+		$this->extensions = new EresusExtensions();
+	}
+	//-----------------------------------------------------------------------------
 	/**
 	* Подключение к источнику данных
 	*
@@ -1129,6 +1213,15 @@ class Eresus {
 	}
 	//------------------------------------------------------------------------------
 	/**
+	* Инициализация учётной записи пользователя
+	*
+	*/
+	function init_user()
+	{
+		useLib('accounts');
+	}
+	//-----------------------------------------------------------------------------
+	/**
 	* Проверка сессии
 	*
 	* @access private
@@ -1147,7 +1240,7 @@ class Eresus {
 	*/
 	function check_loginout()
 	{
-		if (arg('action')) switch (arg('action')) {
+		switch (arg('action')) {
 			case 'login':
 				$this->login(arg('user', 'dbsafe'), $this->password_hash(arg('password')), arg('autologin', 'int'));
 				goto($this->request['url']);
@@ -1207,12 +1300,12 @@ class Eresus {
 		if (PHP_VERSION >= '5.1.0') date_default_timezone_set($this->conf['timezone']);
 		# Определение путей
 		$this->init_resolve();
+		# Инициализация сессии
+		$this->init_session();
 		# Изменяем путь поиска подключаемых файлов
 		set_include_path(dirname(__FILE__).DIRECTORY_SEPARATOR.'lib'.PATH_SEPARATOR.get_include_path());
 		# Если установлен флаг отладки, подключаем отладочную библиотеку
 		if ($this->conf['debug']) useLib('debug');
-		# Инициализация сессии
-		$this->init_session();
 		# Читаем настройки
 		$this->init_settings();
 		# Первичный разбор запроса
@@ -1221,10 +1314,14 @@ class Eresus {
 		$this->init_locale();
 		# Подключение базовых классов
 		$this->init_classes();
+		# Инициализация расширений
+		$this->init_extensions();
 		# Подключение к источнику данных
 		$this->init_datasource();
 		# Инициализация механизма плагинов
 		$this->init_plugins();
+		# Инициализация учётной записи пользователя
+		$this->init_user();
 		# Проверка сессии
 		$this->check_session();
 		# Проверка логина/логаута
@@ -1354,4 +1451,3 @@ $GLOBALS['Eresus']->init();
 $GLOBALS['Eresus']->execute();
 
 ###cut:end (testing purpose)
-?>

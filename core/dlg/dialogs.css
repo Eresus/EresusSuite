@@ -1,8 +1,8 @@
 html {
-	padding: 0px;
-	margin: 0px;
-	height: 100%;
-	}
+  padding: 0px;
+  margin: 0px;
+  height: 100%;
+}
 body {
   background: ThreeDFace;
   padding: 0px;
@@ -10,15 +10,15 @@ body {
   height: 100%;
   font-family: sans-serif;
 }
-
+  
 .Panel {
-  border: solid 1px;
+  border: solid 1px; 
   border-color: ThreeDHighlight ThreeDShadow ThreeDShadow ThreeDHighlight;
   padding: 2px;
 }
 
 .ListBox {
-  border: solid 1px;
+  border: solid 1px; 
   border-color: ThreeDShadow ThreeDHighlight ThreeDHighlight ThreeDShadow;
   background: Window;
   color: WindowText;
