@@ -1,24 +1,41 @@
 /**
- * Eresus 2.10.1
+ * Eresus 2.11
  *
- * Стили административного интерфейса
+ * Система управления контентом Eresus 2
  *
- * Система управления контентом Eresus™ 2
- * © 2004-2007, ProCreat Systems, http://procreat.ru/
- * © 2007-2008, Eresus Group, http://eresus.ru/
- *
+ * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @license http://www.gnu.org/licenses/gpl.txt GPL License 3
  * @author Mikhail Krasilnikov <mk@procreat.ru>
+ *
+ * Данная программа является свободным программным обеспечением. Вы
+ * вправе распространять ее и/или модифицировать в соответствии с
+ * условиями версии 3 либо (по вашему выбору) с условиями более поздней
+ * версии Стандартной Общественной Лицензии GNU, опубликованной Free
+ * Software Foundation.
+ *
+ * Мы распространяем эту программу в надежде на то, что она будет вам
+ * полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том
+ * числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ
+ * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
+ * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
+ *
+ * Вы должны были получить копию Стандартной Общественной Лицензии
+ * GNU с этой программой. Если Вы ее не получили, смотрите документ на
+ * <http://www.gnu.org/licenses/>
+ *
+ * $Id$
  */
 
 
 /* Основные стили */
 body.admin {
-  background-image: none;
-  background-color: #ddd;
-  color: #000;
-  margin: 0px;
-  padding: 0px;
-  font: 8pt Verdana, Geneva, sans-serif;
+	background-image: none;
+	background-color: #ddd;
+	color: #000;
+	margin: 0px;
+	padding: 0px;
+	font: 8pt Verdana, Geneva, sans-serif;
 }
 
 img {border: none 0px;}
@@ -34,32 +51,32 @@ h1,h2,h3,h4,h5,h6 {color: #007acc; border: none 0px;}
 
 /* Заголовок */
 div.pageHeader {
-  height: 32px;
-  font-size: 8pt;
-  font-weight: bold;
-  color: white;
-  background-color: #007acc;
-  border-style: solid;
-  border-width: 1px;
-  border-color: #6ad #005 #005 #6ad;
-  text-align: left;
-  padding: 2px 10px;
+	height: 32px;
+	font-size: 8pt;
+	font-weight: bold;
+	color: white;
+	background-color: #007acc;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #6ad #005 #005 #6ad;
+	text-align: left;
+	padding: 2px 10px;
 }
 
 .pageHeader h1 {
-  font-family : Sans, Arial, Helvetica, sans-serif;
-  font-size : 12pt;
-  font-style : italic;
-  font-weight : bold;
-  color: #ffd700;
-  margin: 0;
-  padding: 0;
+	font-family : Sans, Arial, Helvetica, sans-serif;
+	font-size : 12pt;
+	font-style : italic;
+	font-weight : bold;
+	color: #ffd700;
+	margin: 0;
+	padding: 0;
 }
 
 #cmsLogo {
-  float: right;
-  width: 150px;
-  height: 30px;
+	float: right;
+	width: 150px;
+	height: 30px;
 }
 
 table {font-size: 8pt;}
@@ -161,10 +178,26 @@ table.admTabs {margin: 2px 0px;}
 
 /* File manager */
 
-table.files {background-color: white;}
-td.filesMenu {background-color: silver; border-style: solid; border-width: 1px; border-color: #ddd #555 #555 #ddd;}
+#fileManager {
+	background-color: white;
+	border-collapse: collapse;
+	border-style: none;
+	border-spacing: 0;
+	width: 100%;
+}
+#fileManager td {
+	padding: 0;
+}
+td.filesMenu {
+	background-color: silver; border-style: solid; border-width: 1px; border-color: #ddd #555 #555 #ddd;
+}
 .filesMenu td {padding: 2px 5px; color: black; width: 5em; text-align: center; border: solid 1px silver; cursor : default;}
-td.filesPanel {border-style: solid; border-width: 0px 1px; border-color: #ddd #555 #555 #ddd;}
+td.filesPanel {
+	border-style: solid;
+	border-width: 0px 1px;
+	border-color: #ddd #555 #555 #ddd;
+	width: 50%;
+}
 table.filesList {width: 100%; color: black;}
 .filesListPath th {background-color: white; padding: 2px 5px; text-align: left; cursor : default;}
 .filesList td {padding: 2px 5px; cursor : default; white-space: nowrap;}

@@ -1,13 +1,13 @@
 <?php
 /**
- * Eresus 2.10.1
+ * Eresus 2.11
  *
- * Управление разделами сайта
+ * Система управления контентом Eresus 2
  *
- * @copyright		2004-2007, ProCreat Systems, http://procreat.ru/
- * @copyright		2007-2008, Eresus Group, http://eresus.ru/
- * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
- * @author      Mikhail Krasilnikov <mk@procreat.ru>
+ * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @license http://www.gnu.org/licenses/gpl.txt GPL License 3
+ * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -24,6 +24,8 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
+ *
+ * $Id$
  */
 
 class TPages {
@@ -94,7 +96,7 @@ class TPages {
 		$old = $Eresus->sections->get(arg('update', 'int'));
 		$item = GetArgs($old, array('active', 'visible'));
 		$item['name'] = preg_replace('/[^a-z0-9_]/i', '', $item['name']);
-		$item['options'] = (empty($item['options']))?'':encodeOptions(text2array($item['options'], true));
+		$item['options'] = text2array($item['options'], true);
 		$item['updated'] = gettime('Y-m-d H:i:s');
 		if (arg('updatedAuto')) $item['updated'] = gettime();
 		$Eresus->sections->update($item);
@@ -272,11 +274,11 @@ class TPages {
 				array ('type' => 'edit','name' => 'hint','label' => admPagesHint,'width' => '100%'),
 				array ('type' => 'edit','name' => 'description','label' => admPagesDescription,'width' => '100%'),
 				array ('type' => 'edit','name' => 'keywords','label' => admPagesKeywords,'width' => '100%'),
-				array ('type' => 'select','name' => 'template','label' => admPagesTemplate, 'items' => $templates[0], 'values' => $templates[1], 'value'=>pageTemplateDefault),
-				array ('type' => 'select','name' => 'type','label' => admPagesContentType, 'items' => $content[0], 'values' => $content[1], 'value'=>contentTypeDefault),
-				array ('type' => 'checkbox','name' => 'active','label' => admPagesActive, 'value'=>true),
-				array ('type' => 'checkbox','name' => 'visible','label' => admPagesVisible, 'value'=>true),
-				array ('type' => 'select','name' => 'access','label' => admAccessLevel,'access' => ADMIN,'values'=>array(ADMIN,EDITOR,USER,GUEST),'items' => array (ACCESSLEVEL2,ACCESSLEVEL3,ACCESSLEVEL4,ACCESSLEVEL5), 'value'=>GUEST),
+				array ('type' => 'select','name' => 'template','label' => admPagesTemplate, 'items' => $templates[0], 'values' => $templates[1], 'default'=>pageTemplateDefault),
+				array ('type' => 'select','name' => 'type','label' => admPagesContentType, 'items' => $content[0], 'values' => $content[1], 'default'=>contentTypeDefault),
+				array ('type' => 'checkbox','name' => 'active','label' => admPagesActive, 'default'=>true),
+				array ('type' => 'checkbox','name' => 'visible','label' => admPagesVisible, 'default'=>true),
+				array ('type' => 'select','name' => 'access','label' => admAccessLevel,'access' => ADMIN,'values'=>array(ADMIN,EDITOR,USER,GUEST),'items' => array (ACCESSLEVEL2,ACCESSLEVEL3,ACCESSLEVEL4,ACCESSLEVEL5), 'default' => GUEST),
 				array ('type' => 'edit','name' => 'position','label' => admPosition,'access' => ADMIN,'width' => '4em','maxlength' => '5'),
 				array ('type' => 'memo','name' => 'options','label' => admPagesOptions,'height' => '5')
 			),
@@ -294,7 +296,7 @@ class TPages {
 		$item = $Eresus->sections->get($id);
 		$content = $this->loadContentTypes();
 		$templates = $this->loadTemplates();
-		$item['options'] = array2text($item['options']);
+		$item['options'] = array2text($item['options'], true);
 		$form['caption'] = $item['caption'];
 		# Вычисляем адрес страницы
 		$urlAbs = $page->clientURL($item['id']);
@@ -321,7 +323,7 @@ class TPages {
 				array ('type' => 'memo','name' => 'options','label' => admPagesOptions,'height' => '5'),
 				array ('type' => 'edit','name' => 'created','label' => admPagesCreated,'access' => ADMIN,'width' => '10em','maxlength' => '19'),
 				array ('type' => 'edit','name' => 'updated','label' => admPagesUpdated,'access' => ADMIN,'width' => '10em','maxlength' => '19'),
-				array ('type' => 'checkbox','name' => 'updatedAuto','label' => admPagesUpdatedAuto, 'value'=>true),
+				array ('type' => 'checkbox','name' => 'updatedAuto','label' => admPagesUpdatedAuto, 'default' => true),
 				array ('type' => 'text', 'value'=>admPagesThisURL.': <a href="'.$urlAbs.'">'.$urlAbs.'</a>'),
 			),
 			'buttons' => array('ok', 'apply', 'cancel'),
@@ -402,4 +404,3 @@ class TPages {
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 }
-?>

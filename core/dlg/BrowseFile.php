@@ -1,7 +1,7 @@
 <?
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
 # Система управления контентом Eresus™
-# Версия 2.10.1
+# Версия 2.11
 # © 2004-2007, ProCreat Systems
 # © 2007-2008, Eresus Group
 # http://eresus.ru/
@@ -45,6 +45,7 @@ if (count($_FILES)) {
   upload('file', $folder);
   goto($Eresus->request['referer']);
 }
+#FIXME: Потенциальная угроза
 if (arg('folder')) {
   $folder = arg('folder');
   parse_str($Eresus->request['referer'], $Eresus->request['arg']);

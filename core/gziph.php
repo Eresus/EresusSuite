@@ -1,13 +1,13 @@
 <?php
 /**
- * Eresus 2.10.1
+ * Eresus 2.11
  *
- * GZIP-сжатие файлов
+ * Система управления контентом Eresus 2
  *
- * @copyright		2004-2007, ProCreat Systems, http://procreat.ru/
- * @copyright		2007-2008, Eresus Group, http://eresus.ru/
- * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
- * @author      Mikhail Krasilnikov <mk@procreat.ru>
+ * @copyright 2004-2007, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007-2008, Eresus Project, http://eresus.ru/
+ * @license http://www.gnu.org/licenses/gpl.txt GPL License 3
+ * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -24,6 +24,8 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
+ *
+ * $Id$
  */
 
 error_reporting(0);
@@ -80,6 +82,7 @@ $dataFiles = $filesRoot.'data/';
 
 $type = isset($_REQUEST['type'])?$_REQUEST['type']:'text/plain';
 $file = isset($_REQUEST['file'])?$_REQUEST['file']:'';
+
 if (empty($file)) HttpError(404);
 if (!preg_match('/\.(js|css|html)$/i',$file)) HttpError(403);
 $filename = AddSlashes($filesRoot.$file);
@@ -108,4 +111,3 @@ if (is_file($filename)) {
 	echo $text;
 	ob_end_flush();
 } else NotFound();
-?>
