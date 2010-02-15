@@ -69,7 +69,7 @@ class TThemes {
 	{
 		useLib('templates');
 		$templates = new Templates();
-		$templates->add(arg('name'), '', arg('code', 'int'), arg('desc'));
+		$templates->add(arg('name'), '', arg('code'), arg('desc'));
 		goto(arg('submitURL'));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -77,7 +77,7 @@ class TThemes {
 	{
 		useLib('templates');
 		$templates = new Templates();
-		$templates->update(arg('name'), '', arg('code', 'int'), arg('desc'));
+		$templates->update(arg('name'), '', arg('code'), arg('desc'));
 		goto(arg('submitURL'));
 	}
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
