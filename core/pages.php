@@ -76,6 +76,7 @@ class TPages {
 
 		$item = GetArgs($Eresus->sections->fields());
 		$item['name'] = preg_replace('/[^a-z0-9_]/i', '', $item['name']);
+		$item['options'] = arg('options');
 		$temp = $Eresus->sections->get("(`name`='".$item['name']."') AND (`owner`='".$item['owner']."')");
 		if (count($temp) == 0) {
 			$item = $Eresus->sections->add($item);
@@ -96,7 +97,7 @@ class TPages {
 		$old = $Eresus->sections->get(arg('update', 'int'));
 		$item = GetArgs($old, array('active', 'visible'));
 		$item['name'] = preg_replace('/[^a-z0-9_]/i', '', $item['name']);
-		$item['options'] = text2array($item['options'], true);
+		$item['options'] = text2array(arg('options'), true);
 		$item['updated'] = gettime('Y-m-d H:i:s');
 		if (arg('updatedAuto')) $item['updated'] = gettime();
 		$Eresus->sections->update($item);
