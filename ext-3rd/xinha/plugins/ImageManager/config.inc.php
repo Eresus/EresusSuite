@@ -81,7 +81,7 @@ $IMConfig['images_dir'] = realpath(dirname(__FILE__).'/../../../../data');
 // try to figure out the URL of the sample images directory. For your installation
 // you will probably want to keep images in another directory.
 
-$IMConfig['images_url'] = substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], 'core/editor/')).'data/';
+$IMConfig['images_url'] = substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], 'ext-3rd/xinha/')).'data/';
 
 // -------------------------------------------------------------------------
 
