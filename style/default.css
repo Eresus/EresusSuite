@@ -1,0 +1,84 @@
+/* Стандартные стили */
+
+/** * * * * * * * * * * * * * * * *
+* Базовый файл стилей для Eresus  *
+* * * * * * * * * * * * * * * * * *
+* В этом файле заданы стили основных элементов
+* и перечислены встроенные селекторы и идентификаторы
+* ---
+* Для указания пути к картинкам используйте макрос $(styleRoot)
+*/
+
+/* Основные стили */
+html, body {
+  margin: 0; padding: 0;
+  width: 100%; height: 100%;
+  font-family: verdana, tahoma, sans-serif;
+  font-size: 8pt;
+}
+img {border: 0;}
+sup, sub {font-size: 80%;}
+
+a {text-decoration: underline;}
+a:link {color: #00f;}
+a:visited {color: #008;}
+a:hover {color: #f00;}
+
+p {
+  text-align: justify;
+  text-indent: 1em;
+  margin: 2px 0 3px;
+}
+
+h1, h2, h3, h4, h5, h6 {font-family: arial, verdana, tahoma, sans-serif;  margin: 1em 0 0.2em;}
+h1 {font-size: 200%;}
+h2 {font-size: 160%;}
+h3 {font-size: 140%;}
+h4 {font-size: 130%;}
+h5 {font-size: 120%;}
+h6 {font-size: 110%;}
+
+.hidden {display: none;}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* Стиль области контента                                                           *
+* Внутри этой области не допускается никаких вложенных элементов шаблона страницы  *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+#Content {
+  padding: 0.5em 1em;
+}
+
+/* Переключатель страниц */
+div.pages {}
+.pages span.selected {} /* Выбранная страница */
+
+/* * * * * * * * *
+* Стили веб-форм *
+* * * * * * * * */
+div.form {}
+.form th {} /* Заголовок */
+.form td {}
+.form input {}
+.form textarea {}
+.form input.button {}
+.form td.formLabel {} /* Ячейка, содержащая метку (подпись) элемента управления */
+.form span.hint {} /* Метка, имеющая подсказку */
+.form th.formHeader {} /* Подзаголовок */
+.form td.formText {} /* Ячейка, содержащая простой текст */
+.form td.buttons {} /* Ячейка, содержащая кнопки формы */
+
+input.contentButton {}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * *
+* Стили, используемые информационными сообщениями  *
+* * * * * * * * * * * * * * * * * * * * * * * * * */
+/* Сообщения об ошибках */
+div.errorBox {background: #fff; color: #000; border: solid 2px #f00; font-size: 8pt; padding: 5px; margin: 0 2px 2px 2px;}
+div.errorBoxCap {background: #f00; color: #fff; font-weight: bold; padding: 2px 5px 0px 5px; margin: 2px 2px 0 2px;}
+/* Информационные сообщения */
+div.infoBox {background: #fff; color: #000; border: solid 2px #25b; font-size: 8pt; padding: 5px; margin: 0 2px 2px 2px;}
+div.infoBoxCap {background: #25b; color: #fff; font-weight: bold; padding: 2px 5px 0px 5px; margin: 2px 2px 0 2px;}
+
+/* * * * * * * * * * * * * * * * * * * * * *
+* Дополнительные стили модулей расширения  *
+* * * * * * * * * * * * * * * * * * * * * */
