@@ -1,0 +1,25 @@
+Options -Indexes +FollowSymLinks
+AddDefaultCharset Off
+
+<IfModule mod_charset.c>
+	CharsetDisable On
+</IfModule>
+
+<IfModule mod_rewrite.c>
+	RewriteEngine on
+
+	# Proxy all requests to 3rd party extensions through their connectors
+	RewriteRule ^ext-3rd/.* ext-3rd/index.php [L]
+
+	# GZip compression
+	#RewriteRule (.*\.css)$ core/gziph.php?file=$1&type=text/css [L]
+	#RewriteRule (.*\.js)$ core/gziph.php?file=$1&type=text/javascript [L]
+
+	# Direct requestes
+	RewriteRule ^(core|ext|data|style)/ - [L]
+
+	RewriteRule ^admin core/admin.php [L]
+	RewriteRule ^ajax/ core/ajax.php [L]
+	RewriteRule ^(robots.txt|favicon.ico)$ - [L]
+	RewriteRule .* core/client.php
+</IfModule>

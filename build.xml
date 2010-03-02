@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ Eresus 2
+
+ Файл сборки проекта
+
+ $Id$
+ -->
+<project name="eresus2" default="build" basedir="./">
+
+	<property file="build.properties" />
+	<php function="date" returnProperty="builddate">
+	  <param value="Y-m-d"/>
+	</php>
+
+	<!--
+	=====================================================================
+		Подготовка к сборке
+	=====================================================================
+  -->
+
+	<target name="prepare" description="Prepare for build">
+
+		<echo msg="Clean up: ${build.dir}..." level="info" />
+
+		<if>
+			<available file="${build.dir}" />
+
+			<then>
+				<delete includeemptydirs="true" failonerror="true">
+					<fileset dir="${build.dir}">
+						<include name="**/*" />
+					</fileset>
+				</delete>
+			</then>
+
+		</if>
+
+		<echo msg="Build directory: ${build.dir}" level="info" />
+
+		<echo msg="Create build directory..." level="info" />
+		<mkdir dir="${build.dir}" />
+
+		<echo msg="Ready to build" level="info" />
+
+	</target>
+
+	<!--
+	=====================================================================
+		Сборка основных модулей
+	=====================================================================
+	-->
+	<target name="core" depends="prepare" description="Build core modules only">
+
+		<if>
+			<available file="${build.dir}" />
+
+			<then>
+				<delete includeemptydirs="true" failonerror="true">
+					<fileset dir="${build.dir}">
+						<include name="**/*" />
+						<exclude name=".svn" />
+						<exclude name=".svn/*" />
+					</fileset>
+				</delete>
+			</then>
+
+		</if>
+
+		<mkdir dir="${build.dir}" />
+
+		<copy todir="${build.dir}">
+			<fileset refid="main_files" />
+			<filterchain>
+			    <expandproperties />
+		  </filterchain>
+		</copy>
+
+		<!-- Eresus Core -->
+		<echo msg="Copying Eresus Core..." level="info" />
+		<copy todir="${build.dir}/core/framework">
+			<fileset refid="files.framework" />
+			<filterchain>
+				<expandproperties />
+			</filterchain>
+		</copy>
+
+		<copy todir="${build.dir}/core/lib">
+			<fileset refid="libs_files" />
+			<filterchain>
+			    <expandproperties />
+		  </filterchain>
+		</copy>
+
+		<copy todir="${build.dir}/">
+			<fileset refid="l10n_files" />
+			<filterchain>
+			    <expandproperties />
+		  </filterchain>
+		</copy>
+
+	</target>
+
+	<!--
+		Build project
+	-->
+	<target name="build" depends="core" description="Build basic set of modules">
+
+		<mkdir dir="${build.dir}/distrib" />
+		<copy todir="${build.dir}/distrib">
+			<fileset refid="db_files" />
+			<filterchain>
+			    <expandproperties />
+		  </filterchain>
+		</copy>
+
+		<copy todir="${build.dir}">
+			<fileset refid="3rdparty_files" />
+		</copy>
+
+		<copy todir="${build.dir}/distrib">
+			<fileset refid="tools_files" />
+			<filterchain>
+			    <expandproperties />
+		  </filterchain>
+		</copy>
+
+  </target>
+
+	<!--
+		Build all
+	-->
+	<target name="all" depends="build" description="Build all modules">
+
+		<mkdir dir="${build.dir}/distrib" />
+		<copy todir="${build.dir}/distrib">
+			<fileset refid="SDK_files" />
+			<filterchain>
+			    <expandproperties />
+		  </filterchain>
+		</copy>
+
+	</target>
+
+
+	<!--
+		Run unit tests
+	-->
+	<target name="test" depends="core" description="Run unit tests">
+
+		<copy todir="${build.dir}">
+			<fileset refid="tests_files" />
+		</copy>
+
+		<phpunit printsummary="true">
+			<formatter type="plain" usefile="false" />
+			<batchtest>
+				<fileset dir="${build.dir}/t">
+					<include name="init.php"/>
+					<include name="**/*Test.php"/>
+					<exclude name="**/AllTests.php"/>
+				</fileset>
+			</batchtest>
+		</phpunit>
+
+	</target>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - -->
+
+	<!-- Main project files -->
+	<fileset dir="main" id="main_files">
+		<include name="**" />
+		<exclude name=".svn" />
+	</fileset>
+
+	<!-- Framework files -->
+	<fileset dir="framework" id="files.framework">
+		<include name="**" />
+		<exclude name=".svn" />
+	</fileset>
+
+	<!-- libs files -->
+	<fileset dir="lib" id="libs_files">
+		<include name="**" />
+		<exclude name=".svn" />
+	</fileset>
+
+	<!-- DB templates -->
+	<fileset dir="db" id="db_files">
+		<include name="**" />
+		<exclude name=".svn" />
+	</fileset>
+
+	<!-- l10n files -->
+	<fileset dir="." id="l10n_files">
+		<include name="lang/**" />
+		<exclude name=".svn" />
+	</fileset>
+
+	<!-- Tools files -->
+	<fileset dir="." id="tools_files">
+		<include name="tools/**" />
+		<exclude name=".svn" />
+	</fileset>
+
+	<!-- 3rd party extensions -->
+	<fileset dir="." id="3rdparty_files">
+		<include name="ext-3rd/**" />
+		<exclude name=".svn" />
+	</fileset>
+
+	<!-- SDK files -->
+	<fileset dir="." id="SDK_files">
+		<include name="SDK/**" />
+		<exclude name=".svn" />
+	</fileset>
+
+	<!-- Unit tests -->
+	<fileset dir="." id="tests_files">
+		<include name="t/**" />
+		<exclude name=".svn" />
+	</fileset>
+
+</project>
