@@ -1,0 +1,6 @@
+#
+# $Id: .htaccess 845 2010-03-01 20:49:40Z mk $
+#
+<IfModule php5_module>
+	php_value error_reporting 0
+</IfModule>
