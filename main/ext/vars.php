@@ -6,12 +6,12 @@
  *
  * Создание собственных текстовых переменных
  *
- * @version 1.06
+ * @version 1.07
  *
- * @copyright   2007-2008, Eresus Group, http://eresus.ru/
- * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
- * @maintainer  Mikhail Krasilnikov <mk@procreat.ru>
- * @author      Mikhail Krasilnikov <mk@procreat.ru>
+ * @copyright 2007, Eresus Group, http://eresus.ru/
+ * @copyright 2010, ООО "Два слона", http://dvaslona.ru/
+ * @license http://www.gnu.org/licenses/gpl.txt  GPL License 3
+ * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -29,13 +29,28 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
+ * @package Vars
+ *
+ * $Id$
  */
 
-class TVars extends TListContentPlugin {
+/**
+ * Класс плагина
+ * @package Vars
+ */
+class TVars extends TListContentPlugin
+{
 	var $name = 'vars';
+
+	/**
+	 * Требуемая версия ядра
+	 * @var string
+	 */
+	public $kernel = '2.12b';
+
 	var $title = 'Vars';
 	var $type = 'client,admin';
-	var $version = '1.06';
+	var $version = '1.07b';
 	var $description = 'Создание собственных текстовых переменных';
 	var $settings = array(
 			);
@@ -65,16 +80,17 @@ class TVars extends TListContentPlugin {
 			PRIMARY KEY  (`name`)
 		) TYPE=MyISAM;",
 	);
- /**
-	* Конструктор
-	*
-	* @return TVars
-	*/
-	function TVars()
+
+	/**
+	 * Конструктор
+	 *
+	 * @return TVars
+	 */
+	function __construct()
 	{
 		global $Eresus;
 
-		parent::TListContentPlugin();
+		parent::__construct();
 		$Eresus->plugins->events['clientOnPageRender'][] = $this->name;
 		$Eresus->plugins->events['adminOnMenuRender'][] = $this->name;
 	}
@@ -92,7 +108,7 @@ class TVars extends TListContentPlugin {
 			'value' => arg('value', 'dbsafe'),
 		);
 		$Eresus->db->insert($this->table['name'], $item);
-		goto(arg('submitURL'));
+		HTTP::redirect(arg('submitURL'));
 	}
 	//-----------------------------------------------------------------------------
  /**
@@ -108,7 +124,7 @@ class TVars extends TListContentPlugin {
 		$item['value'] = arg('value', 'dbsafe');
 
 		$Eresus->db->updateItem($this->table['name'], $item, "`name`='".arg('update', 'word')."'");
-		goto(arg('submitURL'));
+		HTTP::redirect(arg('submitURL'));
 	}
 	//-----------------------------------------------------------------------------
  /**
