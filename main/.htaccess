@@ -12,8 +12,8 @@ AddDefaultCharset Off
 	RewriteRule ^ext-3rd/.* ext-3rd/index.php [L]
 
 	# GZip compression
-	#RewriteRule (.*\.css)$ core/gziph.php?file=$1&type=text/css [L]
-	#RewriteRule (.*\.js)$ core/gziph.php?file=$1&type=text/javascript [L]
+	RewriteRule (.*\.css)$ core/gziph.php?file=$1&type=text/css [L]
+	RewriteRule (.*\.js)$ core/gziph.php?file=$1&type=text/javascript [L]
 
 	# Direct requestes
 	RewriteRule ^(core|ext|data|style)/ - [L]
