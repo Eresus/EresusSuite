@@ -6,13 +6,13 @@
  *
  * Управление текстовыми блоками
  *
- * @version 2.04
+ * @version 2.05
  *
- * @copyright   2005-2006, ProCreat Systems, http://procreat.ru/
- * @copyright   2007-2008, Eresus Group, http://eresus.ru/
- * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
- * @maintainer  Mikhail Krasilnikov <mk@procreat.ru>
- * @author      Mikhail Krasilnikov <mk@procreat.ru>
+ * @copyright 2005, ProCreat Systems, http://procreat.ru/
+ * @copyright 2007, Eresus Group, http://eresus.ru/
+ * @copyright 2010, ООО "Два слона", http://dvaslona.ru/
+ * @license http://www.gnu.org/licenses/gpl.txt  GPL License 3
+ * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -26,14 +26,59 @@
  * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
  * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
  *
+ * @package Blocks
+ *
+ * $Id$
  */
-class TBlocks extends TListContentPlugin {
-  var $name = 'blocks';
-  var $title = 'Блоки';
-  var $type = 'client,admin';
-  var $version = '2.04';
-  var $description = 'Система управления текстовыми блоками';
-  var $table = array (
+
+/**
+ * Класс плагина
+ *
+ * @package Blocks
+ */
+class TBlocks extends TListContentPlugin
+{
+	/**
+	 * Имя плагина
+	 * @var string
+	 */
+  public $name = 'blocks';
+
+  /**
+   * Требуемая версия ядра
+   * @var string
+   */
+  public $kernel = '2.12b';
+
+  /**
+   * Название плагина
+   * @var string
+   */
+  public $title = 'Блоки';
+
+  /**
+   * Тип плагина
+   * @var string
+   */
+  public $type = 'client,admin';
+
+  /**
+   * Версия плагина
+   * @var string
+   */
+  public $version = '2.05b';
+
+  /**
+   * Описание плагина
+   * @var string
+   */
+  public  $description = 'Система управления текстовыми блоками';
+
+  /**
+   * Описание таблицы данных
+   * @var array
+   */
+  public $table = array (
     'name' => 'blocks',
     'key'=> 'id',
     'sortMode' => 'id',
@@ -41,7 +86,8 @@ class TBlocks extends TListContentPlugin {
     'columns' => array(
       array('name' => 'caption', 'caption' => 'Название'),
       array('name' => 'block', 'caption' => 'Блок', 'align'=> 'right'),
-      array('name' => 'priority', 'caption' => '<span title="Приоритет" style="cursor: default;">&nbsp;&nbsp;*</span>', 'align'=>'center'),
+      array('name' => 'priority', 'caption' =>
+      	'<span title="Приоритет" style="cursor: default;">&nbsp;&nbsp;*</span>', 'align'=>'center'),
     ),
     'controls' => array (
       'delete' => '',
@@ -76,20 +122,25 @@ class TBlocks extends TListContentPlugin {
    *
    * @return TBlocks
    */
-  function TBlocks()
+  public function __construct()
   {
   	global $plugins;
 
-    parent::TListContentPlugin();
+    parent::__construct();
     if (defined('CLIENTUI')) {
       $plugins->events['clientOnContentRender'][] = $this->name;
       $plugins->events['clientOnPageRender'][] = $this->name;
     } else $plugins->events['adminOnMenuRender'][] = $this->name;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  # Внутренние функции
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function menuBranch($owner = 0, $level = 0)
+  //-----------------------------------------------------------------------------
+
+  /**
+   * ???
+   * @param $owner
+   * @param $level
+   * @return unknown_type
+   */
+  public function menuBranch($owner = 0, $level = 0)
   {
   	global $db;
 
@@ -106,8 +157,13 @@ class TBlocks extends TListContentPlugin {
     }
     return $result;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function insert()
+  //-----------------------------------------------------------------------------
+
+  /**
+   * ???
+   * @return unknown_type
+   */
+  public function insert()
   {
   	global $db, $request;
 
@@ -117,10 +173,15 @@ class TBlocks extends TListContentPlugin {
     $item['active'] = true;
     $db->insert($this->table['name'], $item);
     sendNotify('Добавлен блок: '.$item['caption']);
-    goto($request['arg']['submitURL']);
+    HTTP::redirect($request['arg']['submitURL']);
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function update()
+  //-----------------------------------------------------------------------------
+
+  /**
+   * ???
+   * @return unknown_type
+   */
+  public function update()
   {
   global $db, $request;
 
@@ -131,12 +192,15 @@ class TBlocks extends TListContentPlugin {
     $db->updateItem($this->table['name'], $item, "`id`='".$request['arg']['update']."'");
     $item = $db->selectItem($this->table['name'], "`id`='".$request['arg']['update']."'");
     sendNotify('Изменен блок: '.$item['caption']);
-    goto($request['arg']['submitURL']);
+    HTTP::redirect($request['arg']['submitURL']);
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  # Административные функции
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function create()
+  //-----------------------------------------------------------------------------
+
+  /**
+   * ???
+   * @return unknown_type
+   */
+  public function create()
   {
   global $page, $db;
 
@@ -163,8 +227,13 @@ class TBlocks extends TListContentPlugin {
     $result = $page->renderForm($form);
     return $result;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function edit()
+  //-----------------------------------------------------------------------------
+
+  /**
+   * ???
+   * @return unknown_type
+   */
+  public function edit()
   {
   global $page, $db, $request;
 
@@ -194,8 +263,13 @@ class TBlocks extends TListContentPlugin {
     $result = $page->renderForm($form, $item);
     return $result;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function adminRender()
+  //-----------------------------------------------------------------------------
+
+  /**
+   * ???
+   * @return unknown_type
+   */
+  public function adminRender()
   {
   global $db, $page, $user, $request, $session;
 
@@ -223,8 +297,15 @@ class TBlocks extends TListContentPlugin {
     }
     return $result;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function renderBlocks($source, $target)
+  //-----------------------------------------------------------------------------
+
+  /**
+   * ???
+   * @param $source
+   * @param $target
+   * @return unknown_type
+   */
+  public function renderBlocks($source, $target)
   {
     global $db, $page, $request;
 
@@ -236,27 +317,42 @@ class TBlocks extends TListContentPlugin {
     }
     return $source;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  # Обработчики событий
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function adminOnMenuRender()
+  //-----------------------------------------------------------------------------
+
+  /**
+   * ???
+   * @return unknown_type
+   */
+  public function adminOnMenuRender()
   {
     global $page;
 
     $page->addMenuItem(admExtensions, array ('access'  => EDITOR, 'link'  => $this->name, 'caption'  => $this->title, 'hint'  => $this->description));
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function clientOnContentRender($text)
+  //-----------------------------------------------------------------------------
+
+  /**
+   * ???
+   * @param $text
+   * @return unknown_type
+   */
+  public function clientOnContentRender($text)
   {
     global $page;
     $page->template = $this->renderBlocks($page->template, 'template');
     return $text;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
-  function clientOnPageRender($text)
+  //-----------------------------------------------------------------------------
+
+  /**
+   * ???
+   * @param $text
+   * @return unknown_type
+   */
+  public function clientOnPageRender($text)
   {
     $text = $this->renderBlocks($text, 'page');
     return $text;
   }
-  #--------------------------------------------------------------------------------------------------------------------------------------------------------------#
+  //-----------------------------------------------------------------------------
 }
