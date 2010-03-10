@@ -1,4 +1,4 @@
-#Tue Mar 02 12:31:18 MSK 2010
+#Wed Mar 10 15:06:38 MSK 2010
 eclipse.preferences.version=1
 encoding//db/mysql-4.sql=windows-1251
 encoding//db/mysql-5.sql=windows-1251
@@ -15,6 +15,7 @@ encoding//main/core/client.php=windows-1251
 encoding//main/core/content.php=windows-1251
 encoding//main/core/dlg/BrowseFile.php=windows-1251
 encoding//main/core/files.php=windows-1251
+encoding//main/core/functions.js=windows-1251
 encoding//main/core/gziph.php=windows-1251
 encoding//main/core/kernel-legacy.php=windows-1251
 encoding//main/core/lib/accounts.php=windows-1251
