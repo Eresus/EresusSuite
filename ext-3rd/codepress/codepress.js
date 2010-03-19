@@ -9,7 +9,7 @@
  * Read the full licence: http://www.opensource.org/licenses/lgpl-license.php
  */
 
-var CodePress = function(obj) {
+CodePress = function(obj) {
 	var self = document.createElement('iframe');
 	self.textarea = obj;
 	self.textarea.disabled = true;
@@ -49,7 +49,6 @@ var CodePress = function(obj) {
 		for (language in CodePress.languages) 
 			if(self.options.match('\\b'+language+'\\b')) 
 				return CodePress.languages[language] ? language : 'generic';
-    return 'generic';
 	}
 	
 	self.setOptions = function() {
