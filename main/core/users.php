@@ -102,10 +102,10 @@ class TUsers extends Accounts {
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
 	/**
-	 * @param void $dummy  Используется для совместимости с родителтским методом
+	 * @param void $dummy  Используется для совместимости с родительтским методом
 	 * @see main/core/lib/EresusAccounts#update($item)
 	 */
-	function update($dummy = null)
+	function update($dummy)
 	{
 		global $Eresus, $page;
 
@@ -156,10 +156,10 @@ class TUsers extends Accounts {
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
 	/**
-	 * @param void $dummy  Используется для совместимости с родителтским методом
+	 * @param void $dummy  Используется для совместимости с родительтским методом
 	 * @see main/core/lib/EresusAccounts#delete($id)
 	 */
-	function delete($dummy = null)
+	function delete($dummy)
 	{
 		global $Eresus, $page;
 
@@ -259,10 +259,10 @@ class TUsers extends Accounts {
 			}
 		}
 		if ($granted) {
-			if (arg('update')) $this->update();
+			if (arg('update')) $this->update(null);
 			elseif (isset($Eresus->request['arg']['password'])  && (!isset($Eresus->request['arg']['action']) || ($Eresus->request['arg']['action'] != 'login'))) $this->password();
 			elseif (isset($Eresus->request['arg']['toggle'])) $this->toggle();
-			elseif (isset($Eresus->request['arg']['delete'])) $this->delete();
+			elseif (isset($Eresus->request['arg']['delete'])) $this->delete(null);
 			elseif (isset($Eresus->request['arg']['id'])) $result = $this->edit();
 			elseif (isset($Eresus->request['arg']['action'])) switch(arg('action')) {
 				case 'create': $result = $this->create(); break;
