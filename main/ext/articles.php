@@ -33,7 +33,7 @@
  *
  * @package Articles
  *
- * $Id: articles.php 280 2010-03-10 07:45:59Z mk $
+ * $Id: articles.php 291 2010-04-01 14:57:42Z mk $
  */
 
 /**
@@ -348,7 +348,6 @@ class TArticles extends TListContentPlugin
 
 		$item = $Eresus->db->selectItem($this->table['name'], "`id`='".arg('update', 'int')."'");
 		$image = $item['image'];
-		$item = array();
 		$item['section'] = arg('section', 'int');
 		if ( ! is_null(arg('section')) )
 			$item['active'] = arg('active', 'int');
@@ -358,9 +357,11 @@ class TArticles extends TListContentPlugin
 		$item['caption'] = arg('caption', 'dbsafe');
 		$item['text'] = arg('text', 'dbsafe');
 		$item['preview'] = arg('preview', 'dbsafe');
-		if (empty($item['preview']) || arg('updatePreview')) $item['preview'] = $this->createPreview($item['text']);
+		if (empty($item['preview']) || arg('updatePreview'))
+			$item['preview'] = $this->createPreview($item['text']);
 
-		if (is_uploaded_file($_FILES['image']['tmp_name'])) {
+		if (is_uploaded_file($_FILES['image']['tmp_name']))
+		{
 
 			$tmpFile = tempnam($Eresus->fdata, $this->name);
 			upload('image', $tmpFile);
