@@ -31,7 +31,7 @@
  *
  * @package Vars
  *
- * $Id$
+ * $Id: vars.php 301 2010-04-05 07:14:49Z mk $
  */
 
 /**
@@ -40,17 +40,21 @@
  */
 class TVars extends TListContentPlugin
 {
+	/**
+	 * Имя плагина
+	 * @var string
+	 */
 	var $name = 'vars';
 
 	/**
 	 * Требуемая версия ядра
 	 * @var string
 	 */
-	public $kernel = '2.12b';
+	public $kernel = '2.12';
 
 	var $title = 'Vars';
 	var $type = 'client,admin';
-	var $version = '1.07b';
+	var $version = '1.07';
 	var $description = 'Создание собственных текстовых переменных';
 	var $settings = array(
 			);
@@ -95,9 +99,12 @@ class TVars extends TListContentPlugin
 		$Eresus->plugins->events['adminOnMenuRender'][] = $this->name;
 	}
 	//-----------------------------------------------------------------------------
- /**
-	* Добавление
-	*/
+
+	/**
+	 * Добавление
+	 *
+	 * @return void
+	 */
 	function insert()
 	{
 		global $Eresus;
@@ -111,9 +118,12 @@ class TVars extends TListContentPlugin
 		HTTP::redirect(arg('submitURL'));
 	}
 	//-----------------------------------------------------------------------------
- /**
-	* Изменение
-	*/
+
+	/**
+	 * Изменение
+	 *
+	 * @return void
+	 */
 	function update()
 	{
 		global $Eresus;
@@ -127,11 +137,12 @@ class TVars extends TListContentPlugin
 		HTTP::redirect(arg('submitURL'));
 	}
 	//-----------------------------------------------------------------------------
- /**
-	* Диплог добавления
-	*
-	* @return string
-	*/
+
+	/**
+	 * Диплог добавления
+	 *
+	 * @return string
+	 */
 	function adminAddItem()
 	{
 		global $page;
@@ -142,8 +153,11 @@ class TVars extends TListContentPlugin
 			'width'=>'500px',
 			'fields' => array (
 				array ('type' => 'hidden', 'name' => 'action', 'value' => 'insert'),
-				array ('type' => 'edit', 'name' => 'name', 'label' => 'Имя $(', 'width' => '200px', 'maxlength' => '31', 'comment' => ')', 'pattern' => '/.+/', 'errormsg' => 'Не указано имя переменной'),
-				array ('type' => 'edit', 'name' => 'caption', 'label' => 'Описание', 'width' => '100%', 'maxlength' => '63', 'pattern' => '/.+/', 'errormsg' => 'Не указано название переменной'),
+				array ('type' => 'edit', 'name' => 'name', 'label' => 'Имя $(', 'width' => '200px',
+					'maxlength' => '31', 'comment' => ')', 'pattern' => '/.+/',
+					'errormsg' => 'Не указано имя переменной'),
+				array ('type' => 'edit', 'name' => 'caption', 'label' => 'Описание', 'width' => '100%',
+					'maxlength' => '63', 'pattern' => '/.+/', 'errormsg' => 'Не указано название переменной'),
 				array ('type' => 'memo', 'name' => 'value', 'label' => 'Значение', 'height' => '10'),
 			),
 			'buttons' => array('ok', 'cancel'),
@@ -153,11 +167,12 @@ class TVars extends TListContentPlugin
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
- /**
-	* Диалог изменения
-	*
-	* @return string
-	*/
+
+	/**
+	 * Диалог изменения
+	 *
+	 * @return string
+	 */
 	function adminEditItem()
 	{
 		global $Eresus, $page;
@@ -169,8 +184,11 @@ class TVars extends TListContentPlugin
 			'width' => '500px',
 			'fields' => array (
 				array ('type' => 'hidden', 'name' => 'update', 'value' => $item['name']),
-				array ('type' => 'edit', 'name' => 'name', 'label' => 'Имя $(', 'width' => '200px', 'maxlength' => '31', 'comment' => ')', 'pattern' => '/.+/', 'errormsg' => 'Не указано имя переменной'),
-				array ('type' => 'edit', 'name' => 'caption', 'label' => 'Описание', 'width' => '100%', 'maxlength' => '63', 'pattern' => '/.+/', 'errormsg' => 'Не указано название переменной'),
+				array ('type' => 'edit', 'name' => 'name', 'label' => 'Имя $(', 'width' => '200px',
+					'maxlength' => '31', 'comment' => ')', 'pattern' => '/.+/',
+					'errormsg' => 'Не указано имя переменной'),
+				array ('type' => 'edit', 'name' => 'caption', 'label' => 'Описание', 'width' => '100%',
+					'maxlength' => '63', 'pattern' => '/.+/', 'errormsg' => 'Не указано название переменной'),
 				array ('type' => 'memo', 'name' => 'value', 'label' => 'Значение', 'height' => '10'),
 			),
 			'buttons' => array('ok', 'apply', 'cancel'),
@@ -179,11 +197,21 @@ class TVars extends TListContentPlugin
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
+
+	/**
+	 *
+	 * @return void
+	 */
 	function adminRender()
 	{
 		return $this->adminRenderContent();
 	}
 	//-----------------------------------------------------------------------------
+
+	/**
+	 *
+	 * @return string
+	 */
 	function clientOnPageRender($text)
 	{
 		global $Eresus;
@@ -195,11 +223,16 @@ class TVars extends TListContentPlugin
 		return $text;
 	}
 	//-----------------------------------------------------------------------------
+
+	/**
+	 * @return void
+	 */
 	function adminOnMenuRender()
 	{
 		global $page;
 
-		$page->addMenuItem('Расширения', array ("access"  => EDITOR, "link"  => $this->name, "caption"  => 'Переменные', "hint"  => "Управление текстовыми переменными"));
+		$page->addMenuItem('Расширения', array ("access"  => EDITOR, "link"  => $this->name,
+			"caption"  => 'Переменные', "hint"  => "Управление текстовыми переменными"));
 	}
 	//-----------------------------------------------------------------------------
 }
