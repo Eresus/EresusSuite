@@ -52,7 +52,7 @@ class TNews extends TListContentPlugin
 	 * Требуемая версия ядра
 	 * @var string
 	 */
-	public $kernel = '2.12b';
+	public $kernel = '2.12';
 
 	/**
 	 * Тип плагина
@@ -70,7 +70,7 @@ class TNews extends TListContentPlugin
 	 * Версия плагина
 	 * @var string
 	 */
-	public $version = '2.08b';
+	public $version = '2.08';
 
 	/**
 	 * Описание плагина
@@ -217,7 +217,9 @@ class TNews extends TListContentPlugin
 
 		$db->insert($this->table['name'], $item);
 		$item['id'] = $db->getInsertedID();
-		sendNotify(admAdded.': <a href="'.httpRoot.'admin.php?mod=content&section='.$item['section'].'&id='.$item['id'].'">'.$item['caption'].'</a><br />'.$item['text'], array('editors'=>defined('CLIENTUI_VERSION')));
+		sendNotify(admAdded . ': <a href="' . httpRoot . 'admin.php?mod=content&section=' .
+			$item['section'] . '&id=' . $item['id'] . '">' . $item['caption'] . '</a><br />' .
+			$item['text'], array('editors'=>defined('CLIENTUI_VERSION')));
 		HTTP::redirect($request['arg']['submitURL']);
 
 	}
@@ -239,10 +241,12 @@ class TNews extends TListContentPlugin
 		$item['caption'] = arg('caption', 'dbsafe');
 		$item['text'] = arg('text', 'dbsafe');
 		$item['preview'] = arg('preview', 'dbsafe');
-		if (empty($item['preview']) || arg('updatePreview')) $item['preview'] = $this->createPreview($item['text']);
+		if (empty($item['preview']) || arg('updatePreview'))
+			$item['preview'] = $this->createPreview($item['text']);
 
 		$db->updateItem($this->table['name'], $item, "`id`='".$request['arg']['update']."'");
-		sendNotify(admUpdated.': <a href="'.$page->url().'">'.$item['caption'].'</a><br />'.$item['text']);
+		sendNotify(admUpdated . ': <a href="' . $page->url() . '">' . $item['caption'] . '</a><br />' .
+			$item['text']);
 		HTTP::redirect($request['arg']['submitURL']);
 	}
 	//-----------------------------------------------------------------------------
@@ -281,7 +285,8 @@ class TNews extends TListContentPlugin
 			'fields' => array (
 				array ('type'=>'hidden','name'=>'action', 'value'=>'insert'),
 				array ('type' => 'hidden', 'name' => 'section', 'value' => $request['arg']['section']),
-				array ('type' => 'edit', 'name' => 'caption', 'label' => 'Заголовок', 'width' => '100%', 'maxlength' => '100'),
+				array ('type' => 'edit', 'name' => 'caption', 'label' => 'Заголовок', 'width' => '100%',
+					'maxlength' => '100'),
 				array ('type' => 'html', 'name' => 'text', 'label' => 'Полный текст', 'height' => '200px'),
 				array ('type' => 'memo', 'name' => 'preview', 'label' => 'Краткое описание', 'height' => '10'),
 				array ('type' => 'edit', 'name'=>'posted', 'label'=>'Написано'),
@@ -310,10 +315,13 @@ class TNews extends TListContentPlugin
 			'width' => '95%',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'update', 'value'=>$item['id']),
-				array ('type' => 'edit', 'name' => 'caption', 'label' => 'Заголовок', 'width' => '100%', 'maxlength' => '100'),
+				array ('type' => 'edit', 'name' => 'caption', 'label' => 'Заголовок', 'width' => '100%',
+					'maxlength' => '100'),
 				array ('type' => 'html', 'name' => 'text', 'label' => 'Полный текст', 'height' => '200px'),
-				array ('type' => 'memo', 'name' => 'preview', 'label' => 'Краткое описание', 'height' => '5'),
-				array ('type' => 'checkbox', 'name'=>'updatePreview', 'label'=>'Обновить краткое описание автоматически'),
+				array ('type' => 'memo', 'name' => 'preview', 'label' => 'Краткое описание',
+					'height' => '5'),
+				array ('type' => 'checkbox', 'name'=>'updatePreview',
+					'label'=>'Обновить краткое описание автоматически'),
 				array ('type' => 'divider'),
 				array ('type' => 'edit', 'name' => 'section', 'label' => 'Раздел', 'access'=>ADMIN),
 				array ('type' => 'edit', 'name'=>'posted', 'label'=>'Написано'),
@@ -342,18 +350,25 @@ class TNews extends TListContentPlugin
 			'width' => '500px',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'update', 'value'=>$this->name),
-				array('type'=>'edit','name'=>'itemsPerPage','label'=>'Новостей на страницу','width'=>'50px', 'maxlength'=>'2'),
-				array('type'=>'memo','name'=>'tmplListItem','label'=>'Шаблон краткого текста','height'=>'5'),
+				array('type'=>'edit','name'=>'itemsPerPage','label'=>'Новостей на страницу','width'=>'50px',
+					'maxlength'=>'2'),
+				array('type'=>'memo','name'=>'tmplListItem','label'=>'Шаблон краткого текста',
+					'height'=>'5'),
 				array('type'=>'edit','name'=>'dateFormatPreview','label'=>'Формат даты', 'width'=>'200px'),
-				array('type'=>'edit','name'=>'previewMaxSize','label'=>'Макс. размер описания','width'=>'50px', 'maxlength'=>'4', 'comment'=>'симовлов'),
+				array('type'=>'edit','name'=>'previewMaxSize','label'=>'Макс. размер описания',
+					'width'=>'50px', 'maxlength'=>'4', 'comment'=>'симовлов'),
 				array('type'=>'checkbox','name'=>'previewSmartSplit','label'=>'"Умное" создание описания'),
 				array('type'=>'divider'),
-				array('type'=>'memo','name'=>'tmplItem','label'=>'Шаблон полнотекстового просмотра','height'=>'5'),
+				array('type'=>'memo','name'=>'tmplItem','label'=>'Шаблон полнотекстового просмотра',
+					'height'=>'5'),
 				array('type'=>'edit','name'=>'dateFormatFullText','label'=>'Формат даты', 'width'=>'200px'),
 				array('type'=>'header', 'value' => 'Последние новости'),
-				array('type'=>'memo','name'=>'tmplLastNews','label'=>'Шаблон последних новостей','height'=>'3'),
-				array('type'=>'select','name'=>'lastNewsMode','label'=>'Режим', 'items'=>array('отключить', 'Заменять макрос $(NewsLast)')),
-				array('type'=>'edit','name'=>'lastNewsCount','label'=>'Показывать новостей', 'width'=>'100px'),
+				array('type'=>'memo','name'=>'tmplLastNews','label'=>'Шаблон последних новостей',
+					'height'=>'3'),
+				array('type'=>'select','name'=>'lastNewsMode','label'=>'Режим',
+					'items'=>array('отключить', 'Заменять макрос $(NewsLast)')),
+				array('type'=>'edit','name'=>'lastNewsCount','label'=>'Показывать новостей',
+					'width'=>'100px'),
 		),
 			'buttons' => array('ok', 'apply', 'cancel'),
 		);
@@ -400,7 +415,8 @@ class TNews extends TListContentPlugin
 		global $db;
 
 		$result = '';
-		$items = $db->select($this->table['name'], "`active`='1'", 'posted', true, '', $this->settings['lastNewsCount']);
+		$items = $db->select($this->table['name'], "`active`='1'", 'posted', true, '',
+			$this->settings['lastNewsCount']);
 		if (count($items))
 			foreach($items as $item)
 			{
