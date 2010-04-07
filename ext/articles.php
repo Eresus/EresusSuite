@@ -33,7 +33,7 @@
  *
  * @package Articles
  *
- * $Id: articles.php 291 2010-04-01 14:57:42Z mk $
+ * $Id: articles.php 311 2010-04-07 04:59:26Z mk $
  */
 
 /**
@@ -99,7 +99,7 @@ class TArticles extends TListContentPlugin
 	 * Версия плагина
 	 * @var string
 	 */
-	var $version = '2.13b';
+	var $version = '2.13';
 
 	/**
 	 * Описание плагина
