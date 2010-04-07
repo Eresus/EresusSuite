@@ -34,7 +34,7 @@
  *
  * @package Banners
  *
- * $Id: banners.php 309 2010-04-06 05:04:36Z mk $
+ * $Id: banners.php 318 2010-04-07 13:40:31Z mk $
  */
 
 /**
@@ -55,7 +55,7 @@ class TBanners extends TListContentPlugin {
 	 * Требуемая версия ядра
 	 * @var string
 	 */
-	public $kernel = '2.12b';
+	public $kernel = '2.12';
 
 	/**
 	 * Название плагина
@@ -73,7 +73,7 @@ class TBanners extends TListContentPlugin {
 	 * Версия
 	 * @var string
 	 */
-	var $version = '1.13b';
+	var $version = '1.13';
 
 	/**
 	 * Описание
