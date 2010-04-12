@@ -1,41 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!--
- Eresus 2 Suite build file
+ Eresus 2 Suite
 
- $Id$
+ Файл сборки проекта
+
+ $Id: build.xml 86 2010-03-20 06:21:07Z mk $
  -->
-
 <project name="eresus2-suite" default="build" basedir="./">
 
 	<property file="build.properties" />
 
-	<!--=====================================================================
+	<!--
+	=====================================================================
+		Подготовка к сборке
+	=====================================================================
+  -->
 
-		Build project
+	<target name="prepare" description="Prepare for build">
 
-  =====================================================================-->
+		<echo msg="Clean up: ${build.dir}..." level="info" />
 
-	<target name="build" description="Build project">
+		<if>
+			<available file="${build.dir}" />
 
-		<copy todir="${build.dir}">
-			<fileset refid="files.main" />
-			<filterchain>
-			    <expandproperties />
-		  </filterchain>
+			<then>
+				<delete includeemptydirs="true" failonerror="true">
+					<fileset dir="${build.dir}">
+						<include name="**/*" />
+					</fileset>
+				</delete>
+			</then>
+
+		</if>
+
+		<echo msg="Build directory: ${build.dir}" level="info" />
+
+		<echo msg="Create build directory..." level="info" />
+		<mkdir dir="${build.dir}" />
+
+		<mkdir dir="${build.dir}" />
+
+		<echo msg="Ready to build" level="info" />
+
+	</target>
+
+	<!--
+	=====================================================================
+		Сборка
+	=====================================================================
+	-->
+	<target name="build" depends="prepare" description="Build project">
+
+		<!--
+			Сборка CMS
+		-->
+		<phing dir="cms">
+			<property name="build.dir" value="${build.dir}"/>
+		</phing>
+
+		<!-- Extensions -->
+		<copy todir="${build.dir}/ext">
+			<fileset refid="files.ext" />
 		</copy>
 
 	</target>
 
-	<!-- - - - - - - - - - - - - - - - - - - - - -->
+	<!--
+	=====================================================================
+		Наборы файлов
+	=====================================================================
+	-->
 
-	<!-- Main files -->
-	<fileset dir="./" id="files.main">
-		<include name="**/*" />
-		<exclude name="build.*" />
-		<exclude name=".settings/*" />
-		<exclude name=".settings" />
-		<exclude name=".project" />
-		<exclude name=".buildpath" />
+	<!-- Extensions -->
+	<fileset dir="ext" id="files.ext">
+		<include name="**" />
+		<exclude name=".svn" />
 	</fileset>
 
 </project>

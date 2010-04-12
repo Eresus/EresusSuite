@@ -2,16 +2,16 @@
 /**
  * E-Forms
  *
- * Eresus 2
+ * Eresus 2.12
  *
  * Расширенные HTML-формы
  *
- * @version 1.00b
+ * @version 1.00
  *
- * @copyright   2008, Eresus Group, http://eresus.ru/
- * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
- * @maintainer  Mikhail Krasilnikov <mk@procreat.ru>
- * @author      Mikhail Krasilnikov <mk@procreat.ru>
+ * @copyright 2008, Eresus Group, http://eresus.ru/
+ * @copyright 2010, ООО "Два слона", http://dvaslona.ru/
+ * @license http://www.gnu.org/licenses/gpl.txt  GPL License 3
+ * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -28,50 +28,81 @@
  * Вы должны были получить копию Стандартной Общественной Лицензии
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
+ *
+ * @package E-Forms
+ *
+ * $Id: eforms.php 264 2010-03-02 11:02:02Z mk $
  */
 
 
-class EForms extends Plugin {
-	var $version = '1.00b';
-	var $kernel = '2.10';
-	var $title = 'E-Forms';
-	var $description = 'Расширенные HTML-формы';
-	var $type = 'client,admin';
+/**
+ * Класс плагина
+ *
+ * @package E-Forms
+ */
+class EForms extends Plugin
+{
+	/**
+	 * Версия плагина
+	 * @var string
+	 */
+	public $version = '1.00b';
+
+	/**
+	 * Требуемая версия ядра
+	 * @var string
+	 */
+	public $kernel = '2.12b';
+
+	/**
+	 * Название плагина
+	 * @var string
+	 */
+	public $title = 'E-Forms';
+
+	/**
+	 * Описание плагина
+	 * @var string
+	 */
+	public $description = 'Расширенные HTML-формы';
+
+	/**
+	 * Тип плагина
+	 * @var string
+	 */
+	public $type = 'client,admin';
 
 	/**
 	 * Список доступных форм
 	 *
 	 * @var array
-	 *
-	 * @access private
 	 */
-	var $forms = null;
+	private $forms = null;
+
 	/**
 	 * Экземпляр объекта Templates
 	 *
 	 * @var object Templates
-	 *
-	 * @access private
 	 */
-	var $templates = null;
-
+	private $templates = null;
 
 	/**
 	 * Констурктор
 	 *
 	 * @return EForms
 	 */
-	function EForms()
+	public function __construct()
 	{
-		parent::Plugin();
+		parent::__construct();
 		$this->listenEvents('clientOnContentRender', 'clientOnPageRender');
 	}
 	//-----------------------------------------------------------------------------
+
 	/**
 	 * Действия при установке плагина
 	 *
 	 */
-	function install()
+	public function install()
 	{
 		global $Eresus;
 
@@ -85,12 +116,13 @@ class EForms extends Plugin {
 
 	}
 	//-----------------------------------------------------------------------------
+
 	/**
 	 * Получить объект Templates
 	 *
 	 * @return object Templates
 	 */
-	function getTemplates()
+	public function getTemplates()
 	{
 		if (is_null($this->templates)) {
 			useLib('templates');
@@ -100,12 +132,13 @@ class EForms extends Plugin {
 		return $this->templates;
 	}
 	//-----------------------------------------------------------------------------
+
 	/**
 	 * Получить список доступных форм
 	 *
 	 * @return array
 	 */
-	function getForms()
+	public function getForms()
 	{
 		if (is_null($this->forms)) {
 			$templates = $this->getTemplates();
@@ -115,13 +148,14 @@ class EForms extends Plugin {
 		return $this->forms;
 	}
 	//-----------------------------------------------------------------------------
+
 	/**
 	 * Получить код формы
 	 *
 	 * @param string $name
 	 * @return string
 	 */
-	function getFormCode($name)
+	public function getFormCode($name)
 	{
 
 		$templates = $this->getTemplates();
@@ -130,26 +164,27 @@ class EForms extends Plugin {
 		return $form;
 	}
 	//-----------------------------------------------------------------------------
+
 	/**
 	 * Подстановка форм на страницу
 	 *
 	 * @param string $text
 	 * @return string
 	 */
-	function clientOnPageRender($text)
+	public function clientOnPageRender($text)
 	{
-
 		$text = preg_replace_callback('/\$\('.$this->name.':(.*)\)/Usi', array($this, 'buildForm'), $text);
 		return $text;
 	}
 	//-----------------------------------------------------------------------------
+
 	/**
 	 * HTML-код формы
 	 *
 	 * @param array $macros
 	 * @return string
 	 */
-	function buildForm($macros)
+	public function buildForm($macros)
 	{
 		$result = $macros[0];
 
@@ -160,11 +195,12 @@ class EForms extends Plugin {
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
+
 	/**
 	 * Обработка отправленных форм
 	 *
 	 */
-	function clientOnContentRender($content)
+	public function clientOnContentRender($content)
 	{
 		global $Eresus, $page;
 
@@ -182,30 +218,37 @@ class EForms extends Plugin {
 /**
  * Форма
  *
+ * @package E-Forms
  */
-class EForm {
+class EForm
+{
+
 	/**
 	 * E-Forms namespace
 	 */
 	const NS = 'http://procreat.ru/eresus2/ext/eforms';
+
 	/**
 	 * Owner plugin
 	 *
-	 * @var TPlugin
+	 * @var Plugin
 	 */
 	protected $owner;
+
 	/**
 	 * Form name
 	 *
 	 * @var string
 	 */
 	protected $name;
+
 	/**
 	 * Raw form code
 	 *
 	 * @var string
 	 */
 	protected $code;
+
 	/**
 	 * XML representation
 	 *
@@ -214,11 +257,12 @@ class EForm {
 	protected $xml;
 
 	/**
-	 * URI for redirect
+	 * URL for redirect
 	 *
 	 * @var mixed
 	 */
 	protected $redirect = false;
+
 	/**
 	 * Contents of 'html' actions
 	 *
@@ -232,7 +276,7 @@ class EForm {
 	 * @param TPlugin $owner  Plugin
 	 * @param string  $name   Form name
 	 */
-	function __construct($owner, $name)
+	public function __construct($owner, $name)
 	{
 		global $Eresus;
 
@@ -255,6 +299,7 @@ class EForm {
 		}
 	}
 	//-----------------------------------------------------------------------------
+
 	/**
 	 * Set form's action attribute
 	 *
@@ -267,6 +312,7 @@ class EForm {
 		$form->setAttribute('action', $Eresus->request['path']);
 	}
 	//-----------------------------------------------------------------------------
+
 	/**
 	 * Adds hidden inputs to form
 	 *
@@ -291,6 +337,7 @@ class EForm {
 		$form->appendChild($div);
 	}
 	//-----------------------------------------------------------------------------
+
 	/**
 	 * Return TRUE if form loaded and it is valid
 	 *
@@ -301,6 +348,7 @@ class EForm {
 		return is_object($this->xml);
 	}
 	//-----------------------------------------------------------------------------
+
 	/**
 	 * Get HTML form markup
 	 *
@@ -351,6 +399,7 @@ class EForm {
 		return $html;
 	}
 	//-----------------------------------------------------------------------------
+
 	/**
 	 * Get element's 'label' attribute
 	 *
@@ -364,6 +413,7 @@ class EForm {
 		return $label;
 	}
 	//-----------------------------------------------------------------------------
+
 	/**
 	 * Return posted form data
 	 *
@@ -410,6 +460,7 @@ class EForm {
 		return $data;
 	}
 	//-----------------------------------------------------------------------------
+
 	/**
 	 * Process form actions
 	 *
@@ -428,11 +479,14 @@ class EForm {
 			}
 		}
 
-		if ($this->redirect) goto($this->redirect);
-		if ($this->html) return $this->html;
-		goto($Eresus->request['referer']);
+		if ($this->redirect)
+			HTTP::redirect($this->redirect);
+		if ($this->html)
+			return $this->html;
+		HTTP::redirect($Eresus->request['referer']);
 	}
 	//-----------------------------------------------------------------------------
+
 	/**
 	 * Process action directive
 	 *
@@ -445,6 +499,7 @@ class EForm {
 		if (method_exists($this, $methodName)) $this->$methodName($action);
 	}
 	//-----------------------------------------------------------------------------
+
 	/**
 	 * Process 'mailto' action
 	 *
@@ -454,6 +509,7 @@ class EForm {
 	{
 		$to = $action->getAttribute('to');
 		$subj = $action->getAttribute('subj');
+		if ($subj) $subj = iconv('utf-8', CHARSET, $subj);
 		#$from = $action->getAttribute('from');
 		$data = $this->getFormData();
 
@@ -469,6 +525,7 @@ class EForm {
 		sendMail($to, $subj, $text);
 	}
 	//-----------------------------------------------------------------------------
+
 	/**
 	 * Process 'redirect' action
 	 *
@@ -485,6 +542,7 @@ class EForm {
 
 	}
 	//-----------------------------------------------------------------------------
+
 	/**
 	 * Process 'html' action
 	 *

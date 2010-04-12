@@ -6,12 +6,12 @@
  *
  * Создание собственных текстовых переменных
  *
- * @version 1.06
+ * @version 1.07
  *
- * @copyright   2007-2008, Eresus Group, http://eresus.ru/
- * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
- * @maintainer  Mikhail Krasilnikov <mk@procreat.ru>
- * @author      Mikhail Krasilnikov <mk@procreat.ru>
+ * @copyright 2007, Eresus Group, http://eresus.ru/
+ * @copyright 2010, ООО "Два слона", http://dvaslona.ru/
+ * @license http://www.gnu.org/licenses/gpl.txt  GPL License 3
+ * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -29,13 +29,32 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
+ * @package Vars
+ *
+ * $Id: vars.php 301 2010-04-05 07:14:49Z mk $
  */
 
-class TVars extends TListContentPlugin {
+/**
+ * Класс плагина
+ * @package Vars
+ */
+class TVars extends TListContentPlugin
+{
+	/**
+	 * Имя плагина
+	 * @var string
+	 */
 	var $name = 'vars';
+
+	/**
+	 * Требуемая версия ядра
+	 * @var string
+	 */
+	public $kernel = '2.12';
+
 	var $title = 'Vars';
 	var $type = 'client,admin';
-	var $version = '1.06';
+	var $version = '1.07';
 	var $description = 'Создание собственных текстовых переменных';
 	var $settings = array(
 			);
@@ -65,23 +84,27 @@ class TVars extends TListContentPlugin {
 			PRIMARY KEY  (`name`)
 		) TYPE=MyISAM;",
 	);
- /**
-	* Конструктор
-	*
-	* @return TVars
-	*/
-	function TVars()
+
+	/**
+	 * Конструктор
+	 *
+	 * @return TVars
+	 */
+	function __construct()
 	{
 		global $Eresus;
 
-		parent::TListContentPlugin();
+		parent::__construct();
 		$Eresus->plugins->events['clientOnPageRender'][] = $this->name;
 		$Eresus->plugins->events['adminOnMenuRender'][] = $this->name;
 	}
 	//-----------------------------------------------------------------------------
- /**
-	* Добавление
-	*/
+
+	/**
+	 * Добавление
+	 *
+	 * @return void
+	 */
 	function insert()
 	{
 		global $Eresus;
@@ -92,12 +115,15 @@ class TVars extends TListContentPlugin {
 			'value' => arg('value', 'dbsafe'),
 		);
 		$Eresus->db->insert($this->table['name'], $item);
-		goto(arg('submitURL'));
+		HTTP::redirect(arg('submitURL'));
 	}
 	//-----------------------------------------------------------------------------
- /**
-	* Изменение
-	*/
+
+	/**
+	 * Изменение
+	 *
+	 * @return void
+	 */
 	function update()
 	{
 		global $Eresus;
@@ -108,14 +134,15 @@ class TVars extends TListContentPlugin {
 		$item['value'] = arg('value', 'dbsafe');
 
 		$Eresus->db->updateItem($this->table['name'], $item, "`name`='".arg('update', 'word')."'");
-		goto(arg('submitURL'));
+		HTTP::redirect(arg('submitURL'));
 	}
 	//-----------------------------------------------------------------------------
- /**
-	* Диплог добавления
-	*
-	* @return string
-	*/
+
+	/**
+	 * Диплог добавления
+	 *
+	 * @return string
+	 */
 	function adminAddItem()
 	{
 		global $page;
@@ -126,8 +153,11 @@ class TVars extends TListContentPlugin {
 			'width'=>'500px',
 			'fields' => array (
 				array ('type' => 'hidden', 'name' => 'action', 'value' => 'insert'),
-				array ('type' => 'edit', 'name' => 'name', 'label' => 'Имя $(', 'width' => '200px', 'maxlength' => '31', 'comment' => ')', 'pattern' => '/.+/', 'errormsg' => 'Не указано имя переменной'),
-				array ('type' => 'edit', 'name' => 'caption', 'label' => 'Описание', 'width' => '100%', 'maxlength' => '63', 'pattern' => '/.+/', 'errormsg' => 'Не указано название переменной'),
+				array ('type' => 'edit', 'name' => 'name', 'label' => 'Имя $(', 'width' => '200px',
+					'maxlength' => '31', 'comment' => ')', 'pattern' => '/.+/',
+					'errormsg' => 'Не указано имя переменной'),
+				array ('type' => 'edit', 'name' => 'caption', 'label' => 'Описание', 'width' => '100%',
+					'maxlength' => '63', 'pattern' => '/.+/', 'errormsg' => 'Не указано название переменной'),
 				array ('type' => 'memo', 'name' => 'value', 'label' => 'Значение', 'height' => '10'),
 			),
 			'buttons' => array('ok', 'cancel'),
@@ -137,11 +167,12 @@ class TVars extends TListContentPlugin {
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
- /**
-	* Диалог изменения
-	*
-	* @return string
-	*/
+
+	/**
+	 * Диалог изменения
+	 *
+	 * @return string
+	 */
 	function adminEditItem()
 	{
 		global $Eresus, $page;
@@ -153,8 +184,11 @@ class TVars extends TListContentPlugin {
 			'width' => '500px',
 			'fields' => array (
 				array ('type' => 'hidden', 'name' => 'update', 'value' => $item['name']),
-				array ('type' => 'edit', 'name' => 'name', 'label' => 'Имя $(', 'width' => '200px', 'maxlength' => '31', 'comment' => ')', 'pattern' => '/.+/', 'errormsg' => 'Не указано имя переменной'),
-				array ('type' => 'edit', 'name' => 'caption', 'label' => 'Описание', 'width' => '100%', 'maxlength' => '63', 'pattern' => '/.+/', 'errormsg' => 'Не указано название переменной'),
+				array ('type' => 'edit', 'name' => 'name', 'label' => 'Имя $(', 'width' => '200px',
+					'maxlength' => '31', 'comment' => ')', 'pattern' => '/.+/',
+					'errormsg' => 'Не указано имя переменной'),
+				array ('type' => 'edit', 'name' => 'caption', 'label' => 'Описание', 'width' => '100%',
+					'maxlength' => '63', 'pattern' => '/.+/', 'errormsg' => 'Не указано название переменной'),
 				array ('type' => 'memo', 'name' => 'value', 'label' => 'Значение', 'height' => '10'),
 			),
 			'buttons' => array('ok', 'apply', 'cancel'),
@@ -163,11 +197,21 @@ class TVars extends TListContentPlugin {
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
+
+	/**
+	 *
+	 * @return void
+	 */
 	function adminRender()
 	{
 		return $this->adminRenderContent();
 	}
 	//-----------------------------------------------------------------------------
+
+	/**
+	 *
+	 * @return string
+	 */
 	function clientOnPageRender($text)
 	{
 		global $Eresus;
@@ -179,11 +223,16 @@ class TVars extends TListContentPlugin {
 		return $text;
 	}
 	//-----------------------------------------------------------------------------
+
+	/**
+	 * @return void
+	 */
 	function adminOnMenuRender()
 	{
 		global $page;
 
-		$page->addMenuItem('Расширения', array ("access"  => EDITOR, "link"  => $this->name, "caption"  => 'Переменные', "hint"  => "Управление текстовыми переменными"));
+		$page->addMenuItem('Расширения', array ("access"  => EDITOR, "link"  => $this->name,
+			"caption"  => 'Переменные', "hint"  => "Управление текстовыми переменными"));
 	}
 	//-----------------------------------------------------------------------------
 }
