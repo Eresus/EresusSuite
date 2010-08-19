@@ -2,18 +2,16 @@
 /**
  * Call
  *
- * Eresus 2
- *
  * Вызов других плагинов посредством макросов.
  *
  * $(call:плагин::метод{аргументы})
  *
- * @version 2.00
+ * @version 2.01
  *
- * @copyright   2007-2008, Eresus Group, http://eresus.ru/
- * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
- * @maintainer  Mikhail Krasilnikov <mk@procreat.ru>
- * @author      Mikhail Krasilnikov <mk@procreat.ru>
+ * @copyright 2007, Eresus Group, http://eresus.ru/
+ * @copyright 2009, ООО "Два слона", http://dvaslona.ru/
+ * @license http://www.gnu.org/licenses/gpl.txt  GPL License 3
+ * @author Mikhail Krasilnikov <mk@procreat.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -31,32 +29,71 @@
  * GNU с этой программой. Если Вы ее не получили, смотрите документ на
  * <http://www.gnu.org/licenses/>
  *
+ * @package Call
+ *
+ * $Id$
  */
 
-class Call extends Plugin {
-	var $version = '2.00';
-	var $kernel = '2.10b3';
-	var $title = 'Call';
-	var $description = 'Вызов плагинов из шаблонов';
-	var $type = 'client';
+/**
+ * Основной класс плагина
+ *
+ * @package Call
+ */
+class Call extends Plugin
+{
+	/**
+	 * Версия плагина
+	 *
+	 * @var string
+	 */
+	public $version = '2.01';
+
+	/**
+	 * Минимально необходимая версия ядра
+	 *
+	 * @var string
+	 */
+	public $kernel = '2.10b3';
+
+	/**
+	 * Название
+	 *
+	 * @var string
+	 */
+	public $title = 'Call';
+
+	/**
+	 * Описание
+	 *
+	 * @var string
+	 */
+	public $description = 'Вызов плагинов из шаблонов';
+
+	/**
+	 * Тип
+	 *
+	 * @var string
+	 */
+	public $type = 'client';
 
  /**
 	* Конструктор
 	*
 	* @return Call
 	*/
-	function Call()
+	public function __construct()
 	{
-		parent::Plugin();
+		parent::__construct();
 		$this->listenEvents('clientOnPageRender');
 	}
 	//-----------------------------------------------------------------------------
- /**
-	* Обработчик события clientOnPageRender
-	*
-	* @param string $text
-	* @return string
-	*/
+
+  /**
+   * Обработчик события clientOnPageRender
+	 *
+	 * @param string $text
+	 * @return string
+	 */
 	function clientOnPageRender($text)
 	{
 		global $Eresus;
@@ -88,4 +125,3 @@ class Call extends Plugin {
 	}
 	//-----------------------------------------------------------------------------
 }
-?>

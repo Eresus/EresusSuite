@@ -2,11 +2,9 @@
 /**
  * Vars
  *
- * Eresus 2
- *
  * Создание собственных текстовых переменных
  *
- * @version 1.07
+ * @version 2.00
  *
  * @copyright 2007, Eresus Group, http://eresus.ru/
  * @copyright 2010, ООО "Два слона", http://dvaslona.ru/
@@ -31,21 +29,15 @@
  *
  * @package Vars
  *
- * $Id: vars.php 301 2010-04-05 07:14:49Z mk $
+ * $Id$
  */
 
 /**
  * Класс плагина
  * @package Vars
  */
-class TVars extends TListContentPlugin
+class Vars extends Plugin
 {
-	/**
-	 * Имя плагина
-	 * @var string
-	 */
-	var $name = 'vars';
-
 	/**
 	 * Требуемая версия ядра
 	 * @var string
@@ -54,7 +46,7 @@ class TVars extends TListContentPlugin
 
 	var $title = 'Vars';
 	var $type = 'client,admin';
-	var $version = '1.07';
+	var $version = '2.00';
 	var $description = 'Создание собственных текстовых переменных';
 	var $settings = array(
 			);
@@ -92,11 +84,8 @@ class TVars extends TListContentPlugin
 	 */
 	function __construct()
 	{
-		global $Eresus;
-
 		parent::__construct();
-		$Eresus->plugins->events['clientOnPageRender'][] = $this->name;
-		$Eresus->plugins->events['adminOnMenuRender'][] = $this->name;
+		$this->listenEvents('clientOnPageRender', 'adminOnMenuRender');
 	}
 	//-----------------------------------------------------------------------------
 
@@ -235,5 +224,66 @@ class TVars extends TListContentPlugin
 			"caption"  => 'Переменные', "hint"  => "Управление текстовыми переменными"));
 	}
 	//-----------------------------------------------------------------------------
+
+	function install()
+	{
+		$this->createTable($this->table);
+		parent::install();
+	}
+
+	function createTable($table)
+	{
+		global $Eresus;
+
+		$Eresus->db->query('CREATE TABLE IF NOT EXISTS `'.$Eresus->db->prefix.$table['name'].'`'.$table['sql']);
+	}
+
+	function adminRenderContent()
+	{
+	global $Eresus, $page;
+
+		$result = '';
+		if (!is_null(arg('id'))) {
+			$item = $Eresus->db->selectItem($this->table['name'], "`".$this->table['key']."` = '".arg('id', 'dbsafe')."'");
+			$page->title .= empty($item['caption'])?'':' - '.$item['caption'];
+		}
+		switch (true) {
+			case !is_null(arg('update')) && isset($this->table['controls']['edit']):
+				if (method_exists($this, 'update')) $result = $this->update(); else ErrorMessage(sprintf(errMethodNotFound, 'update', get_class($this)));
+			break;
+			case !is_null(arg('toggle')) && isset($this->table['controls']['toggle']):
+				if (method_exists($this, 'toggle')) $result = $this->toggle(arg('toggle', 'dbsafe')); else ErrorMessage(sprintf(errMethodNotFound, 'toggle', get_class($this)));
+			break;
+			case !is_null(arg('delete')) && isset($this->table['controls']['delete']):
+				if (method_exists($this, 'delete')) $result = $this->delete(arg('delete', 'dbsafe')); else ErrorMessage(sprintf(errMethodNotFound, 'delete', get_class($this)));
+			break;
+			case !is_null(arg('up')) && isset($this->table['controls']['position']):
+				if (method_exists($this, 'up')) $result = $this->table['sortDesc']?$this->down(arg('up', 'dbsafe')):$this->up(arg('up', 'dbsafe')); else ErrorMessage(sprintf(errMethodNotFound, 'up', get_class($this)));
+			break;
+			case !is_null(arg('down')) && isset($this->table['controls']['position']):
+				if (method_exists($this, 'down')) $result = $this->table['sortDesc']?$this->up(arg('down', 'dbsafe')):$this->down(arg('down', 'dbsafe')); else ErrorMessage(sprintf(errMethodNotFound, 'down', get_class($this)));
+			break;
+			case !is_null(arg('id')) && isset($this->table['controls']['edit']):
+				if (method_exists($this, 'adminEditItem')) $result = $this->adminEditItem(); else ErrorMessage(sprintf(errMethodNotFound, 'adminEditItem', get_class($this)));
+			break;
+			case !is_null(arg('action')):
+				switch (arg('action')) {
+					case 'create': if (isset($this->table['controls']['edit']))
+						if (method_exists($this, 'adminAddItem')) $result = $this->adminAddItem();
+						else ErrorMessage(sprintf(errMethodNotFound, 'adminAddItem', get_class($this)));
+					break;
+					case 'insert':
+						if (method_exists($this, 'insert')) $result = $this->insert();
+						else ErrorMessage(sprintf(errMethodNotFound, 'insert', get_class($this)));
+					break;
+				}
+			break;
+			default:
+				if (!is_null(arg('section'))) $this->table['condition'] = "`section`='".arg('section', 'int')."'";
+				$result = $page->renderTable($this->table);
+		}
+		return $result;
+	}
+
 }
 
