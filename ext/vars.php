@@ -4,7 +4,7 @@
  *
  * Ñîçäàíèå ñîáñòâåííûõ òåêñòîâûõ ïåğåìåííûõ
  *
- * @version 2.00
+ * @version 2.01
  *
  * @copyright 2007, Eresus Group, http://eresus.ru/
  * @copyright 2010, ÎÎÎ "Äâà ñëîíà", http://dvaslona.ru/
@@ -29,7 +29,7 @@
  *
  * @package Vars
  *
- * $Id$
+ * $Id: vars.php 552 2010-09-22 12:34:24Z mk $
  */
 
 /**
@@ -42,11 +42,11 @@ class Vars extends Plugin
 	 * Òğåáóåìàÿ âåğñèÿ ÿäğà
 	 * @var string
 	 */
-	public $kernel = '2.12';
+	public $kernel = '2.14';
 
 	var $title = 'Vars';
 	var $type = 'client,admin';
-	var $version = '2.00';
+	var $version = '2.01';
 	var $description = 'Ñîçäàíèå ñîáñòâåííûõ òåêñòîâûõ ïåğåìåííûõ';
 	var $settings = array(
 			);
@@ -66,15 +66,9 @@ class Vars extends Plugin
 		'tabs' => array(
 			'width'=>'180px',
 			'items'=>array(
-			 array('caption'=>strAdd, 'name'=>'action', 'value'=>'create')
+				array('caption'=>strAdd, 'name'=>'action', 'value'=>'create')
 			),
-		),
-		'sql' => "(
-			`name` varchar(31) NOT NULL,
-			`caption` varchar(63) NOT NULL,
-			`value` text NOT NULL,
-			PRIMARY KEY  (`name`)
-		) TYPE=MyISAM;",
+		)
 	);
 
 	/**
@@ -94,16 +88,26 @@ class Vars extends Plugin
 	 *
 	 * @return void
 	 */
-	function insert()
+	private function insert()
 	{
-		global $Eresus;
-
 		$item = array(
 			'name' => arg('name', 'word'),
 			'caption' => arg('caption', 'dbsafe'),
 			'value' => arg('value', 'dbsafe'),
 		);
-		$Eresus->db->insert($this->table['name'], $item);
+
+		$tmp = $this->dbItem('', $item['name'], 'name');
+		if (!$tmp)
+		{
+			$this->dbInsert('', $item, 'name');
+		}
+		else
+		{
+			ErrorMessage('Ïåğåìåííàÿ ñ èìåíåì "' . $item['name'] .
+				'" óæå ñóùåñòâóåò. Âûáåğèòå äğóãîå èìÿ.');
+			HTTP::goback();
+		}
+
 		HTTP::redirect(arg('submitURL'));
 	}
 	//-----------------------------------------------------------------------------
@@ -113,17 +117,44 @@ class Vars extends Plugin
 	 *
 	 * @return void
 	 */
-	function update()
+	private function update()
 	{
-		global $Eresus;
+		$oldName = arg('update', 'word');
+		$item = $this->dbItem('', $oldName, 'name');
 
-		$item = $Eresus->db->selectItem($this->table['name'], "`name`='".arg('update', 'word')."'");
 		$item['name'] = arg('name', 'word');
 		$item['caption'] = arg('caption', 'dbsafe');
 		$item['value'] = arg('value', 'dbsafe');
+		if ($item['name'] != $oldName)
+		{
+			$tmp = $this->dbItem('', $item['name'], 'name');
+			if ($tmp)
+			{
+				ErrorMessage('Ïåğåìåííàÿ ñ èìåíåì "' . $item['name'] .
+					'" óæå ñóùåñòâóåò. Âûáåğèòå äğóãîå èìÿ.');
+				HTTP::redirect(arg('submitURL'));
+			}
+		}
 
-		$Eresus->db->updateItem($this->table['name'], $item, "`name`='".arg('update', 'word')."'");
-		HTTP::redirect(arg('submitURL'));
+		$q = DB::getHandler()->createUpdateQuery();
+		$q->update($this->__table(''))
+			->where($q->expr->eq('name', $q->bindValue($oldName, null, PDO::PARAM_STR)));
+
+		foreach ($item as $key => $value)
+		{
+			$q->set($key, $q->bindValue($value));
+		}
+
+		DB::execute($q);
+
+		$url = arg('submitURL');
+
+		if ($item['name'] != $oldName)
+		{
+			$url = str_replace('id=' . $oldName, 'id=' . $item['name'], $url);
+		}
+
+		HTTP::redirect($url);
 	}
 	//-----------------------------------------------------------------------------
 
@@ -132,7 +163,7 @@ class Vars extends Plugin
 	 *
 	 * @return string
 	 */
-	function adminAddItem()
+	private function adminAddItem()
 	{
 		global $page;
 
@@ -162,7 +193,7 @@ class Vars extends Plugin
 	 *
 	 * @return string
 	 */
-	function adminEditItem()
+	private function adminEditItem()
 	{
 		global $Eresus, $page;
 
@@ -188,12 +219,42 @@ class Vars extends Plugin
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Âîçâğàùàåò ğàçìåòêó èíòåğôåéñà
 	 *
-	 * @return void
+	 * @return string  HTML
 	 */
 	function adminRender()
 	{
-		return $this->adminRenderContent();
+		global $page;
+
+		$result = '';
+
+		switch (true)
+		{
+			case !is_null(arg('update')):
+				$this->update();
+			break;
+			case !is_null(arg('delete')):
+				$this->delete(arg('delete', 'dbsafe'));
+			break;
+			case !is_null(arg('id')):
+				$result = $this->adminEditItem();
+			break;
+			case !is_null(arg('action')):
+				switch (arg('action'))
+				{
+					case 'create':
+						$result = $this->adminAddItem();
+					break;
+					case 'insert':
+						$this->insert();
+					break;
+				}
+			break;
+			default:
+				$result = $page->renderTable($this->table);
+		}
+		return $result;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -206,8 +267,12 @@ class Vars extends Plugin
 		global $Eresus;
 
 		$items = $Eresus->db->select($this->table['name']);
-		if (count($items)) foreach ($items as $item) {
-			$text= str_replace('$('.$item['name'].')', $item['value'], $text);
+		if (count($items))
+		{
+			foreach ($items as $item)
+			{
+				$text= str_replace('$('.$item['name'].')', $item['value'], $text);
+			}
 		}
 		return $text;
 	}
@@ -225,65 +290,46 @@ class Vars extends Plugin
 	}
 	//-----------------------------------------------------------------------------
 
-	function install()
+	/**
+	 * (non-PHPdoc)
+	 * @see main/core/Plugin::install()
+	 */
+	public function install()
 	{
-		$this->createTable($this->table);
 		parent::install();
-	}
 
-	function createTable($table)
+		$sql = "
+			`name` varchar(31) NOT NULL,
+			`caption` varchar(63) NOT NULL,
+			`value` text NOT NULL,
+			PRIMARY KEY  (`name`)
+		";
+
+		$this->dbCreateTable($sql, '');
+
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Óäàëÿåò ïåğåìåííóş
+	 *
+	 * @param string $name  Èìÿ ïåğåìåííîé
+	 */
+	private function delete($name)
 	{
-		global $Eresus;
+		global $page;
 
-		$Eresus->db->query('CREATE TABLE IF NOT EXISTS `'.$Eresus->db->prefix.$table['name'].'`'.$table['sql']);
-	}
-
-	function adminRenderContent()
-	{
-	global $Eresus, $page;
-
-		$result = '';
-		if (!is_null(arg('id'))) {
-			$item = $Eresus->db->selectItem($this->table['name'], "`".$this->table['key']."` = '".arg('id', 'dbsafe')."'");
-			$page->title .= empty($item['caption'])?'':' - '.$item['caption'];
+		$item = $this->dbItem('', $name, 'name');
+		if ($item)
+		{
+			$this->dbDelete('', $name, 'name');
 		}
-		switch (true) {
-			case !is_null(arg('update')) && isset($this->table['controls']['edit']):
-				if (method_exists($this, 'update')) $result = $this->update(); else ErrorMessage(sprintf(errMethodNotFound, 'update', get_class($this)));
-			break;
-			case !is_null(arg('toggle')) && isset($this->table['controls']['toggle']):
-				if (method_exists($this, 'toggle')) $result = $this->toggle(arg('toggle', 'dbsafe')); else ErrorMessage(sprintf(errMethodNotFound, 'toggle', get_class($this)));
-			break;
-			case !is_null(arg('delete')) && isset($this->table['controls']['delete']):
-				if (method_exists($this, 'delete')) $result = $this->delete(arg('delete', 'dbsafe')); else ErrorMessage(sprintf(errMethodNotFound, 'delete', get_class($this)));
-			break;
-			case !is_null(arg('up')) && isset($this->table['controls']['position']):
-				if (method_exists($this, 'up')) $result = $this->table['sortDesc']?$this->down(arg('up', 'dbsafe')):$this->up(arg('up', 'dbsafe')); else ErrorMessage(sprintf(errMethodNotFound, 'up', get_class($this)));
-			break;
-			case !is_null(arg('down')) && isset($this->table['controls']['position']):
-				if (method_exists($this, 'down')) $result = $this->table['sortDesc']?$this->up(arg('down', 'dbsafe')):$this->down(arg('down', 'dbsafe')); else ErrorMessage(sprintf(errMethodNotFound, 'down', get_class($this)));
-			break;
-			case !is_null(arg('id')) && isset($this->table['controls']['edit']):
-				if (method_exists($this, 'adminEditItem')) $result = $this->adminEditItem(); else ErrorMessage(sprintf(errMethodNotFound, 'adminEditItem', get_class($this)));
-			break;
-			case !is_null(arg('action')):
-				switch (arg('action')) {
-					case 'create': if (isset($this->table['controls']['edit']))
-						if (method_exists($this, 'adminAddItem')) $result = $this->adminAddItem();
-						else ErrorMessage(sprintf(errMethodNotFound, 'adminAddItem', get_class($this)));
-					break;
-					case 'insert':
-						if (method_exists($this, 'insert')) $result = $this->insert();
-						else ErrorMessage(sprintf(errMethodNotFound, 'insert', get_class($this)));
-					break;
-				}
-			break;
-			default:
-				if (!is_null(arg('section'))) $this->table['condition'] = "`section`='".arg('section', 'int')."'";
-				$result = $page->renderTable($this->table);
+		else
+		{
+			ErrorMessage('Ïåğåìåííîé ñ èìåíåì "' . $name . '" íå íàéäåíî.');
 		}
-		return $result;
+		HTTP::redirect(str_replace('&amp;', '&', $page->url()));
 	}
-
+	//-----------------------------------------------------------------------------
 }
 
