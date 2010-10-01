@@ -1,0 +1,43 @@
+{if count($items) > 0}
+<div class="legacy-tabs ui-helper-clearfix">
+	<a href="admin.php?mod=content&amp;section={$sectionId}{if arg('pg')}&amp;pg={arg('pg')}{/if}&amp;action=create">Добавить изображение</a>
+</div>
+
+{$pager}
+<div class="gallery-image-list">
+{foreach $items group}
+<div class="group">
+	<div class="gallery-group-title">{$group->title}</div>
+	{foreach $group->images image}
+	{include "image-list-item.html"}
+	{/foreach}
+</div>
+{/foreach}
+</div>
+{$pager}
+
+{if $orphans}
+<div class="errorBox">
+	<div class="errorBoxCap">Внимание!</div>
+	<div class="content">
+		<p>У вас есть изображения, не вошедшие ни в одну группу! Эти изображения недоступны посетителям.
+		Нажмите на название изображения ниже для выбора группы.</p>
+		<p>
+		&raquo;
+		{foreach $orphans image, implode=", "}<a href="admin.php?mod=content&section={$image->section}&id={$image->id}">{if $image->title}{$image->title}{else}#{$image->id}{/if}</a>{/foreach}
+		</p>
+	</div>
+</div>
+{/if}
+
+{else}
+<div class="infoBox">
+	<div class="infoBoxCap">Внимание!</div>
+	<div class="content">
+		<p>В <a href="admin.php?mod=plgmgr&id={$this->name}">настройках модуля</a> включена опция
+		"Использовать группы".</p>
+		<p>Для работы с изображениями вам необходимо добавить хотя бы одну группу.
+		Воспользуйтесь кнопкой "Группы", расположенной выше.</p>
+	</div>
+</div>
+{/if}

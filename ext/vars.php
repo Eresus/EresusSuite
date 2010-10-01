@@ -2,11 +2,9 @@
 /**
  * Vars
  *
- * Eresus 2
- *
  * Ñîçäàíèå ñîáñòâåííûõ òåêñòîâûõ ïåğåìåííûõ
  *
- * @version 1.07
+ * @version 2.01
  *
  * @copyright 2007, Eresus Group, http://eresus.ru/
  * @copyright 2010, ÎÎÎ "Äâà ñëîíà", http://dvaslona.ru/
@@ -31,30 +29,24 @@
  *
  * @package Vars
  *
- * $Id: vars.php 301 2010-04-05 07:14:49Z mk $
+ * $Id: vars.php 552 2010-09-22 12:34:24Z mk $
  */
 
 /**
  * Êëàññ ïëàãèíà
  * @package Vars
  */
-class TVars extends TListContentPlugin
+class Vars extends Plugin
 {
-	/**
-	 * Èìÿ ïëàãèíà
-	 * @var string
-	 */
-	var $name = 'vars';
-
 	/**
 	 * Òğåáóåìàÿ âåğñèÿ ÿäğà
 	 * @var string
 	 */
-	public $kernel = '2.12';
+	public $kernel = '2.14';
 
 	var $title = 'Vars';
 	var $type = 'client,admin';
-	var $version = '1.07';
+	var $version = '2.01';
 	var $description = 'Ñîçäàíèå ñîáñòâåííûõ òåêñòîâûõ ïåğåìåííûõ';
 	var $settings = array(
 			);
@@ -74,15 +66,9 @@ class TVars extends TListContentPlugin
 		'tabs' => array(
 			'width'=>'180px',
 			'items'=>array(
-			 array('caption'=>strAdd, 'name'=>'action', 'value'=>'create')
+				array('caption'=>strAdd, 'name'=>'action', 'value'=>'create')
 			),
-		),
-		'sql' => "(
-			`name` varchar(31) NOT NULL,
-			`caption` varchar(63) NOT NULL,
-			`value` text NOT NULL,
-			PRIMARY KEY  (`name`)
-		) TYPE=MyISAM;",
+		)
 	);
 
 	/**
@@ -92,11 +78,8 @@ class TVars extends TListContentPlugin
 	 */
 	function __construct()
 	{
-		global $Eresus;
-
 		parent::__construct();
-		$Eresus->plugins->events['clientOnPageRender'][] = $this->name;
-		$Eresus->plugins->events['adminOnMenuRender'][] = $this->name;
+		$this->listenEvents('clientOnPageRender', 'adminOnMenuRender');
 	}
 	//-----------------------------------------------------------------------------
 
@@ -105,16 +88,26 @@ class TVars extends TListContentPlugin
 	 *
 	 * @return void
 	 */
-	function insert()
+	private function insert()
 	{
-		global $Eresus;
-
 		$item = array(
 			'name' => arg('name', 'word'),
 			'caption' => arg('caption', 'dbsafe'),
 			'value' => arg('value', 'dbsafe'),
 		);
-		$Eresus->db->insert($this->table['name'], $item);
+
+		$tmp = $this->dbItem('', $item['name'], 'name');
+		if (!$tmp)
+		{
+			$this->dbInsert('', $item, 'name');
+		}
+		else
+		{
+			ErrorMessage('Ïåğåìåííàÿ ñ èìåíåì "' . $item['name'] .
+				'" óæå ñóùåñòâóåò. Âûáåğèòå äğóãîå èìÿ.');
+			HTTP::goback();
+		}
+
 		HTTP::redirect(arg('submitURL'));
 	}
 	//-----------------------------------------------------------------------------
@@ -124,17 +117,44 @@ class TVars extends TListContentPlugin
 	 *
 	 * @return void
 	 */
-	function update()
+	private function update()
 	{
-		global $Eresus;
+		$oldName = arg('update', 'word');
+		$item = $this->dbItem('', $oldName, 'name');
 
-		$item = $Eresus->db->selectItem($this->table['name'], "`name`='".arg('update', 'word')."'");
 		$item['name'] = arg('name', 'word');
 		$item['caption'] = arg('caption', 'dbsafe');
 		$item['value'] = arg('value', 'dbsafe');
+		if ($item['name'] != $oldName)
+		{
+			$tmp = $this->dbItem('', $item['name'], 'name');
+			if ($tmp)
+			{
+				ErrorMessage('Ïåğåìåííàÿ ñ èìåíåì "' . $item['name'] .
+					'" óæå ñóùåñòâóåò. Âûáåğèòå äğóãîå èìÿ.');
+				HTTP::redirect(arg('submitURL'));
+			}
+		}
 
-		$Eresus->db->updateItem($this->table['name'], $item, "`name`='".arg('update', 'word')."'");
-		HTTP::redirect(arg('submitURL'));
+		$q = DB::getHandler()->createUpdateQuery();
+		$q->update($this->__table(''))
+			->where($q->expr->eq('name', $q->bindValue($oldName, null, PDO::PARAM_STR)));
+
+		foreach ($item as $key => $value)
+		{
+			$q->set($key, $q->bindValue($value));
+		}
+
+		DB::execute($q);
+
+		$url = arg('submitURL');
+
+		if ($item['name'] != $oldName)
+		{
+			$url = str_replace('id=' . $oldName, 'id=' . $item['name'], $url);
+		}
+
+		HTTP::redirect($url);
 	}
 	//-----------------------------------------------------------------------------
 
@@ -143,7 +163,7 @@ class TVars extends TListContentPlugin
 	 *
 	 * @return string
 	 */
-	function adminAddItem()
+	private function adminAddItem()
 	{
 		global $page;
 
@@ -173,7 +193,7 @@ class TVars extends TListContentPlugin
 	 *
 	 * @return string
 	 */
-	function adminEditItem()
+	private function adminEditItem()
 	{
 		global $Eresus, $page;
 
@@ -199,12 +219,42 @@ class TVars extends TListContentPlugin
 	//-----------------------------------------------------------------------------
 
 	/**
+	 * Âîçâğàùàåò ğàçìåòêó èíòåğôåéñà
 	 *
-	 * @return void
+	 * @return string  HTML
 	 */
 	function adminRender()
 	{
-		return $this->adminRenderContent();
+		global $page;
+
+		$result = '';
+
+		switch (true)
+		{
+			case !is_null(arg('update')):
+				$this->update();
+			break;
+			case !is_null(arg('delete')):
+				$this->delete(arg('delete', 'dbsafe'));
+			break;
+			case !is_null(arg('id')):
+				$result = $this->adminEditItem();
+			break;
+			case !is_null(arg('action')):
+				switch (arg('action'))
+				{
+					case 'create':
+						$result = $this->adminAddItem();
+					break;
+					case 'insert':
+						$this->insert();
+					break;
+				}
+			break;
+			default:
+				$result = $page->renderTable($this->table);
+		}
+		return $result;
 	}
 	//-----------------------------------------------------------------------------
 
@@ -217,8 +267,12 @@ class TVars extends TListContentPlugin
 		global $Eresus;
 
 		$items = $Eresus->db->select($this->table['name']);
-		if (count($items)) foreach ($items as $item) {
-			$text= str_replace('$('.$item['name'].')', $item['value'], $text);
+		if (count($items))
+		{
+			foreach ($items as $item)
+			{
+				$text= str_replace('$('.$item['name'].')', $item['value'], $text);
+			}
 		}
 		return $text;
 	}
@@ -233,6 +287,48 @@ class TVars extends TListContentPlugin
 
 		$page->addMenuItem('Ğàñøèğåíèÿ', array ("access"  => EDITOR, "link"  => $this->name,
 			"caption"  => 'Ïåğåìåííûå', "hint"  => "Óïğàâëåíèå òåêñòîâûìè ïåğåìåííûìè"));
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * (non-PHPdoc)
+	 * @see main/core/Plugin::install()
+	 */
+	public function install()
+	{
+		parent::install();
+
+		$sql = "
+			`name` varchar(31) NOT NULL,
+			`caption` varchar(63) NOT NULL,
+			`value` text NOT NULL,
+			PRIMARY KEY  (`name`)
+		";
+
+		$this->dbCreateTable($sql, '');
+
+	}
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * Óäàëÿåò ïåğåìåííóş
+	 *
+	 * @param string $name  Èìÿ ïåğåìåííîé
+	 */
+	private function delete($name)
+	{
+		global $page;
+
+		$item = $this->dbItem('', $name, 'name');
+		if ($item)
+		{
+			$this->dbDelete('', $name, 'name');
+		}
+		else
+		{
+			ErrorMessage('Ïåğåìåííîé ñ èìåíåì "' . $name . '" íå íàéäåíî.');
+		}
+		HTTP::redirect(str_replace('&amp;', '&', $page->url()));
 	}
 	//-----------------------------------------------------------------------------
 }

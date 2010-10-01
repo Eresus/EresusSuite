@@ -6,7 +6,7 @@
  *
  * Публикация новостей
  *
- * @version 2.08
+ * @version 2.09
  *
  * @copyright 2005, ProCreat Systems, http://procreat.ru/
  * @copyright 2007, Eresus Project, http://eresus.ru/
@@ -30,7 +30,7 @@
  *
  * @package News
  *
- * $Id$
+ * $Id: news.php 109 2010-04-12 14:11:13Z mk $
  */
 
 /**
@@ -70,7 +70,7 @@ class TNews extends TListContentPlugin
 	 * Версия плагина
 	 * @var string
 	 */
-	public $version = '2.08';
+	public $version = '2.09';
 
 	/**
 	 * Описание плагина
@@ -148,14 +148,14 @@ class TNews extends TListContentPlugin
 	 */
 	function __construct()
 	{
-		global $plugins;
+		global $Eresus;
 
 		parent::__construct();
 
 		switch ($this->settings['lastNewsMode'])
 		{
 			case 1:
-				$plugins->events['clientOnPageRender'][] = $this->name;
+				$Eresus->plugins->events['clientOnPageRender'][] = $this->name;
 			break;
 		}
 
@@ -204,7 +204,7 @@ class TNews extends TListContentPlugin
 	 */
 	function insert()
 	{
-		global $db, $request, $page;
+		global $Eresus, $request, $page;
 
 		$item['section'] = arg('section', 'int');
 		$item['posted'] = gettime();
@@ -215,11 +215,7 @@ class TNews extends TListContentPlugin
 		$item['preview'] = arg('preview', 'dbsafe');
 		if (empty($item['preview'])) $item['preview'] = $this->createPreview($item['text']);
 
-		$db->insert($this->table['name'], $item);
-		$item['id'] = $db->getInsertedID();
-		sendNotify(admAdded . ': <a href="' . httpRoot . 'admin.php?mod=content&section=' .
-			$item['section'] . '&id=' . $item['id'] . '">' . $item['caption'] . '</a><br />' .
-			$item['text'], array('editors'=>defined('CLIENTUI_VERSION')));
+		$Eresus->db->insert($this->table['name'], $item);
 		HTTP::redirect($request['arg']['submitURL']);
 
 	}
@@ -230,9 +226,9 @@ class TNews extends TListContentPlugin
 	 */
 	function update()
 	{
-		global $db, $page, $request;
+		global $Eresus, $page, $request;
 
-		$item = $db->selectItem($this->table['name'], "`id`='".$request['arg']['update']."'");
+		$item = $Eresus->db->selectItem($this->table['name'], "`id`='".$request['arg']['update']."'");
 		$item['section'] = arg('section', 'int');
 		if ( ! is_null(arg('section')) )
 			$item['active'] = arg('active', 'int');
@@ -244,9 +240,7 @@ class TNews extends TListContentPlugin
 		if (empty($item['preview']) || arg('updatePreview'))
 			$item['preview'] = $this->createPreview($item['text']);
 
-		$db->updateItem($this->table['name'], $item, "`id`='".$request['arg']['update']."'");
-		sendNotify(admUpdated . ': <a href="' . $page->url() . '">' . $item['caption'] . '</a><br />' .
-			$item['text']);
+		$Eresus->db->updateItem($this->table['name'], $item, "`id`='".$request['arg']['update']."'");
 		HTTP::redirect($request['arg']['submitURL']);
 	}
 	//-----------------------------------------------------------------------------
@@ -306,9 +300,9 @@ class TNews extends TListContentPlugin
 	 */
 	function adminEditItem()
 	{
-	global $db, $page, $request;
+	global $Eresus, $page, $request;
 
-		$item = $db->selectItem($this->table['name'], "`id`='".$request['arg']['id']."'");
+		$item = $Eresus->db->selectItem($this->table['name'], "`id`='".$request['arg']['id']."'");
 		$form = array(
 			'name' => 'editNews',
 			'caption' => 'Изменить новость',
@@ -410,12 +404,12 @@ class TNews extends TListContentPlugin
 	 *
 	 * @return string
 	 */
-	function renderLastNews()
+	private function renderLastNews()
 	{
-		global $db;
+		global $Eresus;
 
 		$result = '';
-		$items = $db->select($this->table['name'], "`active`='1'", 'posted', true, '',
+		$items = $Eresus->db->select($this->table['name'], "`active`='1'", '-posted', '',
 			$this->settings['lastNewsCount']);
 		if (count($items))
 			foreach($items as $item)
@@ -449,13 +443,13 @@ class TNews extends TListContentPlugin
 	 */
 	function clientRenderItem()
 	{
-		global $db, $page, $plugins, $request;
+		global $Eresus, $page, $Eresus, $request;
 
 		if ($page->topic != (string)((int)($page->topic))) {
 			$page->httpError(404);
 		}
 
-		$item = $db->selectItem($this->table['name'], "(`id`='".$page->topic."')AND(`active`='1')");
+		$item = $Eresus->db->selectItem($this->table['name'], "(`id`='".$page->topic."')AND(`active`='1')");
 		if (is_null($item)) $page->httpError('404');
 		$item['posted'] = FormatDate($item['posted'], $this->settings['dateFormatFullText']);
 		$result = $this->replaceMacros($this->settings['tmplItem'], $item).$page->buttonBack();
@@ -464,7 +458,7 @@ class TNews extends TListContentPlugin
 		$item['name'] = $item['id'];
 		$item['title'] = $item['caption'];
 		$item['hint'] = $item['description'] = $item['keywords'] = '';
-		$plugins->clientOnURLSplit($item, $request['path']);
+		$Eresus->plugins->clientOnURLSplit($item, $request['path']);
 
 		return $result;
 	}
@@ -478,10 +472,24 @@ class TNews extends TListContentPlugin
 	 */
 	function clientOnPageRender($text)
 	{
-	global $page;
+		global $page;
 
 		$text = str_replace('$(NewsLast)', $this->renderLastNews(), $text);
 		return $text;
 	}
 	//-----------------------------------------------------------------------------
+
+	function toggle($id)
+	{
+		global $page;
+
+		$q = DB::getHandler()->createUpdateQuery();
+		$e = $q->expr;
+		$q->update($this->table['name'])
+			->set('active', $e->not('active'))
+			->where($e->eq('id', $id));
+		DB::execute($q);
+
+		HTTP::redirect(str_replace('&amp;', '&', $page->url()));
+	}
 }

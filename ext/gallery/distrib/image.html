@@ -1,0 +1,27 @@
+<h1>{$image->title}</h1>
+<div class="date">{date_format($image->posted, "%d.%m.%Y %H:%M")}</div>
+<p><a href="{$this->clientListURL()}">[ Вернуться к списку ]</a></p>
+<div class="image">
+	<img src="{$image->imageURL}" alt="Не удаётся загрузить картинку" title="{$image->title|escape}" />
+</div>
+<p>
+	{if $image->prevSibling}<a href="{$image->prevSibling->showURL}">[ &laquo; Предыдущее изображение ]</a>{/if}
+	{if $image->nextSibling}<a href="{$image->nextSibling->showURL}">[ Следующее изображение &raquo; ]</a>{/if}
+</p>
+<p><a href="{$this->clientListURL()}">[ Вернуться к списку ]</a></p>
+
+<h2>Другие изображения в этом альбоме</h2>
+{if count($images) > 1}
+<table>
+	<tr>
+		{foreach $images item}
+		<td>
+			{if $item->id != $image->id}<a href="{$item->showURL}">{/if}
+			{$.foreach.default.iteration}<br />
+			<img src="{$item->thumbURL}" alt="" />
+			{if $item->id != $image->id}</a>{/if}
+		</td>
+		{/foreach}
+	</tr>
+</table>
+{/if}

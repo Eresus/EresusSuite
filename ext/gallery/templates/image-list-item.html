@@ -1,0 +1,25 @@
+<div class="image{if $image->cover} cover{/if}">
+	<div class="thumb-holder" style="width: {$this->settings.thumbWidth}px; height: {$this->settings.thumbHeight}px;">
+		<img src="{$image->thumbURL}" alt="Миниатюра отсутствует" />
+	</div>
+	<div class="info" style="margin-left: {$this->settings.thumbWidth + 10}px">
+		<div class="title">{$image->title}</div>
+		<div class="date">{date_format($image->posted, "%d.%m.%Y %H:%M")}</div>
+		{if $image->cover}
+		<div class="cover-text">(обложка альбома)</div>
+		{else}{if $image->active}
+		<a href="{sprintf($urlCover, $image->id)}">Сделать обложкой альбома</a>
+		{/if}{/if}
+		<div class="controls">
+			<a href="{sprintf($urlEdit, $image->id)}" title="Изменить"><img src="{$Eresus->root}{$theme->getIcon('item-edit.png')}" alt="[изменить]" /></a>
+			<a href="{sprintf($urlToggle, $image->id)}" title="{if $image->active}Отключить{else}Включить{/if}"><img src="{$Eresus->root}{if $image->active}{$theme->getIcon('item-active.png')}{else}{$theme->getIcon('item-inactive.png')}{/if}" alt="[{if $image->active}отключить{else}включить{/if}]" /></a>
+			{if $this->settings.sort == "manual"}
+			<a href="{sprintf($urlUp, $image->id)}" title="Поднять"><img src="{$Eresus->root}{$theme->getIcon('move-up.png')}" alt="[поднять]" /></a>
+			<a href="{sprintf($urlDown, $image->id)}" title="Опустить"><img src="{$Eresus->root}{$theme->getIcon('move-down.png')}" alt="[опустить]" /></a>
+			{/if}
+			&nbsp;
+			<a href="{sprintf($urlDelete, $image->id)}" title="Удалить" class="delete"><img src="{$Eresus->root}{$theme->getIcon('item-delete.png')}" alt="[удалить]" /></a>
+		</div>
+	</div>
+	<div class="float-margin"></div>
+</div>
