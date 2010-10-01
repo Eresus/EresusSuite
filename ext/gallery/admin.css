@@ -1,0 +1,255 @@
+@CHARSET "UTF-8";
+/**
+ * Галерея изображений
+ *
+ * Файл стилей для административного интерфейса
+ *
+ * @version 2.00
+ *
+ * @copyright 2008, ООО "Два слона", http://dvaslona.ru/
+ * @license http://www.gnu.org/licenses/gpl.txt  GPL License 3
+ * @author Михаил Красильников <mk@3wstyle.ru>
+ *
+ * @package Gallery
+ *
+ * $Id: admin.css 977 2010-09-29 12:47:43Z mk $
+ */
+
+/**
+ * Содержимое чего бы то ни было
+ */
+.content
+{
+	padding: .2em .3em;
+}
+
+/**
+ * Второстепенные элементы
+ */
+.minor
+{
+	color: #888;
+	font-size: 95%;
+}
+
+/**
+ * Нижняя граница плавающих элементов
+ */
+.float-margin
+{
+	clear: both;
+}
+
+/**
+ * Блок миниатюры в форме изменения изобраджения
+ */
+#editImage .thumbnail
+{
+	padding: 1px;
+	text-align: center;
+}
+
+	/**
+	 * Миниатюра
+	 */
+	#editImage .thumbnail img
+	{
+		padding: 1px;
+		border: solid 1px #aaa;
+	}
+
+
+/**
+ * Пара "метка-поле ввода"
+ */
+.input-pair
+{
+	margin-bottom: .5em;
+}
+
+	/**
+	 * Элемент ввода
+	 */
+	.input-pair input
+	{
+		font-size: 9pt;
+	}
+
+/**
+ * Ячейка с меткой поля формы
+ */
+td.formLabel
+{
+	vertical-align: top;
+}
+
+form table th
+{
+	background-color: #fffaf0;
+	border: solid 1px #ddd;
+}
+
+
+/**
+ * Переключатель страниц
+ */
+.pages
+{
+	margin: .3em .5em;
+}
+	/**
+	 * Обычные страницы
+	 */
+	.pages a
+	{
+		font-weight: bold;
+	}
+	/**
+	 * Текущая страница
+	 */
+	.pages b
+	{
+		background-color: #007acc;
+		color: #ffd700;
+		padding: 0 2px;
+	}
+
+/**
+ * Список изображений
+ */
+.gallery-image-list
+{
+	max-width: 1000px;
+}
+
+	/**
+	 * Блок группы изображений
+	 */
+	.gallery-image-list .group
+	{
+		margin: 0 .3em 1em;
+	}
+
+		/**
+		 * Заголовок блока группы изображений
+		 */
+		.gallery-group-title
+		{
+			background-color: #4682b4;
+			color: white;
+			font-weight: bold;
+			padding: .1em .3em;
+			margin-bottom: .2em;
+			border-style: solid;
+			border-color: #14466f;
+			border-width: 1px;
+		}
+
+	/**
+	 * Изображение в списке
+	 */
+	.gallery-image-list .image
+	{
+		background-color: #fff;
+		border: solid 1px #88c;
+		margin-bottom: .3em;
+	}
+
+	/**
+	 * Изображение в списке (при наведении мыши)
+	 */
+	.gallery-image-list .image:hover
+	{
+		background-color: #cfc;
+	}
+
+		/**
+		 * Текст "Обложка альбома"
+		 */
+		.gallery-image-list .cover-text
+		{
+			color: red;
+		}
+
+		/**
+		 * Контейнер миниатюры
+		 */
+		.gallery-image-list .image .thumb-holder
+		{
+			background-color: #dde;
+			border: solid 1px #ccc;
+			margin: 1px;
+			overflow: hidden;
+			padding: 1px;
+			float: left;
+		}
+
+			/**
+			 * Миниатюра
+			 */
+			.gallery-image-list .image .thumb-holder img
+			{
+				display: block;
+				margin: 0 auto;
+			}
+
+		/**
+		 * Контейнер информации
+		 */
+		.gallery-image-list .image .info
+		{
+		}
+
+		/**
+		 * Название изображения
+		 */
+		.gallery-image-list .image .caption
+		{
+			font-size: 120%;
+			font-weight: bold;
+			margin-top: .3em;
+		}
+
+		/**
+		 * Блок управления
+		 */
+		.gallery-image-list .image .controls
+		{
+			margin-top: 1em;
+		}
+
+/**
+ * Псевдо вкладки
+ */
+#gallery-settings-tabs
+{
+	text-align: right;
+}
+
+#gallery-settings-templates
+{
+	display: none;
+}
+
+.gallery-tmpl-hint .content
+{
+	background-color: #e8f1ff;
+	border: solid 1px #aaa;
+	display: none;
+}
+
+dl
+{
+	margin: 0;
+	padding: 0;
+}
+
+dt
+{
+	font-weight: bold;
+}
+
+dd
+{
+	margin-left: 2em;
+}

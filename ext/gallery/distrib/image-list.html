@@ -1,0 +1,32 @@
+<h1>{$page->title}</h1>
+<p class="date">{date_format($page->created, '%d.%m.%Y %H:%M')}</p>
+<div>
+	{if $cover}
+	<img src="{$cover->thumbURL}" alt="{$cover->title|escape}" style="float: left; margin: 1em;" />
+	{/if}
+	{$page->content}
+</div>
+
+{if count($items) > 0}
+
+{$pager}
+
+{foreach $items image}
+<table>
+	<tr>
+		<td style="width: {$this->settings.previewWidth}px">
+			<a href="{$image->showURL}"><img src="{$image->thumbURL}" alt="Миниатюра отсутствует" title="" /></a>
+		</td>
+		<td>
+			<div class="title"><strong><a href="{$image->showURL}">{$image->title}</a></strong></div>
+			<div class="date">{date_format($image->posted, "%d.%m.%Y %H:%M")}</div>
+		</td>
+	</tr>
+</table>
+{/foreach}
+
+{$pager}
+
+{else}
+<p>В этой галерее нет изображений.</p>
+{/if}
