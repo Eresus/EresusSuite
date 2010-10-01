@@ -1,0 +1,107 @@
+<div class="box ui-widget-content" style="float: left;">
+
+	<div class="header">Изменение картинки</div>
+
+	<div class="content">
+		<form name="editImage" id="editImage" action="admin.php" method="post" enctype="multipart/form-data">
+
+			<div class="hidden">
+				<input type="hidden" name="original_section" value="{$image->section}" />
+
+				<input type="hidden" name="mod" value="content" />
+				<input type="hidden" name="pg" value="{$pg}" />
+				<input type="hidden" name="update" value="{$image->id}" />
+			</div>
+
+			<div class="thumbnail">
+				<img src="{$image->thumbURL}" alt="Миниатюра" />
+			</div>
+
+			<fieldset>
+
+				<legend>Свойства изображения</legend>
+
+				<div class="input-pair">
+					<label>Название:</label><br />
+					<input type="text" name="title" value="{$image->title}" maxlength="255" style="width: 99%" />
+				</div>
+
+				{if $this->settings.useGroups}
+				<div class="input-pair">
+					<label>Группа:</label><br />
+					<select name="group">
+						{foreach $groups group}
+						<option value="{$group.id}"{if $group.id == $image->group->id} selected="selected"{/if}>{$group.title}{if $group.id == $image->group} (текущая){/if}</option>
+						{/foreach}
+					</select>
+				</div>
+				{/if}
+
+				<div class="input-pair">
+					<label>
+						<input type="checkbox" name="cover" value="1"{if $image->cover} checked="checked"{/if} />
+						Обложка альбома
+					</label>
+				</div>
+
+				<div class="input-pair">
+					<label>
+						<input type="checkbox" name="active" value="1"{if $image->active} checked="checked"{/if} />
+						Показывать это изображение посетителям
+					</label>
+				</div>
+
+				<div class="input-pair">
+					<label>Дата и время добавления:</label><br />
+					<input type="text" name="posted" value="{$image->posted}" />
+					<span class="minor">Формат: ГГГГ-ММ-ДД ЧЧ:ММ:СС</span>
+				</div>
+
+			</fieldset>
+
+			<fieldset>
+
+				<legend>Заменить изображение</legend>
+
+				<div class="input-pair">
+					<label>Новое изображение:</label><br />
+					<input type="file" name="image" />
+					<div class="ui-minor">Формат JPEG, PNG или GIF. Размер файла не более {ini_get('upload_max_filesize')}</div>
+				</div>
+
+			</fieldset>
+
+			<fieldset>
+
+				<legend>Переместить в другую галерею</legend>
+
+				<div class="input-pair">
+					<label for="input-section">Переместить в раздел:</label><br />
+					<select name="section" id="input-section">
+						{foreach $sections section}
+						<option value="{$section.id}"{if !$section.selectable} disabled="disabled"{/if}{if $section.id == $image->section} selected="selected"{/if}>
+							{str_repeat('-', $section.level)}
+							{$section.caption} {if $section.id == $image->section} (текущая галерея){/if}
+						</option>
+						{/foreach}
+					</select>
+				</div>
+				{if $this->settings.useGroups}
+				<div class="input-pair" id="input-group-block" style="display: none;">
+					<label for="input-group">Переместить в группу:</label><br />
+					<select name="new_group" id="input-group">
+					</select>
+				</div>
+				{/if}
+
+			</fieldset>
+
+			<div class="ui-button-box">
+				<br />
+				<button type="submit" >Сохранить</button>
+				<button type="button" class="cancel" onclick="history.back();">Отменить</button>
+			</div>
+
+		</form>
+	</div>
+</div>
