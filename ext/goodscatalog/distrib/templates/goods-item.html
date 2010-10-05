@@ -1,0 +1,44 @@
+<a href="{$listURL}">&laquo; Вернуться к списку</a>
+<h2>Свойства товара</h2>
+<dl>
+	<dt>Артикул</dt>
+	<dd>{$good->article}</dd>
+
+	<dt>Название</dt>
+	<dd>{$good->title}</dd>
+
+	<dt>Описание</dt>
+	<dd>{$good->description}</dd>
+
+	<dt>Цена</dt>
+	<dd>{$good->cost}</dd>
+
+	{if $this->settings.mainPhotoEnabled}
+	<dt>Основная фотография</dt>
+	<dd>{if $good->photoURL}<img src="{$good->photoURL}" alt="" />{else}Нет Фотографии{/if}</dd>
+
+	<dt>Миниатюра</dt>
+	<dd>{if $good->thumbURL}<img src="{$good->thumbURL}" alt="" />{else}Нет миниатюры{/if}</dd>
+	{/if}
+</dl>
+
+{if $this->settings.extPhotosEnabled}
+<h2>Дополнительные фото</h2>
+{foreach $good->photos photo}
+<a href="{$photo->clientPopup}"><img src="{$photo->thumbURL}" /></a>
+{/foreach}
+{/if}
+
+{if $this->settings.brandsEnabled and $good->brand}
+<h2>Бренд</h2>
+<dl>
+	<dt>Название</dt>
+	<dd>{$good->brand->title}</dd>
+
+	<dt>Описание</dt>
+	<dd>{$good->brand->description}</dd>
+
+	<dt>Логотип</dt>
+	<dd>{if $good->brand->logoURL}<img src="{$good->brand->logoURL}" alt="" />{else}Нет логотипа{/if}</dd>
+</dl>
+{/if}

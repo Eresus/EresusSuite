@@ -1,0 +1,52 @@
+<div class="box ui-widget-content" style="min-width: 600px; float: left;">
+	<div class="header">Добавление бренда</div>
+	<div class="content">
+
+		<form action="admin.php" method="post" enctype="multipart/form-data" id="catalogAddDialog">
+
+			<div class="hidden">
+				<input type="hidden" name="mod" value="ext-{$this->name}" />
+				<input type="hidden" name="ref" value="brands" />
+				<input type="hidden" name="action" value="insert" />
+				<input type="hidden" name="submitURL" value="admin.php?mod=ext-{$this->name}&amp;ref=brands" />
+			</div>
+
+			<table width="100%">
+				<colgroup>
+					<col width="10%" />
+					<col width="*" />
+				</colgroup>
+				<tr>
+					<td class="formLabel">
+						<label for="catalog-title-input">Название</label>
+					</td>
+					<td>
+						<input type="text" name="title" id="catalog-title-input" maxlength="255" class="full-width" />
+					</td>
+				</tr>
+				<tr>
+					<td class="formLabel">
+						<label for="catalog-logo-input">Логотип</label>
+					</td>
+					<td>
+						<input type="file" name="logo" id="catalog-logo-input" />
+						<div class="ui-minor">Формат JPEG, PNG или GIF. Размер файла не более {ini_get('upload_max_filesize')}</div>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<label for="wyswyg_description">Описание</label><br />
+						<textarea name="wyswyg_description" id="wyswyg_description" cols="40" rows="20" class="wysiwyg tinymce_default full-width"></textarea>
+					</td>
+				</tr>
+				
+			</table>
+
+			<div class="ui-button-box">
+				<br />
+				<button type="submit" onclick="formApplyClick('catalogAddDialog')">Добавить</button>
+				<button type="button" class="cancel" onclick="history.back();">Отменить</button>
+			</div>
+		</form>
+	</div>
+</div>
