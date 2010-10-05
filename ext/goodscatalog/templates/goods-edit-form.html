@@ -1,0 +1,168 @@
+<form xmlns:fc="http://eresus.ru/schema/form/" action="admin.php" enctype="multipart/form-data" id="settingsForm" class="ui-widget ui-widget-content ui-corner-all">
+
+	<div class="hidden">
+		<input type="hidden" name="mod" value="content" />
+		<input type="hidden" name="update" value="{$good->id}" />
+	</div>
+
+	<fc:tabwidget id="catalogEdit">
+
+		<fc:tabcontrol>
+			<fc:tab name="main">Свойства товара</fc:tab>
+			{if $this->settings.extPhotosEnabled}
+			<fc:tab name="images">Дополнительные фотографии</fc:tab>
+			{/if}
+	</fc:tabcontrol>
+	
+
+		<fc:tabs>
+
+			<fc:tab name="main">
+				<table width="100%">
+					<colgroup>
+						<col width="10%" />
+						<col width="*" />
+					</colgroup>
+					<tr>
+						<td class="formLabel">
+							<label for="catalog-article-input">Артикул</label>
+						</td>
+						<td>
+							<input type="text" name="article" id="catalog-article-input" value="{$good->article|escape}" maxlength="255" />
+						</td>
+					</tr>
+					<tr>
+						<td class="formLabel">
+							<label for="catalog-title-input">Название</label>
+						</td>
+						<td>
+							<input type="text" name="title" id="catalog-title-input" value="{$good->title|escape}" maxlength="255" class="full-width" />
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<label for="catalog-about-input">Краткое описание</label><br />
+							<textarea name="about" id="catalog-about-input" cols="40" rows="5" class="full-width">{$good->about|escape}</textarea>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<label for="wyswyg_description">Описание</label><br />
+							<textarea name="wyswyg_description" id="wyswyg_description" cols="40" rows="8" class="tinymce_default wysiwyg full-width">{$good->description|escape}</textarea>
+						</td>
+					</tr>
+					<tr>
+						<td class="formLabel">
+							<label for="catalog-cost-input">Цена</label>
+						</td>
+						<td>
+							<input type="text" name="cost" id="catalog-cost-input" value="{$good->cost|escape}"  maxlength="20" size="5" class="number" />
+						</td>
+					</tr>
+					{if $this->settings.mainPhotoEnabled}
+					<tr>
+						<td></td><td>{if $good->thumbURL}<a href="#" onclick="return false;" class="pseudo good-photo-preview">Показать основное фото<img src="{$good->thumbURL}" alt="" /></a>{/if}</td>
+					</tr>
+					<tr>
+						<td class="formLabel">
+							<label for="catalog-photo-input">Заменить фотографию</label>
+						</td>
+						<td>
+							<input type="file" name="photo" id="catalog-photo-input" />
+							<div class="ui-minor">Формат JPEG, PNG или GIF. Размер файла не более {ini_get('upload_max_filesize')}</div>
+						</td>
+					</tr>
+					{/if}
+					<tr>
+						<td></td>
+						<td>
+							<label for="catalog-active-input">
+								<input type="checkbox" name="active" value="1" id="catalog-active-input"{if $good->active} checked="checked"{/if} />
+								Показывать товар посетителям
+							</label>
+						</td>
+					</tr>
+					{if $this->settings.specialsEnabled}
+					<tr>
+						<td></td>
+						<td>
+							<label for="catalog-special-input">
+								<input type="checkbox" name="special" value="1" id="catalog-special-input"{if $good->special} checked="checked"{/if} />
+								Этот товар спецпредложение
+							</label>
+						</td>
+					</tr>
+					{/if}
+					{if $this->settings.brandsEnabled}
+					<tr>
+						<td class="formLabel">
+							<label for="catalog-brand-input">Бренд</label>
+						</td>
+						<td>
+							<select name="brand" id="catalog-brand-input">
+								<option value="">(не относится ни к одному бренду)</option>
+								{foreach $brands brand}
+								<option value="{$brand->id}"{if $good->brand->id == $brand->id} selected="selected"{/if}>{$brand->title|escape}</option>
+								{/foreach}
+							</select>
+						</td>
+					</tr>
+					{/if}
+					<tr>
+						<td class="formLabel">
+							<label for="catalog-section-input">Раздел</label>
+						</td>
+						<td>
+							<select name="section" id="catalog-section-input">
+								{foreach $sections section}
+								<option value="{$section.id}"{if $good->section == $section.id} selected="selected"{/if}{if !$section.selectable} disabled="disabled"{/if}>{$section.padding} {$section.caption|escape}</option>
+								{/foreach}
+							</select>
+						</td>
+					</tr>
+					
+				</table>
+	
+				<div class="ui-button-box">
+					<br />
+					<button type="submit">Сохранить</button>
+				</div>
+			</fc:tab>
+
+			{if $this->settings.extPhotosEnabled}
+			<fc:tab name="images">
+				<div class="ui-button-box">
+					<a class="ui-button ui-button-list-add" href="admin.php?mod=content&amp;section={$good->section}&amp;id={$good->id}&amp;action=photo_add">Добавить фотографию</a>
+				</div>
+				{if count($photos) > 0}
+				<table class="catalog-photo-list ui-widget ui-widget-content">
+					{foreach $photos photo}
+					<tr class="photo-list-item">
+						<td class="controls">
+							<a href="{sprintf($urlEdit, $photo->id)}" title="Изменить">
+								<img src="{$Eresus->root}{$theme->getIcon('item-edit.png')}" alt="[изменить]" />
+							</a>
+							<a href="{sprintf($urlUp, $photo->id)}" title="Поднять">
+								<img src="{$Eresus->root}{$theme->getIcon('move-up.png')}" alt="[поднять]" />
+							</a>
+							<a href="{sprintf($urlDown, $photo->id)}" title="Опустить">
+								<img src="{$Eresus->root}{$theme->getIcon('move-down.png')}" alt="[опустить]" />
+							</a>
+							&nbsp;
+							<a href="{sprintf($urlDelete, $photo->id)}" title="Удалить" class="delete">
+								<img src="{$Eresus->root}{$theme->getIcon('item-delete.png')}" alt="[удалить]" />
+							</a>
+						</td>
+						<td class="photo">{if $photo->thumbURL}<img src="{$photo->thumbURL}" alt="" />{/if}</td>
+					</tr>
+					{/foreach}
+				</table>
+				{/if}
+			</fc:tab>
+			{/if}
+
+		</fc:tabs>
+
+	</fc:tabwidget>
+				
+</form>

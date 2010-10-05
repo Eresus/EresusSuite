@@ -1,0 +1,41 @@
+<div class="box ui-widget-content" style="min-width: 600px; float: left;">
+	<div class="header">Добавление фотографии</div>
+	<div class="content">
+
+		<form action="admin.php" method="post" enctype="multipart/form-data" id="catalogPhotoAddDialog">
+
+			<div class="hidden">
+				<input type="hidden" name="mod" value="content" />
+				<input type="hidden" name="section" value="{$good->section}" />
+				<input type="hidden" name="id" value="{$good->id}" />
+				<input type="hidden" name="action" value="photo_insert" />
+			</div>
+
+			<label for="catalog-file1-input">Вы можете выбрать до 5-ти файлов:</label>
+			<ol>
+				<li><input type="file" name="file1" id="catalog-file1-input" /></li>
+				<li class="hidden"><input type="file" name="file2" /></li>
+				<li class="hidden"><input type="file" name="file3" /></li>
+				<li class="hidden"><input type="file" name="file4" /></li>
+				<li class="hidden"><input type="file" name="file5" /></li>
+			</ol>
+			<div class="ui-minor">Формат JPEG, PNG или GIF. Размер файла не более {ini_get('upload_max_filesize')}</div>
+			
+			<div class="ui-button-box">
+				<br />
+				<button type="submit">Добавить</button>
+				<button type="button" class="cancel" onclick="history.back();">Отменить</button>
+			</div>
+			
+		</form>
+	</div>
+</div>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+jQuery(document).ready(function () 
+{
+	jQuery("#catalogPhotoAddDialog input:file").live('change', function ()
+	{
+		jQuery(this).parent().next().show().children('input').focus();
+	});
+});
+//--><!]]></script>
