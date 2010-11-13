@@ -64,6 +64,16 @@
 			<fileset refid="files.ext" />
 		</copy>
 
+		<!--
+			Banners
+		-->
+		<copy todir="${build.dir}/ext">
+			<fileset dir="plugins/banners">
+  			<include name="banners.php" />
+  			<include name="banners/**" />
+			</fileset>
+		</copy>
+
 	</target>
 
 	<!--
