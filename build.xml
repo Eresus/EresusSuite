@@ -75,6 +75,15 @@
 		</copy>
 
 		<!--
+			Blocks
+		-->
+		<copy todir="${build.dir}/ext">
+			<fileset dir="plugins/blocks">
+  			<include name="blocks.php" />
+			</fileset>
+		</copy>
+
+		<!--
 			Gallery
 		-->
 		<mkdir dir="${build.dir}/temp" />
