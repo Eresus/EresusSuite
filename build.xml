@@ -100,6 +100,23 @@
 		</copy>
 		<delete dir="${build.dir}/temp" />
 
+		<!--
+			GoodsCatalog
+		-->
+		<mkdir dir="${build.dir}/temp" />
+		<phing dir="plugins/goodscatalog" phingfile="build.xml" target="build" inheritAll="no">
+			<property name="build.dir" value="${build.dir}/temp" override="yes" />
+			<property name="phpunit" value="no" />
+			<property name="phpmd" value="no" />
+			<property name="phpcs" value="no" />
+		</phing>
+		<copy todir="${build.dir}/ext">
+			<fileset dir="${build.dir}/temp">
+  				<include name="**" />
+			</fileset>
+		</copy>
+		<delete dir="${build.dir}/temp" />
+
 	</target>
 
 	<!--
