@@ -1,65 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
- Eresus 2 Suite
+ Eresus Suite
 
  Файл сборки проекта
 
  $Id$
  -->
-<project name="eresus2-suite" default="build" basedir="./">
+<project name="eresus-suite" default="build" basedir="./">
 
 	<property file="build.properties" />
 
 	<!--
 	=====================================================================
-		Подготовка к сборке
+	Наборов файлов
 	=====================================================================
-  -->
-
-	<target name="prepare" description="Prepare for build">
-
-		<echo msg="Clean up: ${build.dir}..." level="info" />
-
-		<if>
-			<available file="${build.dir}" />
-
-			<then>
-				<delete includeemptydirs="true" failonerror="true">
-					<fileset dir="${build.dir}">
-						<include name="**/*" />
-					</fileset>
-				</delete>
-			</then>
-
-		</if>
-
-		<echo msg="Build directory: ${build.dir}" level="info" />
-
-		<echo msg="Create build directory..." level="info" />
-		<mkdir dir="${build.dir}" />
-
-		<mkdir dir="${build.dir}" />
-
-		<echo msg="Ready to build" level="info" />
-
-	</target>
+	-->
+	
+	<!-- Плагины, подключенные по старому методу -->
+	<fileset dir="ext" id="files.ext">
+		<include name="**" />
+		<exclude name=".svn" />
+	</fileset>
 
 	<!--
 	=====================================================================
 		Сборка
 	=====================================================================
 	-->
-	<target name="build" depends="prepare" description="Build project">
+	<target name="build" description="Build project">
+
+		<!--
+			Делаем путь к директориям сборки и логов абсолютным 
+		-->
+		<php function="preg_replace" returnProperty="build.dir">
+			<param value="/^\./" />
+			<param value="${project.basedir}" />
+		  <param value="${build.dir}" />
+		</php>
+		<php function="preg_replace" returnProperty="logs.dir">
+			<param value="/^\./" />
+			<param value="${project.basedir}" />
+		  <param value="${logs.dir}" />
+		</php>
+
+		<mkdir dir="${build.dir}" />
 
 		<!--
 			Сборка CMS
 		-->
-		<phing dir="cms">
-			<property name="build.dir" value="${build.dir}"/>
+		<phing dir="cms" inheritAll="false">
+			<property name="build.dir" value="${build.dir}" override="true" />
+			<property name="phpunit.coverage.html" value="${logs.dir}/cms-coverage" override="true"/>
+			<property name="logs.dir" value="${logs.dir}/cms" override="true"/>
+			<property name="phpunit" value="no" override="true"/>
+			<property name="phpcs" value="no" override="true"/>
 		</phing>
 
-		<!-- Extensions -->
+		<!-- Плагины, подключенные старым способом -->
 		<copy todir="${build.dir}/ext">
 			<fileset refid="files.ext" />
 		</copy>
@@ -121,14 +119,32 @@
 
 	<!--
 	=====================================================================
-		Наборы файлов
+	Очистка после сборки
 	=====================================================================
 	-->
+	<target name="clean" description="Clean up build">
 
-	<!-- Extensions -->
-	<fileset dir="ext" id="files.ext">
-		<include name="**" />
-		<exclude name=".svn" />
-	</fileset>
+		<delete dir="${build.dir}" includeemptydirs="true" />
+		<delete dir="${logs.dir}" includeemptydirs="true" />
+		
+	</target>
+
+	<!--
+	=====================================================================
+	Создание дистрибутива
+	=====================================================================
+	-->
+	<target name="distr" depends="build" description="Build distributive">
+
+		<mkdir dir="${distr.dir}" />
+		<delete file="${distr.dir}/${distr.name}.tar.bz2" failonerror="false" />
+		
+		<tar destfile="${distr.dir}/${distr.name}.tar.bz2" compression="bzip2">
+			<fileset dir="${build.dir}">
+				<include name="**" />
+			</fileset>
+		</tar>
+
+	</target>
 
 </project>
