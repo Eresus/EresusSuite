@@ -66,7 +66,7 @@
 			Banners
 		-->
 		<copy todir="${build.dir}/ext">
-			<fileset dir="plugins/banners">
+			<fileset dir="plugins/banners/src">
   			<include name="banners.php" />
   			<include name="banners/**" />
 			</fileset>
@@ -76,7 +76,7 @@
 			Blocks
 		-->
 		<copy todir="${build.dir}/ext">
-			<fileset dir="plugins/blocks">
+			<fileset dir="plugins/blocks/src">
   			<include name="blocks.php" />
 			</fileset>
 		</copy>
