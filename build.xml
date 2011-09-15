@@ -82,6 +82,16 @@
 		</copy>
 
 		<!--
+			Eforms
+		-->
+		<copy todir="${build.dir}/ext">
+			<fileset dir="plugins/eforms/src">
+  			<include name="eforms.php" />
+  			<include name="eforms/**" />
+			</fileset>
+		</copy>
+
+		<!--
 			Gallery
 		-->
 		<mkdir dir="${build.dir}/temp" />
