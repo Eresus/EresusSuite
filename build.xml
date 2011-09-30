@@ -92,6 +92,16 @@
 		</copy>
 
 		<!--
+			Vars
+		-->
+		<copy todir="${build.dir}/ext">
+			<fileset dir="plugins/vars/src">
+  			<include name="vars.php" />
+  			<include name="vars/**" />
+			</fileset>
+		</copy>
+
+		<!--
 			Gallery
 		-->
 		<mkdir dir="${build.dir}/temp" />
