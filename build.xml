@@ -102,6 +102,25 @@
 		</copy>
 
 		<!--
+			Articles
+		-->
+		<copy todir="${build.dir}/ext">
+			<fileset dir="plugins/articles/src">
+  			<include name="articles.php" />
+  			<include name="articles/**" />
+			</fileset>
+		</copy>
+
+		<!--
+			Menus
+		-->
+		<copy todir="${build.dir}/ext">
+			<fileset dir="plugins/menus">
+  			<include name="menus.php" />
+			</fileset>
+		</copy>
+
+		<!--
 			Gallery
 		-->
 		<mkdir dir="${build.dir}/temp" />
