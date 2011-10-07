@@ -63,6 +63,16 @@
 		</copy>
 
 		<!--
+			Articles
+		-->
+		<copy todir="${build.dir}/ext">
+			<fileset dir="plugins/articles/src">
+  			<include name="articles.php" />
+  			<include name="articles/**" />
+			</fileset>
+		</copy>
+
+		<!--
 			Banners
 		-->
 		<copy todir="${build.dir}/ext">
@@ -82,12 +92,35 @@
 		</copy>
 
 		<!--
-			Eforms
+			E-Forms
 		-->
 		<copy todir="${build.dir}/ext">
 			<fileset dir="plugins/eforms/src">
   			<include name="eforms.php" />
   			<include name="eforms/**" />
+			</fileset>
+		</copy>
+
+		<!--
+			Gallery
+		-->
+		<phingcall target="plugin">
+			<property name="plugin.name" value="gallery" />
+		</phingcall>
+
+		<!--
+			GoodsCatalog
+		-->
+		<phingcall target="plugin">
+			<property name="plugin.name" value="goodscatalog" />
+		</phingcall>
+
+		<!--
+			Menus
+		-->
+		<copy todir="${build.dir}/ext">
+			<fileset dir="plugins/menus">
+  			<include name="menus.php" />
 			</fileset>
 		</copy>
 
@@ -100,59 +133,6 @@
   			<include name="vars/**" />
 			</fileset>
 		</copy>
-
-		<!--
-			Articles
-		-->
-		<copy todir="${build.dir}/ext">
-			<fileset dir="plugins/articles/src">
-  			<include name="articles.php" />
-  			<include name="articles/**" />
-			</fileset>
-		</copy>
-
-		<!--
-			Menus
-		-->
-		<copy todir="${build.dir}/ext">
-			<fileset dir="plugins/menus">
-  			<include name="menus.php" />
-			</fileset>
-		</copy>
-
-		<!--
-			Gallery
-		-->
-		<mkdir dir="${build.dir}/temp" />
-		<phing dir="plugins/gallery" phingfile="build.xml" target="build" inheritAll="no">
-			<property name="build.dir" value="${build.dir}/temp" override="yes" />
-			<property name="phpunit" value="no" />
-			<property name="phpmd" value="no" />
-			<property name="phpcs" value="no" />
-		</phing>
-		<copy todir="${build.dir}/ext">
-			<fileset dir="${build.dir}/temp">
-  				<include name="**" />
-			</fileset>
-		</copy>
-		<delete dir="${build.dir}/temp" />
-
-		<!--
-			GoodsCatalog
-		-->
-		<mkdir dir="${build.dir}/temp" />
-		<phing dir="plugins/goodscatalog" phingfile="build.xml" target="build" inheritAll="no">
-			<property name="build.dir" value="${build.dir}/temp" override="yes" />
-			<property name="phpunit" value="no" />
-			<property name="phpmd" value="no" />
-			<property name="phpcs" value="no" />
-		</phing>
-		<copy todir="${build.dir}/ext">
-			<fileset dir="${build.dir}/temp">
-  				<include name="**" />
-			</fileset>
-		</copy>
-		<delete dir="${build.dir}/temp" />
 
 	</target>
 
@@ -186,4 +166,27 @@
 
 	</target>
 
+	<!--
+	=====================================================================
+	Сборка плагина
+	=====================================================================
+	-->
+	<target name="plugin" description="[internal] Build specified plugin">
+	
+		<mkdir dir="${build.dir}/temp" />
+		<phing dir="plugins/${plugin.name}" phingfile="build.xml" target="build" inheritAll="no">
+			<property name="build.dir" value="${build.dir}/temp" override="yes" />
+			<property name="phpunit" value="no" />
+			<property name="phpmd" value="no" />
+			<property name="phpcs" value="no" />
+		</phing>
+		<copy todir="${build.dir}/ext">
+			<fileset dir="${build.dir}/temp">
+  				<include name="**" />
+			</fileset>
+		</copy>
+		<delete dir="${build.dir}/temp" />
+		
+	</target>
+	
 </project>
