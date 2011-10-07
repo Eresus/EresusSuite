@@ -62,6 +62,11 @@
 			<fileset refid="files.ext" />
 		</copy>
 
+		<!-- 
+			Сборка плагинов.
+			Располагайте плагины по алфавиту.
+		-->
+
 		<!--
 			Articles
 		-->
@@ -118,11 +123,9 @@
 		<!--
 			Menus
 		-->
-		<copy todir="${build.dir}/ext">
-			<fileset dir="plugins/menus">
-  			<include name="menus.php" />
-			</fileset>
-		</copy>
+		<phingcall target="plugin">
+			<property name="plugin.name" value="menus" />
+		</phingcall>
 
 		<!--
 			Vars
