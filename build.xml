@@ -107,12 +107,9 @@
 		<!--
 			E-Forms
 		-->
-		<copy todir="${build.dir}/ext">
-			<fileset dir="plugins/eforms/src">
-  			<include name="eforms.php" />
-  			<include name="eforms/**" />
-			</fileset>
-		</copy>
+		<phingcall target="plugin">
+			<property name="plugin.name" value="eforms" />
+		</phingcall>
 
 		<!--
 			Gallery
