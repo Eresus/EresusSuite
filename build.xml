@@ -126,6 +126,15 @@
 		</phingcall>
 
 		<!--
+			HTML
+		-->
+		<copy todir="${build.dir}/ext">
+			<fileset dir="plugins/html/src">
+  			<include name="html.php" />
+			</fileset>
+		</copy>
+
+		<!--
 			Menus
 		-->
 		<phingcall target="plugin">
