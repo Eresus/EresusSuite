@@ -88,12 +88,9 @@
 		<!--
 			Banners
 		-->
-		<copy todir="${build.dir}/ext">
-			<fileset dir="plugins/banners/src">
-  			<include name="banners.php" />
-  			<include name="banners/**" />
-			</fileset>
-		</copy>
+		<phingcall target="plugin">
+			<property name="plugin.name" value="banners" />
+		</phingcall>
 
 		<!--
 			Blocks
@@ -175,7 +172,7 @@
 		<mkdir dir="${distr.dir}" />
 		<delete file="${distr.dir}/${distr.name}.tar.bz2" failonerror="false" />
 		
-		<tar destfile="${distr.dir}/${distr.name}.tar.bz2" compression="bzip2">
+		<tar destFile="${distr.dir}/${distr.name}.tar.bz2" compression="bzip2">
 			<fileset dir="${build.dir}">
 				<include name="**" />
 			</fileset>
@@ -191,7 +188,7 @@
 	<target name="plugin" description="[internal] Build specified plugin">
 	
 		<mkdir dir="${build.dir}/temp" />
-		<phing dir="plugins/${plugin.name}" phingfile="build.xml" target="build" inheritAll="no">
+		<phing dir="plugins/${plugin.name}" phingfile="build.xml" target="build" inheritAll="false">
 			<property name="build.dir" value="${build.dir}/temp" override="yes" />
 			<property name="phpunit" value="no" />
 			<property name="phpmd" value="no" />
