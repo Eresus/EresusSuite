@@ -46,8 +46,8 @@ class Admin_Auth_Test extends Eresus_Mink_TestCase
 		$page->find('xpath', '//button[@type="submit"]')->click();
 
 		$exitButton = $page->find('css', '.user-box button');
-		$this->assertCookieExists($session, 'sid', 'Нет куки sid');
-		$this->assertCookieExists($session, 'eresus_login', 'Нет куки eresus_login');
+		$this->getMink()->assertSession()->cookieExists('sid');
+		$this->getMink()->assertSession()->cookieExists('eresus_login');
 		$this->assertCookieEquals($session, 'eresus_login', 'root',
 			'Неправильное значение куки eresus_login');
 		$exitButton->click();
