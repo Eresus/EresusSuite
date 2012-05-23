@@ -124,6 +124,13 @@
 		</copy>
 
 		<!--
+			Image
+		-->
+		<phingcall target="plugin">
+			<property name="plugin.name" value="image" />
+		</phingcall>
+
+		<!--
 			Menus
 		-->
 		<phingcall target="plugin">
