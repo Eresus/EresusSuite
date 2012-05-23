@@ -68,14 +68,6 @@
 		-->
 
 		<!--
-			Autoload
-		-->
-		<phingcall target="plugin">
-			<property name="plugin.name" value="autoload" />
-		</phingcall>
-
-
-		<!--
 			Articles
 		-->
 		<copy todir="${build.dir}/ext">
