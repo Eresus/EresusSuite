@@ -146,6 +146,13 @@
 		</phingcall>
 
 		<!--
+			SpamPrevent
+		-->
+		<phingcall target="plugin">
+			<property name="plugin.name" value="spamprevent" />
+		</phingcall>
+
+		<!--
 			Vars
 		-->
 		<copy todir="${build.dir}/ext">
