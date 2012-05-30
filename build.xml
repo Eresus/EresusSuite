@@ -145,9 +145,12 @@
 		<!--
 			SiteMap
 		-->
-		<phingcall target="plugin">
-			<property name="plugin.name" value="sitemap" />
-		</phingcall>
+		<copy todir="${build.dir}/ext">
+			<fileset dir="plugins/sitemap/src">
+  			<include name="sitemap.php" />
+  			<include name="sitemap/**" />
+			</fileset>
+		</copy>
 
 		<!--
 			SpamPrevent
