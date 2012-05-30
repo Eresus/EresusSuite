@@ -117,11 +117,9 @@
 		<!--
 			HTML
 		-->
-		<copy todir="${build.dir}/ext">
-			<fileset dir="plugins/html/src">
-  			<include name="html.php" />
-			</fileset>
-		</copy>
+		<phingcall target="plugin">
+			<property name="plugin.name" value="html" />
+		</phingcall>
 
 		<!--
 			Image
