@@ -160,6 +160,13 @@
 		</phingcall>
 
 		<!--
+			UI
+		-->
+		<phingcall target="plugin">
+			<property name="plugin.name" value="ui" />
+		</phingcall>
+
+		<!--
 			Vars
 		-->
 		<copy todir="${build.dir}/ext">
