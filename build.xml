@@ -143,6 +143,16 @@
 		</phingcall>
 
 		<!--
+			Path
+		-->
+		<copy todir="${build.dir}/ext">
+			<fileset dir="plugins/path/src">
+  			<include name="path" />
+  			<include name="path/**" />
+			</fileset>
+		</copy>
+
+		<!--
 			SiteMap
 		-->
 		<copy todir="${build.dir}/ext">
