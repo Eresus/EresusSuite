@@ -160,6 +160,13 @@
 		</phingcall>
 
 		<!--
+			TemplateService
+		-->
+		<phingcall target="plugin">
+			<property name="plugin.name" value="templateservice" />
+		</phingcall>
+
+		<!--
 			UI
 		-->
 		<phingcall target="plugin">
