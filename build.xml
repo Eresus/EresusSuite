@@ -147,7 +147,7 @@
 		-->
 		<copy todir="${build.dir}/ext">
 			<fileset dir="plugins/path/src">
-  			<include name="path" />
+  			<include name="path.php" />
   			<include name="path/**" />
 			</fileset>
 		</copy>
