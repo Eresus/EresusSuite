@@ -217,7 +217,7 @@
 		<mkdir dir="${distr.dir}" />
 		<delete file="${distr.dir}/${distr.name}.tar.bz2" failonerror="false" />
 		
-		<tar destFile="${distr.dir}/${distr.name}.tar.bz2" compression="bzip2">
+		<tar destfile="${distr.dir}/${distr.name}.tar.bz2" compression="bzip2">
 			<fileset dir="${build.dir}">
 				<include name="**" />
 			</fileset>
@@ -246,30 +246,6 @@
 		</copy>
 		<delete dir="${build.dir}/temp" />
 		
-	</target>
-	
-	<!--
-	=====================================================================
-	Тесты Selenium
-	=====================================================================
-	-->
-	<target name="selenium" description="Run Selenium tests">
-
-		<exec
-			command="
-				export selenium_site_root=${selenium.site.root};
-				export selenium_host=${selenium.host};
-				export selenium_port=${selenium.port};
-				export screenshots=${selenium.screenshots};
-				export pagesources=${selenium.pagesources};
-				phpunit
-				--configuration ${project.basedir}/tests/phpunit.xml
-				--log-junit ${logs.dir}/selenium.xml
-			"
-			checkreturn="false"
-			logoutput="true"
-		/>
-
 	</target>
 
 </project>
