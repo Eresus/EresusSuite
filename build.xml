@@ -23,17 +23,20 @@
 		<delete dir="${repo.dir}" />
 
 		<gitclone
+			gitPath="git"
 			repository="git://github.com/Eresus/EresusCMS.git"
 			targetPath="${repo.dir}"
 		/>
 
 		<gitfetch
+			gitPath="git"
 			repository="${repo.dir}"
 			source="origin"
 			quiet="true"
 		/>
 
 		<gitcheckout
+			gitPath="git"
 			repository="${repo.dir}"
 			branchname="origin/${cms.git.branch}" quiet="true"
 		/>
