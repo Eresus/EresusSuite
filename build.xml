@@ -71,6 +71,9 @@
 		<!--
 			Сборка CMS
 		-->
+		<phing dir="cms" inheritAll="false" target="vendors">
+			<property name="build.dir" value="${build.dir}" override="true" />
+		</phing>
 		<phing dir="cms" inheritAll="false">
 			<property name="build.dir" value="${build.dir}" override="true" />
 			<property name="phpunit.coverage.html" value="${logs.dir}/cms-coverage" override="true"/>
