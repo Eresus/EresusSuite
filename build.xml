@@ -13,35 +13,39 @@
 
 	<!--
 	=====================================================================
-		Получение сторонних компонентов
+	Загружает файлы сторонних компонентов
 	=====================================================================
 	-->
-	<target name="vendors" description="Get 3rd party vendor files">
+	<target name="vendors" description="Fetch 3rd party components">
 
-		<resolvepath propertyName="repo.dir" file="cms" />
+		<property environment="env" />
 
-		<delete dir="${repo.dir}" />
+		<if>
+			<available file="composer" property="." filepath="${env.PATH}" />
+			<then>
+				<exec command="composer update" passthru="true" />
+			</then>
 
-		<gitclone
-			gitPath="git"
-			repository="git://github.com/Eresus/EresusCMS.git"
-			targetPath="${repo.dir}"
-		/>
+			<else>
 
-		<gitfetch
-			gitPath="git"
-			repository="${repo.dir}"
-			source="origin"
-			quiet="true"
-		/>
+				<if>
+					<available file="composer.phar" property="." />
 
-		<gitcheckout
-			gitPath="git"
-			repository="${repo.dir}"
-			branchname="origin/${cms.git.branch}" quiet="true"
-		/>
+					<then>
+						<exec command="php composer.phar update" passthru="true" />
+					</then>
 
-		<exec dir="cms" command="git submodule init; git submodule update" />
+					<else>
+						<echo message="download" />
+						<httpget url="http://getcomposer.org/installer" dir="${project.basedir}"
+						         filename="composer.php"/>
+						<exec command="php composer.php" passthru="true" />
+						<delete file="composer.php" />
+						<exec command="php composer.phar install" passthru="true" />
+					</else>
+				</if>
+			</else>
+		</if>
 
 	</target>
 
@@ -50,7 +54,7 @@
 		Сборка
 	=====================================================================
 	-->
-	<target name="build" description="Build project">
+	<target name="build" description="Build project" depends="vendors">
 
 		<!--
 			Делаем путь к директориям сборки и логов абсолютным 
@@ -71,10 +75,8 @@
 		<!--
 			Сборка CMS
 		-->
-		<phing dir="cms" inheritAll="false" target="vendors">
-			<property name="build.dir" value="${build.dir}" override="true" />
-		</phing>
-		<phing dir="cms" inheritAll="false">
+		<phing dir="vendor/eresus/eresus-cms" inheritAll="false" target="vendors"/>
+		<phing dir="vendor/eresus/eresus-cms" inheritAll="false" target="build">
 			<property name="build.dir" value="${build.dir}" override="true" />
 			<property name="phpunit.coverage.html" value="${logs.dir}/cms-coverage" override="true"/>
 			<property name="logs.dir" value="${logs.dir}/cms" override="true"/>
@@ -145,6 +147,7 @@
 			HTML
 		-->
 		<phingcall target="plugin">
+			<property name="plugin.source" value="vendor/eresus" />
 			<property name="plugin.name" value="html" />
 		</phingcall>
 
@@ -231,6 +234,8 @@
 
 		<delete dir="${build.dir}" includeemptydirs="true" />
 		<delete dir="${logs.dir}" includeemptydirs="true" />
+		<delete dir="${project.basedir}/vendor" includeemptydirs="true" />
+		<delete file="${project.basedir}/composer.lock" />
 		
 	</target>
 
@@ -258,9 +263,17 @@
 	=====================================================================
 	-->
 	<target name="plugin" description="[internal] Build specified plugin">
-	
+
+		<if>
+			<not>
+				<isset property="plugin.source"/>
+			</not>
+			<then>
+				<property name="plugin.source" value="plugins"/>
+			</then>
+		</if>
 		<mkdir dir="${build.dir}/temp" />
-		<phing dir="plugins/${plugin.name}" phingfile="build.xml" target="build" inheritAll="false">
+		<phing dir="${plugin.source}/${plugin.name}" phingfile="build.xml" target="build" inheritAll="false">
 			<property name="build.dir" value="${build.dir}/temp" override="yes" />
 			<property name="phpunit" value="no" />
 			<property name="phpmd" value="no" />

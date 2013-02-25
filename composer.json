@@ -1,0 +1,38 @@
+{
+    "require":
+    {
+	      "eresus/eresus-cms" : "3.00",
+        "eresus/html" : "4.00"
+    },
+    "repositories":
+    [
+	    {
+		    "type": "package",
+		    "package":
+		    {
+			    "name": "eresus/eresus-cms",
+			    "version": "3.00",
+			    "source":
+			    {
+				    "type": "git",
+				    "url": "https://github.com/Eresus/EresusCMS",
+				    "reference": "v3.00"
+			    }
+		    }
+	    },
+	    {
+		    "type": "package",
+		    "package":
+		    {
+			    "name": "eresus/html",
+			    "version": "4.00",
+			    "source":
+			    {
+				    "type": "git",
+				    "url": "https://github.com/Eresus/Html",
+				    "reference": "v4.00"
+			    }
+		    }
+	    }
+    ]
+}
