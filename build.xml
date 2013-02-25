@@ -169,6 +169,7 @@
 			ORM
 		-->
 		<phingcall target="plugin">
+			<property name="plugin.source" value="vendor/eresus" />
 			<property name="plugin.name" value="orm" />
 		</phingcall>
 
