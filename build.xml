@@ -93,7 +93,7 @@
 			Articles
 		-->
 		<copy todir="${build.dir}/ext">
-			<fileset dir="plugins/articles/src">
+			<fileset dir="vendor/eresus/articles/src">
   			<include name="articles.php" />
   			<include name="articles/**" />
 			</fileset>
