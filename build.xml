@@ -20,6 +20,8 @@
 
 		<property environment="env" />
 
+        <svnupdate todir="${project.basedir}" />
+
 		<if>
 			<available file="composer" property="." filepath="${env.PATH}" />
 			<then>
@@ -246,6 +248,7 @@
 
 		<delete dir="${build.dir}" includeemptydirs="true" />
 		<delete dir="${logs.dir}" includeemptydirs="true" />
+        <delete dir="${project.basedir}/plugins" includeemptydirs="true" />
 		<delete dir="${project.basedir}/vendor" includeemptydirs="true" />
 		<delete file="${project.basedir}/composer.lock" />
 		
