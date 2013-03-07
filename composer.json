@@ -1,68 +1,83 @@
 {
     "require":
     {
-	      "eresus/eresus-cms" : "3.00",
-	      "eresus/articles" : "3.00",
+        "eresus/eresus-cms" : "3.00",
+        "eresus/articles" : "3.00",
         "eresus/html" : "4.00",
-	      "eresus/orm" : "2.00"
+        "eresus/orm" : "2.00",
+        "eresus/ui" : "2.01"
     },
     "repositories":
     [
-	    {
-		    "type": "package",
-		    "package":
-		    {
-			    "name": "eresus/eresus-cms",
-			    "version": "3.00",
-			    "source":
-			    {
-				    "type": "git",
-				    "url": "https://github.com/Eresus/EresusCMS",
-				    "reference": "v3.00"
-			    }
-		    }
-	    },
-	    {
-		    "type": "package",
-		    "package":
-		    {
-			    "name": "eresus/articles",
-			    "version": "3.00",
-			    "source":
-			    {
-				    "type": "git",
-				    "url": "https://github.com/Eresus/Articles",
-				    "reference": "v3.00"
-			    }
-		    }
-	    },
-	    {
-		    "type": "package",
-		    "package":
-		    {
-			    "name": "eresus/html",
-			    "version": "4.00",
-			    "source":
-			    {
-				    "type": "git",
-				    "url": "https://github.com/Eresus/Html",
-				    "reference": "v4.00"
-			    }
-		    }
-	    },
-	    {
-		    "type": "package",
-		    "package":
-		    {
-			    "name": "eresus/orm",
-			    "version": "2.00",
-			    "source":
-			    {
-				    "type": "git",
-				    "url": "https://github.com/Eresus/ORM",
-				    "reference": "v2.00"
-			    }
-		    }
-	    }
+        {
+            "type": "package",
+            "package":
+            {
+                "name": "eresus/eresus-cms",
+                "version": "3.00",
+                "source":
+                {
+                    "type": "git",
+                    "url": "https://github.com/Eresus/EresusCMS",
+                    "reference": "v3.00"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package":
+            {
+                "name": "eresus/articles",
+                "version": "3.00",
+                "source":
+                {
+                    "type": "git",
+                    "url": "https://github.com/Eresus/Articles",
+                    "reference": "v3.00"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package":
+            {
+                "name": "eresus/html",
+                "version": "4.00",
+                "source":
+                {
+                    "type": "git",
+                    "url": "https://github.com/Eresus/Html",
+                    "reference": "v4.00"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package":
+            {
+                "name": "eresus/orm",
+                "version": "2.00",
+                "source":
+                {
+                    "type": "git",
+                    "url": "https://github.com/Eresus/ORM",
+                    "reference": "v2.00"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package":
+            {
+                "name": "eresus/ui",
+                "version": "2.01",
+                "source":
+                {
+                    "type": "git",
+                    "url": "https://github.com/Eresus/UI",
+                    "reference": "v2.01"
+                }
+            }
+        }
     ]
 }
