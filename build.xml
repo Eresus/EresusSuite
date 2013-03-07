@@ -4,8 +4,6 @@
  Eresus Suite
 
  Файл сборки проекта
-
- $Id$
  -->
 <project name="eresus-suite" default="build" basedir="./">
 
@@ -19,6 +17,8 @@
 	<target name="vendors" description="Fetch 3rd party components">
 
 		<property environment="env" />
+
+        <svnupdate todir="${project.basedir}" />
 
 		<if>
 			<available file="composer" property="." filepath="${env.PATH}" />
@@ -246,6 +246,7 @@
 
 		<delete dir="${build.dir}" includeemptydirs="true" />
 		<delete dir="${logs.dir}" includeemptydirs="true" />
+        <delete dir="${project.basedir}/plugins" includeemptydirs="true" />
 		<delete dir="${project.basedir}/vendor" includeemptydirs="true" />
 		<delete file="${project.basedir}/composer.lock" />
 		
