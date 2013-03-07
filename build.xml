@@ -4,8 +4,6 @@
  Eresus Suite
 
  Файл сборки проекта
-
- $Id$
  -->
 <project name="eresus-suite" default="build" basedir="./">
 
