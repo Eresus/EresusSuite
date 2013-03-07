@@ -13,22 +13,48 @@
 
 	<!--
 	=====================================================================
-	Наборов файлов
+	Загружает файлы сторонних компонентов
 	=====================================================================
 	-->
-	
-	<!-- Плагины, подключенные по старому методу -->
-	<fileset dir="ext" id="files.ext">
-		<include name="**" />
-		<exclude name=".svn" />
-	</fileset>
+	<target name="vendors" description="Fetch 3rd party components">
+
+		<property environment="env" />
+
+		<if>
+			<available file="composer" property="." filepath="${env.PATH}" />
+			<then>
+				<exec command="composer update" passthru="true" />
+			</then>
+
+			<else>
+
+				<if>
+					<available file="composer.phar" property="." />
+
+					<then>
+						<exec command="php composer.phar update" passthru="true" />
+					</then>
+
+					<else>
+						<echo message="download" />
+						<httpget url="http://getcomposer.org/installer" dir="${project.basedir}"
+						         filename="composer.php"/>
+						<exec command="php composer.php" passthru="true" />
+						<delete file="composer.php" />
+						<exec command="php composer.phar install" passthru="true" />
+					</else>
+				</if>
+			</else>
+		</if>
+
+	</target>
 
 	<!--
 	=====================================================================
 		Сборка
 	=====================================================================
 	-->
-	<target name="build" description="Build project">
+	<target name="build" description="Build project" depends="vendors">
 
 		<!--
 			Делаем путь к директориям сборки и логов абсолютным 
@@ -49,7 +75,8 @@
 		<!--
 			Сборка CMS
 		-->
-		<phing dir="cms" inheritAll="false">
+		<phing dir="vendor/eresus/eresus-cms" inheritAll="false" target="vendors"/>
+		<phing dir="vendor/eresus/eresus-cms" inheritAll="false" target="build">
 			<property name="build.dir" value="${build.dir}" override="true" />
 			<property name="phpunit.coverage.html" value="${logs.dir}/cms-coverage" override="true"/>
 			<property name="logs.dir" value="${logs.dir}/cms" override="true"/>
@@ -57,12 +84,7 @@
 			<property name="phpcs" value="no" override="true"/>
 		</phing>
 
-		<!-- Плагины, подключенные старым способом -->
-		<copy todir="${build.dir}/ext">
-			<fileset refid="files.ext" />
-		</copy>
-
-		<!-- 
+		<!--
 			Сборка плагинов.
 			Располагайте плагины по алфавиту.
 		-->
@@ -71,7 +93,7 @@
 			Articles
 		-->
 		<copy todir="${build.dir}/ext">
-			<fileset dir="plugins/articles/src">
+			<fileset dir="vendor/eresus/articles/src">
   			<include name="articles.php" />
   			<include name="articles/**" />
 			</fileset>
@@ -104,6 +126,13 @@
 		</copy>
 
 		<!--
+			Cart
+		-->
+		<phingcall target="plugin">
+			<property name="plugin.name" value="cart" />
+		</phingcall>
+
+		<!--
 			E-Forms
 		-->
 		<phingcall target="plugin">
@@ -128,6 +157,7 @@
 			HTML
 		-->
 		<phingcall target="plugin">
+			<property name="plugin.source" value="vendor/eresus" />
 			<property name="plugin.name" value="html" />
 		</phingcall>
 
@@ -149,6 +179,7 @@
 			ORM
 		-->
 		<phingcall target="plugin">
+			<property name="plugin.source" value="vendor/eresus" />
 			<property name="plugin.name" value="orm" />
 		</phingcall>
 
@@ -190,6 +221,7 @@
 			UI
 		-->
 		<phingcall target="plugin">
+            <property name="plugin.source" value="vendor/eresus" />
 			<property name="plugin.name" value="ui" />
 		</phingcall>
 
@@ -214,6 +246,8 @@
 
 		<delete dir="${build.dir}" includeemptydirs="true" />
 		<delete dir="${logs.dir}" includeemptydirs="true" />
+		<delete dir="${project.basedir}/vendor" includeemptydirs="true" />
+		<delete file="${project.basedir}/composer.lock" />
 		
 	</target>
 
@@ -227,7 +261,7 @@
 		<mkdir dir="${distr.dir}" />
 		<delete file="${distr.dir}/${distr.name}.tar.bz2" failonerror="false" />
 		
-		<tar destFile="${distr.dir}/${distr.name}.tar.bz2" compression="bzip2">
+		<tar destfile="${distr.dir}/${distr.name}.tar.bz2" compression="bzip2">
 			<fileset dir="${build.dir}">
 				<include name="**" />
 			</fileset>
@@ -241,9 +275,17 @@
 	=====================================================================
 	-->
 	<target name="plugin" description="[internal] Build specified plugin">
-	
+
+		<if>
+			<not>
+				<isset property="plugin.source"/>
+			</not>
+			<then>
+				<property name="plugin.source" value="plugins"/>
+			</then>
+		</if>
 		<mkdir dir="${build.dir}/temp" />
-		<phing dir="plugins/${plugin.name}" phingfile="build.xml" target="build" inheritAll="false">
+		<phing dir="${plugin.source}/${plugin.name}" phingfile="build.xml" target="build" inheritAll="false">
 			<property name="build.dir" value="${build.dir}/temp" override="yes" />
 			<property name="phpunit" value="no" />
 			<property name="phpmd" value="no" />
@@ -256,30 +298,6 @@
 		</copy>
 		<delete dir="${build.dir}/temp" />
 		
-	</target>
-	
-	<!--
-	=====================================================================
-	Тесты Selenium
-	=====================================================================
-	-->
-	<target name="selenium" description="Run Selenium tests">
-
-		<exec
-			command="
-				export selenium_site_root=${selenium.site.root};
-				export selenium_host=${selenium.host};
-				export selenium_port=${selenium.port};
-				export screenshots=${selenium.screenshots};
-				export pagesources=${selenium.pagesources};
-				phpunit
-				--configuration ${project.basedir}/tests/phpunit.xml
-				--log-junit ${logs.dir}/selenium.xml
-			"
-			checkreturn="false"
-			logoutput="true"
-		/>
-
 	</target>
 
 </project>
