@@ -1,7 +1,7 @@
 {
     "require":
     {
-        "eresus/eresus-cms" : "3.00",
+        "eresus/eresus-cms" : "dev-master",
         "eresus/articles" : "3.00",
         "eresus/html" : "4.00",
         "eresus/orm" : "2.00",
@@ -14,12 +14,12 @@
             "package":
             {
                 "name": "eresus/eresus-cms",
-                "version": "3.00",
+                "version": "dev-master",
                 "source":
                 {
                     "type": "git",
                     "url": "https://github.com/Eresus/EresusCMS",
-                    "reference": "v3.00"
+                    "reference": "master"
                 }
             }
         },
