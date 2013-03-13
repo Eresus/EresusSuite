@@ -16,36 +16,22 @@
 	-->
 	<target name="vendors" description="Fetch 3rd party components">
 
-		<property environment="env" />
+        <if>
+            <available file="composer.phar" property="." />
 
-        <svnupdate todir="${project.basedir}" />
+            <then>
+                <exec command="php composer.phar update" passthru="true" />
+            </then>
 
-		<if>
-			<available file="composer" property="." filepath="${env.PATH}" />
-			<then>
-				<exec command="composer update" passthru="true" />
-			</then>
-
-			<else>
-
-				<if>
-					<available file="composer.phar" property="." />
-
-					<then>
-						<exec command="php composer.phar update" passthru="true" />
-					</then>
-
-					<else>
-						<echo message="download" />
-						<httpget url="http://getcomposer.org/installer" dir="${project.basedir}"
-						         filename="composer.php"/>
-						<exec command="php composer.php" passthru="true" />
-						<delete file="composer.php" />
-						<exec command="php composer.phar install" passthru="true" />
-					</else>
-				</if>
-			</else>
-		</if>
+            <else>
+                <echo message="download" />
+                <httpget url="http://getcomposer.org/installer" dir="${project.basedir}"
+                         filename="composer.php"/>
+                <exec command="php composer.php" passthru="true" />
+                <delete file="composer.php" />
+                <exec command="php composer.phar install" passthru="true" />
+            </else>
+        </if>
 
 	</target>
 
@@ -103,7 +89,7 @@
 			Autoreplace
 		-->
 		<copy todir="${build.dir}/ext">
-			<fileset dir="plugins/autoreplace/src">
+			<fileset dir="vendor/eresus/autoreplace/src">
   			<include name="autoreplace.php" />
   			<include name="autoreplace/**" />
 			</fileset>
@@ -113,6 +99,7 @@
 			Banners
 		-->
 		<phingcall target="plugin">
+            <property name="plugin.source" value="vendor/eresus" />
 			<property name="plugin.name" value="banners" />
 		</phingcall>
 
@@ -120,7 +107,7 @@
 			Blocks
 		-->
 		<copy todir="${build.dir}/ext">
-			<fileset dir="plugins/blocks/src">
+			<fileset dir="vendor/eresus/blocks/src">
   			<include name="blocks.php" />
 			</fileset>
 		</copy>
@@ -129,6 +116,7 @@
 			Cart
 		-->
 		<phingcall target="plugin">
+            <property name="plugin.source" value="vendor/eresus" />
 			<property name="plugin.name" value="cart" />
 		</phingcall>
 
@@ -136,6 +124,7 @@
 			E-Forms
 		-->
 		<phingcall target="plugin">
+            <property name="plugin.source" value="vendor/eresus" />
 			<property name="plugin.name" value="eforms" />
 		</phingcall>
 
@@ -143,6 +132,7 @@
 			Gallery
 		-->
 		<phingcall target="plugin">
+            <property name="plugin.source" value="vendor/eresus" />
 			<property name="plugin.name" value="gallery" />
 		</phingcall>
 
@@ -150,6 +140,7 @@
 			GoodsCatalog
 		-->
 		<phingcall target="plugin">
+            <property name="plugin.source" value="vendor/eresus" />
 			<property name="plugin.name" value="goodscatalog" />
 		</phingcall>
 
@@ -165,6 +156,7 @@
 			Image
 		-->
 		<phingcall target="plugin">
+            <property name="plugin.source" value="vendor/eresus" />
 			<property name="plugin.name" value="image" />
 		</phingcall>
 
@@ -172,6 +164,7 @@
 			Menus
 		-->
 		<phingcall target="plugin">
+            <property name="plugin.source" value="vendor/eresus" />
 			<property name="plugin.name" value="menus" />
 		</phingcall>
 
@@ -187,7 +180,7 @@
 			Path
 		-->
 		<copy todir="${build.dir}/ext">
-			<fileset dir="plugins/path/src">
+			<fileset dir="vendor/eresus/path/src">
   			<include name="path.php" />
   			<include name="path/**" />
 			</fileset>
@@ -197,7 +190,7 @@
 			SiteMap
 		-->
 		<copy todir="${build.dir}/ext">
-			<fileset dir="plugins/sitemap/src">
+			<fileset dir="vendor/eresus/sitemap/src">
   			<include name="sitemap.php" />
   			<include name="sitemap/**" />
 			</fileset>
@@ -207,6 +200,7 @@
 			SpamPrevent
 		-->
 		<phingcall target="plugin">
+            <property name="plugin.source" value="vendor/eresus" />
 			<property name="plugin.name" value="spamprevent" />
 		</phingcall>
 
@@ -214,6 +208,7 @@
 			TemplateService
 		-->
 		<phingcall target="plugin">
+            <property name="plugin.source" value="vendor/eresus" />
 			<property name="plugin.name" value="templateservice" />
 		</phingcall>
 
@@ -229,7 +224,7 @@
 			Vars
 		-->
 		<copy todir="${build.dir}/ext">
-			<fileset dir="plugins/vars/src">
+			<fileset dir="vendor/eresus/vars/src">
   			<include name="vars.php" />
   			<include name="vars/**" />
 			</fileset>
