@@ -1,11 +1,25 @@
 {
     "require":
     {
-        "eresus/eresus-cms" : "dev-master",
-        "eresus/articles" : "3.00",
-        "eresus/html" : "4.00",
-        "eresus/orm" : "2.00",
-        "eresus/ui" : "2.01"
+        "eresus/eresus-cms" : "@dev",
+        "eresus/articles" : "@dev",
+        "eresus/autoreplace" : "@dev",
+        "eresus/banners" : "@dev",
+        "eresus/blocks" : "@dev",
+        "eresus/cart" : "@dev",
+        "eresus/eforms" : "@dev",
+        "eresus/gallery" : "@dev",
+        "eresus/goodscatalog" : "@dev",
+        "eresus/html" : "@dev",
+        "eresus/image" : "@dev",
+        "eresus/menus" : "@dev",
+        "eresus/orm" : "@dev",
+        "eresus/path" : "@dev",
+        "eresus/sitemap" : "@dev",
+        "eresus/spamprevent" : "@dev",
+        "eresus/templateservice" : "@dev",
+        "eresus/ui" : "@dev",
+        "eresus/vars" : "@dev"
     },
     "repositories":
     [
@@ -14,12 +28,12 @@
             "package":
             {
                 "name": "eresus/eresus-cms",
-                "version": "dev-master",
+                "version": "@dev",
                 "source":
                 {
                     "type": "git",
                     "url": "https://github.com/Eresus/EresusCMS",
-                    "reference": "master"
+                    "reference": "develop"
                 }
             }
         },
@@ -28,12 +42,110 @@
             "package":
             {
                 "name": "eresus/articles",
-                "version": "3.00",
+                "version": "@dev",
                 "source":
                 {
                     "type": "git",
                     "url": "https://github.com/Eresus/Articles",
-                    "reference": "v3.00"
+                    "reference": "develop"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package":
+            {
+                "name": "eresus/autoreplace",
+                "version": "@dev",
+                "source":
+                {
+                    "type": "svn",
+                    "url": "http://svn.eresus.ru/svn/cms-plugins/autoreplace",
+                    "reference": "trunk"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package":
+            {
+                "name": "eresus/banners",
+                "version": "@dev",
+                "source":
+                {
+                    "type": "git",
+                    "url": "https://github.com/Eresus/Banners",
+                    "reference": "develop"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package":
+            {
+                "name": "eresus/blocks",
+                "version": "@dev",
+                "source":
+                {
+                    "type": "svn",
+                    "url": "http://svn.eresus.ru/svn/cms-plugins/blocks",
+                    "reference": "trunk"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package":
+            {
+                "name": "eresus/cart",
+                "version": "@dev",
+                "source":
+                {
+                    "type": "svn",
+                    "url": "http://svn.eresus.ru/svn/cms-plugins/cart",
+                    "reference": "trunk"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package":
+            {
+                "name": "eresus/eforms",
+                "version": "@dev",
+                "source":
+                {
+                    "type": "svn",
+                    "url": "http://svn.eresus.ru/svn/cms-plugins/eforms",
+                    "reference": "trunk"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package":
+            {
+                "name": "eresus/gallery",
+                "version": "@dev",
+                "source":
+                {
+                    "type": "svn",
+                    "url": "http://svn.eresus.ru/svn/cms-plugins/gallery",
+                    "reference": "trunk"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package":
+            {
+                "name": "eresus/goodscatalog",
+                "version": "@dev",
+                "source":
+                {
+                    "type": "svn",
+                    "url": "http://svn.eresus.ru/svn/cms-plugins/goodscatalog",
+                    "reference": "trunk"
                 }
             }
         },
@@ -42,12 +154,40 @@
             "package":
             {
                 "name": "eresus/html",
-                "version": "4.00",
+                "version": "@dev",
                 "source":
                 {
                     "type": "git",
                     "url": "https://github.com/Eresus/Html",
-                    "reference": "v4.00"
+                    "reference": "develop"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package":
+            {
+                "name": "eresus/image",
+                "version": "@dev",
+                "source":
+                {
+                    "type": "svn",
+                    "url": "http://svn.eresus.ru/svn/cms-plugins/image",
+                    "reference": "trunk"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package":
+            {
+                "name": "eresus/menus",
+                "version": "@dev",
+                "source":
+                {
+                    "type": "svn",
+                    "url": "http://svn.eresus.ru/svn/cms-plugins/menus",
+                    "reference": "trunk"
                 }
             }
         },
@@ -56,12 +196,68 @@
             "package":
             {
                 "name": "eresus/orm",
-                "version": "2.00",
+                "version": "@dev",
                 "source":
                 {
                     "type": "git",
                     "url": "https://github.com/Eresus/ORM",
-                    "reference": "v2.00"
+                    "reference": "develop"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package":
+            {
+                "name": "eresus/path",
+                "version": "@dev",
+                "source":
+                {
+                    "type": "svn",
+                    "url": "http://svn.eresus.ru/svn/cms-plugins/path",
+                    "reference": "trunk"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package":
+            {
+                "name": "eresus/sitemap",
+                "version": "@dev",
+                "source":
+                {
+                    "type": "svn",
+                    "url": "http://svn.eresus.ru/svn/cms-plugins/sitemap",
+                    "reference": "trunk"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package":
+            {
+                "name": "eresus/spamprevent",
+                "version": "@dev",
+                "source":
+                {
+                    "type": "svn",
+                    "url": "http://svn.eresus.ru/svn/cms-plugins/spamprevent",
+                    "reference": "trunk"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package":
+            {
+                "name": "eresus/templateservice",
+                "version": "@dev",
+                "source":
+                {
+                    "type": "svn",
+                    "url": "http://svn.eresus.ru/svn/cms-plugins/templateservice",
+                    "reference": "trunk"
                 }
             }
         },
@@ -70,12 +266,26 @@
             "package":
             {
                 "name": "eresus/ui",
-                "version": "2.01",
+                "version": "@dev",
                 "source":
                 {
                     "type": "git",
                     "url": "https://github.com/Eresus/UI",
-                    "reference": "v2.01"
+                    "reference": "develop"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package":
+            {
+                "name": "eresus/vars",
+                "version": "@dev",
+                "source":
+                {
+                    "type": "svn",
+                    "url": "http://svn.eresus.ru/svn/cms-plugins/vars",
+                    "reference": "trunk"
                 }
             }
         }
