@@ -73,9 +73,9 @@
                 "version": "@dev",
                 "source":
                 {
-                    "type": "svn",
-                    "url": "http://svn.eresus.ru/svn/cms-plugins/banners",
-                    "reference": "trunk"
+                    "type": "git",
+                    "url": "https://github.com/Eresus/Banners",
+                    "reference": "develop"
                 }
             }
         },
