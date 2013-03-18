@@ -1,15 +1,15 @@
 {
     "require":
     {
-        "eresus/eresus-cms" : "@dev",
-        "eresus/articles" : "@dev",
-        "eresus/autoreplace" : "@dev",
-        "eresus/banners" : "@dev",
-        "eresus/blocks" : "@dev",
-        "eresus/cart" : "@dev",
-        "eresus/eforms" : "@dev",
+        "eresus/eresus-cms" : "3.00",
+        "eresus/articles" : "3.00",
+        "eresus/autoreplace" : "2.00",
+        "eresus/banners" : "3.00",
+        "eresus/blocks" : "4.00",
+        "eresus/cart" : "2.00",
+        "eresus/eforms" : "2.00",
         "eresus/gallery" : "@dev",
-        "eresus/goodscatalog" : "@dev",
+        "eresus/goodscatalog" : "2.00",
         "eresus/html" : "@dev",
         "eresus/image" : "@dev",
         "eresus/menus" : "@dev",
@@ -28,12 +28,12 @@
             "package":
             {
                 "name": "eresus/eresus-cms",
-                "version": "@dev",
+                "version": "3.00",
                 "source":
                 {
                     "type": "git",
                     "url": "https://github.com/Eresus/EresusCMS",
-                    "reference": "develop"
+                    "reference": "v3.00"
                 }
             }
         },
@@ -42,12 +42,12 @@
             "package":
             {
                 "name": "eresus/articles",
-                "version": "@dev",
+                "version": "3.00",
                 "source":
                 {
                     "type": "git",
                     "url": "https://github.com/Eresus/Articles",
-                    "reference": "develop"
+                    "reference": "v3.00"
                 }
             }
         },
@@ -56,12 +56,12 @@
             "package":
             {
                 "name": "eresus/autoreplace",
-                "version": "@dev",
+                "version": "2.00",
                 "source":
                 {
                     "type": "svn",
                     "url": "http://svn.eresus.ru/svn/cms-plugins/autoreplace",
-                    "reference": "trunk"
+                    "reference": "tags/2.00"
                 }
             }
         },
@@ -70,12 +70,12 @@
             "package":
             {
                 "name": "eresus/banners",
-                "version": "@dev",
+                "version": "3.00",
                 "source":
                 {
                     "type": "git",
                     "url": "https://github.com/Eresus/Banners",
-                    "reference": "develop"
+                    "reference": "v3.00"
                 }
             }
         },
@@ -84,12 +84,12 @@
             "package":
             {
                 "name": "eresus/blocks",
-                "version": "@dev",
+                "version": "4.00",
                 "source":
                 {
                     "type": "svn",
                     "url": "http://svn.eresus.ru/svn/cms-plugins/blocks",
-                    "reference": "trunk"
+                    "reference": "tags/4.00"
                 }
             }
         },
@@ -98,12 +98,12 @@
             "package":
             {
                 "name": "eresus/cart",
-                "version": "@dev",
+                "version": "2.00",
                 "source":
                 {
                     "type": "svn",
                     "url": "http://svn.eresus.ru/svn/cms-plugins/cart",
-                    "reference": "trunk"
+                    "reference": "tags/2.00"
                 }
             }
         },
@@ -112,12 +112,12 @@
             "package":
             {
                 "name": "eresus/eforms",
-                "version": "@dev",
+                "version": "2.00",
                 "source":
                 {
                     "type": "svn",
                     "url": "http://svn.eresus.ru/svn/cms-plugins/eforms",
-                    "reference": "trunk"
+                    "reference": "tags/2.00"
                 }
             }
         },
@@ -140,12 +140,12 @@
             "package":
             {
                 "name": "eresus/goodscatalog",
-                "version": "@dev",
+                "version": "2.00",
                 "source":
                 {
                     "type": "svn",
                     "url": "http://svn.eresus.ru/svn/cms-plugins/goodscatalog",
-                    "reference": "trunk"
+                    "reference": "tags/2.00"
                 }
             }
         },
