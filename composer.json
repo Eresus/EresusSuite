@@ -10,7 +10,7 @@
         "eresus/eforms" : "2.00",
         "eresus/gallery" : "@dev",
         "eresus/goodscatalog" : "2.00",
-        "eresus/html" : "@dev",
+        "eresus/html" : "4.00",
         "eresus/image" : "@dev",
         "eresus/menus" : "@dev",
         "eresus/orm" : "@dev",
@@ -154,12 +154,12 @@
             "package":
             {
                 "name": "eresus/html",
-                "version": "@dev",
+                "version": "4.00",
                 "source":
                 {
                     "type": "git",
                     "url": "https://github.com/Eresus/Html",
-                    "reference": "develop"
+                    "reference": "v4.00"
                 }
             }
         },
