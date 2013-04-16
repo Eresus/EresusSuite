@@ -244,6 +244,7 @@
         <delete dir="${project.basedir}/plugins" includeemptydirs="true" />
 		<delete dir="${project.basedir}/vendor" includeemptydirs="true" />
 		<delete file="${project.basedir}/composer.lock" />
+        <delete file="${project.basedir}/composer.phar" />
 		
 	</target>
 
