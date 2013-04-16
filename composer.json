@@ -59,9 +59,9 @@
                 "version": "2.00",
                 "source":
                 {
-                    "type": "svn",
-                    "url": "http://svn.eresus.ru/svn/cms-plugins/autoreplace",
-                    "reference": "tags/2.00"
+                    "type": "git",
+                    "url": "https://github.com/Eresus/Autoreplace",
+                    "reference": "v2.00"
                 }
             }
         },
