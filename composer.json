@@ -11,15 +11,15 @@
         "eresus/gallery" : "@dev",
         "eresus/goodscatalog" : "2.00",
         "eresus/html" : "4.00",
-        "eresus/image" : "@dev",
-        "eresus/menus" : "@dev",
-        "eresus/orm" : "@dev",
-        "eresus/path" : "@dev",
-        "eresus/sitemap" : "@dev",
-        "eresus/spamprevent" : "@dev",
-        "eresus/templateservice" : "@dev",
-        "eresus/ui" : "@dev",
-        "eresus/vars" : "@dev"
+        "eresus/image" : "2.00",
+        "eresus/menus" : "3.00",
+        "eresus/orm" : "2.00",
+        "eresus/path" : "3.00",
+        "eresus/sitemap" : "4.00",
+        "eresus/spamprevent" : "2.01",
+        "eresus/templateservice" : "1.00",
+        "eresus/ui" : "2.01",
+        "eresus/vars" : "3.00"
     },
     "repositories":
     [
@@ -87,9 +87,9 @@
                 "version": "4.00",
                 "source":
                 {
-                    "type": "svn",
-                    "url": "http://svn.eresus.ru/svn/cms-plugins/blocks",
-                    "reference": "tags/4.00"
+                    "type": "git",
+                    "url": "https://github.com/Eresus/Blocks",
+                    "reference": "v4.00"
                 }
             }
         },
@@ -101,9 +101,9 @@
                 "version": "2.00",
                 "source":
                 {
-                    "type": "svn",
-                    "url": "http://svn.eresus.ru/svn/cms-plugins/cart",
-                    "reference": "tags/2.00"
+                    "type": "git",
+                    "url": "https://github.com/Eresus/Cart",
+                    "reference": "v2.00"
                 }
             }
         },
@@ -115,9 +115,9 @@
                 "version": "2.00",
                 "source":
                 {
-                    "type": "svn",
-                    "url": "http://svn.eresus.ru/svn/cms-plugins/eforms",
-                    "reference": "tags/2.00"
+                    "type": "git",
+                    "url": "https://github.com/Eresus/EForms",
+                    "reference": "v2.00"
                 }
             }
         },
@@ -143,9 +143,9 @@
                 "version": "2.00",
                 "source":
                 {
-                    "type": "svn",
-                    "url": "http://svn.eresus.ru/svn/cms-plugins/goodscatalog",
-                    "reference": "tags/2.00"
+                    "type": "git",
+                    "url": "https://github.com/Eresus/GoodsCatalog",
+                    "reference": "v2.00"
                 }
             }
         },
@@ -168,12 +168,12 @@
             "package":
             {
                 "name": "eresus/image",
-                "version": "@dev",
+                "version": "2.00",
                 "source":
                 {
-                    "type": "svn",
-                    "url": "http://svn.eresus.ru/svn/cms-plugins/image",
-                    "reference": "trunk"
+                    "type": "git",
+                    "url": "https://github.com/Eresus/Image",
+                    "reference": "v2.00"
                 }
             }
         },
@@ -182,12 +182,12 @@
             "package":
             {
                 "name": "eresus/menus",
-                "version": "@dev",
+                "version": "3.00",
                 "source":
                 {
-                    "type": "svn",
-                    "url": "http://svn.eresus.ru/svn/cms-plugins/menus",
-                    "reference": "trunk"
+                    "type": "git",
+                    "url": "https://github.com/Eresus/Menus",
+                    "reference": "v3.00"
                 }
             }
         },
@@ -196,12 +196,12 @@
             "package":
             {
                 "name": "eresus/orm",
-                "version": "@dev",
+                "version": "2.00",
                 "source":
                 {
                     "type": "git",
                     "url": "https://github.com/Eresus/ORM",
-                    "reference": "develop"
+                    "reference": "v2.00"
                 }
             }
         },
@@ -210,12 +210,12 @@
             "package":
             {
                 "name": "eresus/path",
-                "version": "@dev",
+                "version": "3.00",
                 "source":
                 {
-                    "type": "svn",
-                    "url": "http://svn.eresus.ru/svn/cms-plugins/path",
-                    "reference": "trunk"
+                    "type": "git",
+                    "url": "https://github.com/Eresus/Path",
+                    "reference": "v3.00"
                 }
             }
         },
@@ -224,12 +224,12 @@
             "package":
             {
                 "name": "eresus/sitemap",
-                "version": "@dev",
+                "version": "4.00",
                 "source":
                 {
-                    "type": "svn",
-                    "url": "http://svn.eresus.ru/svn/cms-plugins/sitemap",
-                    "reference": "trunk"
+                    "type": "git",
+                    "url": "https://github.com/Eresus/SiteMap",
+                    "reference": "v4.00"
                 }
             }
         },
@@ -238,12 +238,12 @@
             "package":
             {
                 "name": "eresus/spamprevent",
-                "version": "@dev",
+                "version": "2.01",
                 "source":
                 {
-                    "type": "svn",
-                    "url": "http://svn.eresus.ru/svn/cms-plugins/spamprevent",
-                    "reference": "trunk"
+                    "type": "git",
+                    "url": "https://github.com/Eresus/SpamPrevent",
+                    "reference": "v2.01"
                 }
             }
         },
@@ -252,12 +252,12 @@
             "package":
             {
                 "name": "eresus/templateservice",
-                "version": "@dev",
+                "version": "1.00",
                 "source":
                 {
-                    "type": "svn",
-                    "url": "http://svn.eresus.ru/svn/cms-plugins/templateservice",
-                    "reference": "trunk"
+                    "type": "git",
+                    "url": "https://github.com/Eresus/TemplateService",
+                    "reference": "v1.00"
                 }
             }
         },
@@ -266,12 +266,12 @@
             "package":
             {
                 "name": "eresus/ui",
-                "version": "@dev",
+                "version": "2.01",
                 "source":
                 {
                     "type": "git",
                     "url": "https://github.com/Eresus/UI",
-                    "reference": "develop"
+                    "reference": "v2.01"
                 }
             }
         },
@@ -280,12 +280,12 @@
             "package":
             {
                 "name": "eresus/vars",
-                "version": "@dev",
+                "version": "3.00",
                 "source":
                 {
-                    "type": "svn",
-                    "url": "http://svn.eresus.ru/svn/cms-plugins/vars",
-                    "reference": "trunk"
+                    "type": "git",
+                    "url": "https://github.com/Eresus/Vars",
+                    "reference": "v3.00"
                 }
             }
         }
