@@ -8,7 +8,7 @@
         "eresus/blocks" : "4.00",
         "eresus/cart" : "2.00",
         "eresus/eforms" : "2.00",
-        "eresus/gallery" : "@dev",
+        "eresus/gallery" : "3.00",
         "eresus/goodscatalog" : "2.00",
         "eresus/html" : "4.00",
         "eresus/image" : "2.00",
@@ -126,12 +126,12 @@
             "package":
             {
                 "name": "eresus/gallery",
-                "version": "@dev",
+                "version": "3.00",
                 "source":
                 {
-                    "type": "svn",
-                    "url": "http://svn.eresus.ru/svn/cms-plugins/gallery",
-                    "reference": "trunk"
+                    "type": "git",
+                    "url": "https://github.com/Eresus/Gallery",
+                    "reference": "v3.00"
                 }
             }
         },
