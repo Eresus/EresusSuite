@@ -1,7 +1,7 @@
 {
     "require":
     {
-        "eresus/eresus-cms" : "@dev",
+        "eresus/eresus-cms" : "dev-develop",
         "eresus/articles" : "@dev",
         "eresus/autoreplace" : "@dev",
         "eresus/banners" : "@dev",
@@ -24,16 +24,20 @@
     "repositories":
     [
         {
+            "type": "vcs",
+            "url": "git@github.com:Eresus/EresusCMS.git"
+        },
+        {
             "type": "package",
             "package":
             {
-                "name": "eresus/eresus-cms",
-                "version": "@dev",
+                "name": "carhartl/jquery-cookie",
+                "version": "1.1",
                 "source":
                 {
                     "type": "git",
-                    "url": "https://github.com/Eresus/EresusCMS",
-                    "reference": "develop"
+                    "url": "https://github.com/carhartl/jquery-cookie",
+                    "reference": "v1.1"
                 }
             }
         },
