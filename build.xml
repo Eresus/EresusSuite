@@ -105,11 +105,9 @@
 		<!--
 			Blocks
 		-->
-		<copy todir="${build.dir}/ext">
-			<fileset dir="vendor/eresus/blocks/src">
-  			<include name="blocks.php" />
-			</fileset>
-		</copy>
+        <phingcall target="plugin">
+            <property name="plugin.name" value="blocks" />
+        </phingcall>
 
 		<!--
 			Cart
