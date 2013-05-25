@@ -8,6 +8,7 @@
             "email": "m.krasilnikov@yandex.ru"
         }
     ],
+    "minimum-stability": "dev",
     "require":
     {
         "eresus/eresus-cms" : "3.00",
@@ -26,7 +27,7 @@
         "eresus/path" : "3.00",
         "eresus/sitemap" : "4.00",
         "eresus/spamprevent" : "2.01",
-        "eresus/templateservice" : "1.00.1",
+        "eresus/template-service" : "1.00.1",
         "eresus/ui" : "2.01",
         "eresus/vars" : "3.00"
     },
@@ -257,18 +258,8 @@
             }
         },
         {
-            "type": "package",
-            "package":
-            {
-                "name": "eresus/templateservice",
-                "version": "1.00",
-                "source":
-                {
-                    "type": "git",
-                    "url": "https://github.com/Eresus/TemplateService",
-                    "reference": "v1.00"
-                }
-            }
+            "type": "vcs",
+            "url": "git://github.com/Eresus/TemplateService.git"
         },
         {
             "type": "package",
