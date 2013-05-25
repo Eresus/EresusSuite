@@ -1,4 +1,13 @@
 {
+    "name": "eresus/eresus-suite",
+    "description": "Eresus CMS с набором модулей расширения",
+    "authors":
+    [
+        {
+            "name": "Михаил Красильников",
+            "email": "m.krasilnikov@yandex.ru"
+        }
+    ],
     "require":
     {
         "eresus/eresus-cms" : "3.00",
