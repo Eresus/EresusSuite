@@ -17,7 +17,7 @@
         "eresus/path" : "3.00",
         "eresus/sitemap" : "4.00",
         "eresus/spamprevent" : "2.01",
-        "eresus/templateservice" : "1.00",
+        "eresus/templateservice" : "1.00.1",
         "eresus/ui" : "2.01",
         "eresus/vars" : "3.00"
     },
