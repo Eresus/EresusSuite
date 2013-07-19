@@ -148,6 +148,7 @@
 			Image
 		-->
 		<phingcall target="plugin">
+            <property name="plugin.build.vendors" value="yes" />
 			<property name="plugin.name" value="image" />
 		</phingcall>
 
@@ -260,6 +261,15 @@
 	<target name="plugin" description="[internal] Build specified plugin">
 
         <mkdir dir="${build.dir}/temp" />
+        <if>
+            <isset property="plugin.build.vendors" />
+            <then>
+                <phing dir="vendor/eresus/${plugin.name}" phingfile="build.xml" target="vendors"
+                    inheritAll="false">
+                    <property name="build.dir" value="${build.dir}/temp" override="yes" />
+                </phing>
+            </then>
+        </if>
 		<phing dir="vendor/eresus/${plugin.name}" phingfile="build.xml" target="build" inheritAll="false">
 			<property name="build.dir" value="${build.dir}/temp" override="yes" />
 			<property name="phpunit" value="no" />
