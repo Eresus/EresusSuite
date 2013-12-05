@@ -21,12 +21,12 @@
         "eresus/gallery" : "3.00",
         "eresus/goodscatalog" : "2.00",
         "eresus/html" : "4.00",
-        "eresus/image" : "2.00",
+        "eresus/image" : "2.01.1",
         "eresus/menus" : "3.00",
         "eresus/orm" : "2.00",
         "eresus/path" : "3.00",
         "eresus/sitemap" : "4.00",
-        "eresus/spamprevent" : "2.01",
+        "eresus/spamprevent" : "2.02",
         "eresus/template-service" : "1.00.1",
         "eresus/ui" : "2.01",
         "eresus/vars" : "3.00"
@@ -177,20 +177,6 @@
             "type": "package",
             "package":
             {
-                "name": "eresus/image",
-                "version": "2.00",
-                "source":
-                {
-                    "type": "git",
-                    "url": "https://github.com/Eresus/Image",
-                    "reference": "v2.00"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package":
-            {
                 "name": "eresus/menus",
                 "version": "3.00",
                 "source":
@@ -240,20 +226,6 @@
                     "type": "git",
                     "url": "https://github.com/Eresus/SiteMap",
                     "reference": "v4.00"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package":
-            {
-                "name": "eresus/spamprevent",
-                "version": "2.01",
-                "source":
-                {
-                    "type": "git",
-                    "url": "https://github.com/Eresus/SpamPrevent",
-                    "reference": "v2.01"
                 }
             }
         },
