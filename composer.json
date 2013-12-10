@@ -180,20 +180,6 @@
             "type": "package",
             "package":
             {
-                "name": "eresus/image",
-                "version": "@dev",
-                "source":
-                {
-                    "type": "git",
-                    "url": "https://github.com/Eresus/Image",
-                    "reference": "develop"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package":
-            {
                 "name": "eresus/menus",
                 "version": "@dev",
                 "source":
@@ -247,32 +233,8 @@
             }
         },
         {
-            "type": "package",
-            "package":
-            {
-                "name": "eresus/spamprevent",
-                "version": "@dev",
-                "source":
-                {
-                    "type": "git",
-                    "url": "https://github.com/Eresus/SpamPrevent",
-                    "reference": "develop"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package":
-            {
-                "name": "eresus/templateservice",
-                "version": "@dev",
-                "source":
-                {
-                    "type": "git",
-                    "url": "https://github.com/Eresus/TemplateService",
-                    "reference": "develop"
-                }
-            }
+            "type": "vcs",
+            "url": "git://github.com/Eresus/TemplateService.git"
         },
         {
             "type": "package",
