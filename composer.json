@@ -8,9 +8,10 @@
             "email": "m.krasilnikov@yandex.ru"
         }
     ],
+    "minimum-stability": "dev",
     "require":
     {
-        "eresus/eresus-cms" : "dev-develop",
+        "eresus/eresus-cms" : "@dev",
         "eresus/articles" : "@dev",
         "eresus/autoreplace" : "@dev",
         "eresus/banners" : "@dev",
@@ -26,15 +27,25 @@
         "eresus/path" : "@dev",
         "eresus/sitemap" : "@dev",
         "eresus/spamprevent" : "@dev",
-        "eresus/templateservice" : "@dev",
+        "eresus/template-service" : "@dev",
         "eresus/ui" : "@dev",
         "eresus/vars" : "@dev"
     },
     "repositories":
     [
         {
-            "type": "vcs",
-            "url": "git@github.com:Eresus/EresusCMS.git"
+            "type": "package",
+            "package":
+            {
+                "name": "eresus/eresus-cms",
+                "version": "@dev",
+                "source":
+                {
+                    "type": "git",
+                    "url": "git@github.com:Eresus/EresusCMS.git",
+                    "reference": "3.01"
+                }
+            }
         },
         {
             "type": "package",
