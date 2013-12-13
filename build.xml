@@ -78,12 +78,9 @@
 		<!--
 			Articles
 		-->
-		<copy todir="${build.dir}/ext">
-			<fileset dir="vendor/eresus/articles/src">
-  			<include name="articles.php" />
-  			<include name="articles/**" />
-			</fileset>
-		</copy>
+        <phingcall target="plugin">
+            <property name="plugin.name" value="articles" />
+        </phingcall>
 
 		<!--
 			Autoreplace
