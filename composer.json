@@ -43,7 +43,7 @@
                 {
                     "type": "git",
                     "url": "git@github.com:Eresus/EresusCMS.git",
-                    "reference": "3.01"
+                    "reference": "develop"
                 }
             }
         },
