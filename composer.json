@@ -11,7 +11,7 @@
     "minimum-stability": "dev",
     "require":
     {
-        "eresus/eresus-cms" : "3.00",
+        "eresus/eresus-cms" : "3.00.1",
         "eresus/articles" : "3.00",
         "eresus/autoreplace" : "2.00",
         "eresus/banners" : "3.00",
@@ -34,8 +34,18 @@
     "repositories":
     [
         {
-            "type": "vcs",
-            "url": "git@github.com:Eresus/EresusCMS.git"
+            "type": "package",
+            "package":
+            {
+                "name": "eresus/eresus-cms",
+                "version": "3.00.1",
+                "source":
+                {
+                    "type": "git",
+                    "url": "git@github.com:Eresus/EresusCMS.git",
+                    "reference": "v3.00.1"
+                }
+            }
         },
         {
             "type": "package",
