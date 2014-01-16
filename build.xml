@@ -78,12 +78,9 @@
 		<!--
 			Articles
 		-->
-		<copy todir="${build.dir}/ext">
-			<fileset dir="vendor/eresus/articles/src">
-  			<include name="articles.php" />
-  			<include name="articles/**" />
-			</fileset>
-		</copy>
+        <phingcall target="plugin">
+            <property name="plugin.name" value="articles" />
+        </phingcall>
 
 		<!--
 			Autoreplace
@@ -105,11 +102,9 @@
 		<!--
 			Blocks
 		-->
-		<copy todir="${build.dir}/ext">
-			<fileset dir="vendor/eresus/blocks/src">
-  			<include name="blocks.php" />
-			</fileset>
-		</copy>
+        <phingcall target="plugin">
+            <property name="plugin.name" value="blocks" />
+        </phingcall>
 
 		<!--
 			Cart
@@ -150,6 +145,7 @@
 			Image
 		-->
 		<phingcall target="plugin">
+            <property name="plugin.build.vendors" value="yes" />
 			<property name="plugin.name" value="image" />
 		</phingcall>
 
@@ -198,7 +194,7 @@
 			TemplateService
 		-->
 		<phingcall target="plugin">
-			<property name="plugin.name" value="template-service" />
+			<property name="plugin.name" value="templateservice" />
 		</phingcall>
 
 		<!--
@@ -233,7 +229,7 @@
 		<delete dir="${project.basedir}/vendor" includeemptydirs="true" />
 		<delete file="${project.basedir}/composer.lock" />
         <delete file="${project.basedir}/composer.phar" />
-		
+
 	</target>
 
 	<!--
@@ -262,6 +258,15 @@
 	<target name="plugin" description="[internal] Build specified plugin">
 
         <mkdir dir="${build.dir}/temp" />
+        <if>
+            <isset property="plugin.build.vendors" />
+            <then>
+                <phing dir="vendor/eresus/${plugin.name}" phingfile="build.xml" target="vendors"
+                    inheritAll="false">
+                    <property name="build.dir" value="${build.dir}/temp" override="yes" />
+                </phing>
+            </then>
+        </if>
 		<phing dir="vendor/eresus/${plugin.name}" phingfile="build.xml" target="build" inheritAll="false">
 			<property name="build.dir" value="${build.dir}/temp" override="yes" />
 			<property name="phpunit" value="no" />
