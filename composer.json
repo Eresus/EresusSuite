@@ -23,7 +23,7 @@
         "eresus/html" : "4.01",
         "eresus/image" : "2.01.2",
         "eresus/menus" : "3.00",
-        "eresus/orm" : "2.00",
+        "eresus/orm" : "3.01",
         "eresus/path" : "3.00",
         "eresus/sitemap" : "4.00",
         "eresus/spamprevent" : "2.02",
@@ -170,20 +170,6 @@
                     "type": "git",
                     "url": "https://github.com/Eresus/Menus",
                     "reference": "v3.00"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package":
-            {
-                "name": "eresus/orm",
-                "version": "2.00",
-                "source":
-                {
-                    "type": "git",
-                    "url": "https://github.com/Eresus/ORM",
-                    "reference": "v2.00"
                 }
             }
         },
