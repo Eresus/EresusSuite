@@ -20,7 +20,7 @@
         "eresus/eforms" : "2.00",
         "eresus/gallery" : "3.00",
         "eresus/goodscatalog" : "2.00",
-        "eresus/html" : "4.00",
+        "eresus/html" : "4.01",
         "eresus/image" : "2.01.2",
         "eresus/menus" : "3.00",
         "eresus/orm" : "2.00",
@@ -156,20 +156,6 @@
                     "type": "git",
                     "url": "https://github.com/Eresus/GoodsCatalog",
                     "reference": "v2.00"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package":
-            {
-                "name": "eresus/html",
-                "version": "4.00",
-                "source":
-                {
-                    "type": "git",
-                    "url": "https://github.com/Eresus/Html",
-                    "reference": "v4.00"
                 }
             }
         },
