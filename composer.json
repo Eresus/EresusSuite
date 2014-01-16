@@ -11,7 +11,7 @@
     "minimum-stability": "dev",
     "require":
     {
-        "eresus/eresus-cms": "dev-release/3.01",
+        "eresus/eresus-cms": "dev-develop",
         "eresus/articles" : "@dev",
         "eresus/autoreplace" : "@dev",
         "eresus/banners" : "@dev",
