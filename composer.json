@@ -12,7 +12,7 @@
     "require":
     {
         "eresus/eresus-cms" : "3.01",
-        "eresus/articles" : "3.00",
+        "eresus/articles" : "3.01",
         "eresus/autoreplace" : "2.00",
         "eresus/banners" : "3.00",
         "eresus/blocks" : "4.00",
@@ -44,20 +44,6 @@
                     "type": "git",
                     "url": "https://github.com/carhartl/jquery-cookie",
                     "reference": "v1.4.0"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package":
-            {
-                "name": "eresus/articles",
-                "version": "3.00",
-                "source":
-                {
-                    "type": "git",
-                    "url": "https://github.com/Eresus/Articles",
-                    "reference": "v3.00"
                 }
             }
         },
