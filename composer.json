@@ -28,7 +28,7 @@
         "eresus/sitemap" : "4.00",
         "eresus/spamprevent" : "2.02",
         "eresus/template-service" : "1.00.1",
-        "eresus/ui" : "2.01",
+        "eresus/ui" : "2.03",
         "eresus/vars" : "3.00"
     },
     "repositories":
@@ -204,20 +204,6 @@
         {
             "type": "vcs",
             "url": "git://github.com/Eresus/TemplateService.git"
-        },
-        {
-            "type": "package",
-            "package":
-            {
-                "name": "eresus/ui",
-                "version": "2.01",
-                "source":
-                {
-                    "type": "git",
-                    "url": "https://github.com/Eresus/UI",
-                    "reference": "v2.01"
-                }
-            }
         },
         {
             "type": "package",
