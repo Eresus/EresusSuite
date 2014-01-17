@@ -22,7 +22,7 @@
         "eresus/goods-catalog" : "2.01",
         "eresus/html" : "4.01",
         "eresus/image" : "2.01.2",
-        "eresus/menus" : "3.00",
+        "eresus/menus" : "3.01",
         "eresus/orm" : "3.01",
         "eresus/path" : "3.00",
         "eresus/sitemap" : "4.00",
@@ -44,20 +44,6 @@
                     "type": "git",
                     "url": "https://github.com/carhartl/jquery-cookie",
                     "reference": "v1.4.0"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package":
-            {
-                "name": "eresus/menus",
-                "version": "3.00",
-                "source":
-                {
-                    "type": "git",
-                    "url": "https://github.com/Eresus/Menus",
-                    "reference": "v3.00"
                 }
             }
         },
