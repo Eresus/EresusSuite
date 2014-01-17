@@ -15,7 +15,7 @@
         "eresus/articles" : "3.01",
         "eresus/auto-replace" : "2.01",
         "eresus/banners" : "3.01",
-        "eresus/blocks" : "4.00",
+        "eresus/blocks" : "4.01",
         "eresus/cart" : "2.00",
         "eresus/eforms" : "2.00",
         "eresus/gallery" : "3.00",
@@ -44,20 +44,6 @@
                     "type": "git",
                     "url": "https://github.com/carhartl/jquery-cookie",
                     "reference": "v1.4.0"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package":
-            {
-                "name": "eresus/blocks",
-                "version": "4.00",
-                "source":
-                {
-                    "type": "git",
-                    "url": "https://github.com/Eresus/Blocks",
-                    "reference": "v4.00"
                 }
             }
         },
