@@ -24,8 +24,8 @@
         "eresus/image" : "2.01.2",
         "eresus/menus" : "3.01",
         "eresus/orm" : "3.01",
-        "eresus/path" : "3.00",
-        "eresus/sitemap" : "4.00",
+        "eresus/path" : "3.01",
+        "eresus/sitemap" : "4.01",
         "eresus/spamprevent" : "2.02",
         "eresus/template-service" : "1.00.1",
         "eresus/ui" : "2.03",
@@ -44,34 +44,6 @@
                     "type": "git",
                     "url": "https://github.com/carhartl/jquery-cookie",
                     "reference": "v1.4.0"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package":
-            {
-                "name": "eresus/path",
-                "version": "3.00",
-                "source":
-                {
-                    "type": "git",
-                    "url": "https://github.com/Eresus/Path",
-                    "reference": "v3.00"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package":
-            {
-                "name": "eresus/sitemap",
-                "version": "4.00",
-                "source":
-                {
-                    "type": "git",
-                    "url": "https://github.com/Eresus/SiteMap",
-                    "reference": "v4.00"
                 }
             }
         },
