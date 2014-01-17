@@ -85,12 +85,9 @@
 		<!--
 			Autoreplace
 		-->
-		<copy todir="${build.dir}/ext">
-			<fileset dir="vendor/eresus/autoreplace/src">
-  			<include name="autoreplace.php" />
-  			<include name="autoreplace/**" />
-			</fileset>
-		</copy>
+        <phingcall target="plugin">
+            <property name="plugin.name" value="autoreplace" />
+        </phingcall>
 
 		<!--
 			Banners
