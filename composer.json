@@ -8,7 +8,6 @@
             "email": "m.krasilnikov@yandex.ru"
         }
     ],
-    "minimum-stability": "dev",
     "require":
     {
         "eresus/eresus-cms" : "3.01",
