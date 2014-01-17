@@ -29,7 +29,7 @@
         "eresus/spamprevent" : "2.02",
         "eresus/template-service" : "1.00.1",
         "eresus/ui" : "2.03",
-        "eresus/vars" : "3.00"
+        "eresus/vars" : "3.01"
     },
     "repositories":
     [
@@ -50,20 +50,6 @@
         {
             "type": "vcs",
             "url": "git://github.com/Eresus/TemplateService.git"
-        },
-        {
-            "type": "package",
-            "package":
-            {
-                "name": "eresus/vars",
-                "version": "3.00",
-                "source":
-                {
-                    "type": "git",
-                    "url": "https://github.com/Eresus/Vars",
-                    "reference": "v3.00"
-                }
-            }
         }
     ]
 }
