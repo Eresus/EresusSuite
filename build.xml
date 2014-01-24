@@ -163,22 +163,16 @@
 		<!--
 			Path
 		-->
-		<copy todir="${build.dir}/ext">
-			<fileset dir="vendor/eresus/path/src">
-  			<include name="path.php" />
-  			<include name="path/**" />
-			</fileset>
-		</copy>
+        <phingcall target="plugin">
+            <property name="plugin.name" value="path" />
+        </phingcall>
 
 		<!--
 			SiteMap
 		-->
-		<copy todir="${build.dir}/ext">
-			<fileset dir="vendor/eresus/sitemap/src">
-  			<include name="sitemap.php" />
-  			<include name="sitemap/**" />
-			</fileset>
-		</copy>
+        <phingcall target="plugin">
+            <property name="plugin.name" value="sitemap" />
+        </phingcall>
 
 		<!--
 			SpamPrevent
@@ -204,12 +198,9 @@
 		<!--
 			Vars
 		-->
-		<copy todir="${build.dir}/ext">
-			<fileset dir="vendor/eresus/vars/src">
-  			<include name="vars.php" />
-  			<include name="vars/**" />
-			</fileset>
-		</copy>
+        <phingcall target="plugin">
+            <property name="plugin.name" value="vars" />
+        </phingcall>
 
 	</target>
 
