@@ -86,7 +86,7 @@
 			Autoreplace
 		-->
         <phingcall target="plugin">
-            <property name="plugin.name" value="autoreplace" />
+            <property name="plugin.name" value="auto-replace" />
         </phingcall>
 
 		<!--
@@ -128,7 +128,7 @@
 			GoodsCatalog
 		-->
 		<phingcall target="plugin">
-			<property name="plugin.name" value="goodscatalog" />
+			<property name="plugin.name" value="goods-catalog" />
 		</phingcall>
 
 		<!--
@@ -191,7 +191,7 @@
 			TemplateService
 		-->
 		<phingcall target="plugin">
-			<property name="plugin.name" value="templateservice" />
+			<property name="plugin.name" value="template-service" />
 		</phingcall>
 
 		<!--
@@ -254,6 +254,7 @@
 	-->
 	<target name="plugin" description="[internal] Build specified plugin">
 
+        <echo msg="Building plugin: ${plugin.name}..." />
         <mkdir dir="${build.dir}/temp" />
         <if>
             <isset property="plugin.build.vendors" />
@@ -264,7 +265,8 @@
                 </phing>
             </then>
         </if>
-		<phing dir="vendor/eresus/${plugin.name}" phingfile="build.xml" target="build" inheritAll="false">
+		<phing dir="vendor/eresus/${plugin.name}" phingfile="build.xml" target="build" inheritAll="false"
+            haltonfailure="true">
 			<property name="build.dir" value="${build.dir}/temp" override="yes" />
 			<property name="phpunit" value="no" />
 			<property name="phpmd" value="no" />
